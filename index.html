@@ -1,1 +1,564 @@
-[PASTE THE FULL HTML FROM THE ARTIFACT HERE]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIME Coin ⏰ - Revolutionary Time-Based Cryptocurrency</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        nav {
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background: rgba(15, 12, 41, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 150px 0 100px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 64px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .hero .subtitle {
+            font-size: 24px;
+            color: #b8b8d4;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .secondary-button {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .secondary-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 60px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #b8b8d4;
+            font-size: 16px;
+        }
+
+        /* Features Section */
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .feature-card p {
+            color: #b8b8d4;
+            line-height: 1.6;
+        }
+
+        /* Masternode Tiers */
+        .tiers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .tier-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tier-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .tier-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .tier-name {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .tier-requirement {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .tier-apy {
+            font-size: 18px;
+            color: #4ade80;
+            margin-bottom: 20px;
+        }
+
+        .tier-features {
+            text-align: left;
+            margin-top: 30px;
+        }
+
+        .tier-features li {
+            color: #b8b8d4;
+            margin: 10px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .tier-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 100px 0;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 30px;
+            margin: 80px 0;
+        }
+
+        .cta-section h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 20px;
+            color: #b8b8d4;
+            margin-bottom: 40px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 0 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 100px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: #b8b8d4;
+            text-decoration: none;
+            display: block;
+            margin: 10px 0;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #ffffff;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #b8b8d4;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 42px;
+            }
+
+            .hero .subtitle {
+                font-size: 18px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">⏰ TIME</div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#masternodes">Masternodes</a></li>
+                <li><a href="#docs">Docs</a></li>
+                <li><a href="#community">Community</a></li>
+            </ul>
+            <a href="#buy" class="cta-button">Buy TIME</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>The Future of Time-Based Cryptocurrency</h1>
+            <p class="subtitle">24-hour blocks. Instant finality. Up to 30% APY. Purchase-based minting with no pre-mine. The cryptocurrency that respects your time.</p>
+            <div class="hero-buttons">
+                <a href="#buy" class="cta-button">Get Started</a>
+                <a href="#whitepaper" class="secondary-button">Read Whitepaper</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="container">
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">24h</div>
+                <div class="stat-label">Block Time</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">&lt;5s</div>
+                <div class="stat-label">Transaction Speed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">30%</div>
+                <div class="stat-label">Max APY</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0%</div>
+                <div class="stat-label">Pre-Mine</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section">
+        <div class="container">
+            <h2 class="section-title">Why TIME?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Instant Finality</h3>
+                    <p>Transactions are validated and final in under 5 seconds through masternode consensus. No waiting, no uncertainty.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>24-Hour Blocks</h3>
+                    <p>Daily immutable checkpoints provide natural rhythm and security. Blocks serve as archival snapshots, not gatekeepers.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Purchase-Based Minting</h3>
+                    <p>No pre-mine. No founder allocation. TIME is created only through purchases with BTC, ETH, USDC, or USDT.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Fair Launch</h3>
+                    <p>Everyone starts equal. Transparent minting process with 90% to buyers, 8% to masternodes, 2% to development.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Byzantine Fault Tolerant</h3>
+                    <p>Advanced BFT consensus ensures network security even with malicious actors. Three-tier masternode validation.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>High Performance</h3>
+                    <p>Built in Rust for memory safety and speed. Optimized for thousands of transactions per second.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Masternode Tiers -->
+    <section id="masternodes" class="section">
+        <div class="container">
+            <h2 class="section-title">Masternode Tiers</h2>
+            <div class="tiers-grid">
+                <div class="tier-card">
+                    <div class="tier-name">TIER 1</div>
+                    <div class="tier-requirement">1,000 TIME</div>
+                    <div class="tier-apy">18% APY</div>
+                    <p style="color: #b8b8d4; margin-bottom: 20px;">Entry level masternode for everyone</p>
+                    <ul class="tier-features">
+                        <li>Transaction validation</li>
+                        <li>Network participation</li>
+                        <li>Reward distribution</li>
+                        <li>Anonymous operation</li>
+                    </ul>
+                </div>
+                <div class="tier-card">
+                    <div class="tier-name">TIER 2</div>
+                    <div class="tier-requirement">10,000 TIME</div>
+                    <div class="tier-apy">24% APY</div>
+                    <p style="color: #b8b8d4; margin-bottom: 20px;">Enhanced rewards and governance</p>
+                    <ul class="tier-features">
+                        <li>All Tier 1 benefits</li>
+                        <li>Governance voting rights</li>
+                        <li>Priority validation</li>
+                        <li>Enhanced rewards</li>
+                    </ul>
+                </div>
+                <div class="tier-card">
+                    <div class="tier-name">TIER 3</div>
+                    <div class="tier-requirement">100,000 TIME</div>
+                    <div class="tier-apy">30% APY</div>
+                    <p style="color: #b8b8d4; margin-bottom: 20px;">Maximum APY and influence</p>
+                    <ul class="tier-features">
+                        <li>All Tier 2 benefits</li>
+                        <li>Maximum APY</li>
+                        <li>Proposal submission</li>
+                        <li>Network leadership</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="container">
+        <div class="cta-section">
+            <h2>Ready to Join the TIME Revolution?</h2>
+            <p>Start earning rewards today with as little as 1,000 TIME</p>
+            <div class="hero-buttons">
+                <a href="#buy" class="cta-button">Buy TIME Now</a>
+                <a href="#docs" class="secondary-button">Setup Masternode</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#wallet">Wallet</a></li>
+                        <li><a href="#explorer">Block Explorer</a></li>
+                        <li><a href="#exchange">Exchange</a></li>
+                        <li><a href="#mobile">Mobile App</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Developers</h4>
+                    <ul>
+                        <li><a href="#docs">Documentation</a></li>
+                        <li><a href="#api">API Reference</a></li>
+                        <li><a href="#sdk">SDK</a></li>
+                        <li><a href="#github">GitHub</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#whitepaper">Whitepaper</a></li>
+                        <li><a href="#roadmap">Roadmap</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="#discord">Discord</a></li>
+                        <li><a href="#twitter">Twitter</a></li>
+                        <li><a href="#telegram">Telegram</a></li>
+                        <li><a href="#reddit">Reddit</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TIME Coin. Built with ⏰ for the future.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
