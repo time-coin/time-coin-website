@@ -456,7 +456,7 @@
             <li><a href="docs.html">Docs</a></li>
             <li><a href="index.html#community">Community</a></li>
         </ul>
-        <a href="#buying-time" class="top-nav-button">Buy TIME</a>
+        <a href="#buying-time" class="top-nav-button">Coming Soon</a>
         <button class="mobile-menu-button" onclick="toggleMobileMenu()">☰</button>
     </nav>
 
@@ -488,15 +488,15 @@
             <div class="nav-section">
                 <div class="nav-title">Masternodes</div>
                 <a href="#masternode-overview" class="nav-link" onclick="toggleMobileMenu()">Overview</a>
-                <a href="#masternode-setup" class="nav-link" onclick="toggleMobileMenu()">Setup Guide</a>
+                <a href="#masternode-setup" class="nav-link" onclick="toggleMobileMenu()">Setup (Testnet Q2)</a>
                 <a href="#masternode-rewards" class="nav-link" onclick="toggleMobileMenu()">Rewards</a>
             </div>
 
             <div class="nav-section">
                 <div class="nav-title">Wallet & Usage</div>
                 <a href="#wallet-setup" class="nav-link" onclick="toggleMobileMenu()">Wallet Setup</a>
-                <a href="#buying-time" class="nav-link" onclick="toggleMobileMenu()">Buying TIME</a>
-                <a href="#sending" class="nav-link" onclick="toggleMobileMenu()">Sending TIME</a>
+                <a href="#buying-time" class="nav-link" onclick="toggleMobileMenu()">Buying TIME (Soon)</a>
+                <a href="#sending" class="nav-link" onclick="toggleMobileMenu()">Sending TIME (Soon)</a>
             </div>
 
             <div class="nav-section">
@@ -559,40 +559,53 @@
         <!-- Main Content -->
         <main class="content">
             <h1 id="introduction">TIME Coin Documentation</h1>
+            
+            <div class="warning-box" style="background: rgba(234, 179, 8, 0.15); border-left-color: #eab308;">
+                <strong>🚧 IMPORTANT: Development Phase Notice</strong><br><br>
+                TIME Coin is currently in active development. The following features are <strong>NOT YET AVAILABLE</strong>:<br>
+                • Purchasing TIME with cryptocurrency<br>
+                • Production wallet downloads<br>
+                • Live masternode operations<br>
+                • Live transaction processing<br><br>
+                <strong>Expected Testnet Launch:</strong> Q2 2025<br>
+                <strong>What you can do now:</strong> Review documentation, join community channels, and follow development progress on GitHub.
+            </div>
+
             <p>Welcome to the TIME Coin documentation. TIME is a revolutionary cryptocurrency featuring 24-hour blocks, instant transaction finality, and a purchase-based minting model with no pre-mine.</p>
 
             <div class="info-box">
                 <strong>🚀 Current Status:</strong> Development Phase<br>
                 <strong>📅 Expected Testnet Launch:</strong> Q2 2025<br>
-                <strong>🔧 Built With:</strong> Rust for performance and security
+                <strong>🔧 Built With:</strong> Rust for performance and security<br>
+                <strong>⚠️ Purchase System:</strong> Not yet available - Coming with testnet launch
             </div>
 
             <h2 id="quick-start">Quick Start</h2>
-            <p>Get started with TIME in under 5 minutes:</p>
+            <p>TIME Coin is currently in active development. Here's what you can do now and what's coming soon:</p>
 
-            <h3>1. Download Wallet</h3>
-            <pre><code># Linux/Mac
-curl -sSL https://get.timecoin.io | sh
+            <h3>Available Now</h3>
+            <p>Download and test the wallet in development mode:</p>
+            <pre><code># Clone the repository
+git clone https://github.com/time-coin/time-coin.git
+cd time-coin
 
-# Or download directly
-wget https://github.com/time-coin/wallet/releases/latest/download/time-wallet
+# Build from source
+cargo build --release
 
-# Windows
-# Download from: https://timecoin.io/download</code></pre>
+# Run tests
+cargo test</code></pre>
 
-            <h3>2. Create Your Wallet</h3>
-            <pre><code>time-wallet create
+            <h3>Coming Soon (Testnet Launch)</h3>
+            <div class="warning-box">
+                <strong>🚧 Not Yet Available:</strong><br>
+                The following features will be available when testnet launches in Q2 2025:<br>
+                • Purchasing TIME with crypto (BTC, ETH, USDC, USDT)<br>
+                • Creating production wallets<br>
+                • Sending TIME transactions<br>
+                • Running masternodes for rewards
+            </div>
 
-# Output:
-# Wallet created successfully!
-# Address: TIME1abc123def456...
-# ⚠️  Save your seed phrase securely!</code></pre>
-
-            <h3>3. Buy TIME</h3>
-            <pre><code>time-wallet purchase --amount 1000 --crypto USDC
-
-# You'll receive a deposit address
-# Send USDC and receive TIME in 3-15 minutes</code></pre>
+            <p>Want to stay updated? Join our community channels to be notified when testnet launches!</p>
 
             <h2 id="installation">Installation</h2>
 
@@ -805,6 +818,11 @@ Distribution:
 
             <h2 id="masternode-setup">Masternode Setup Guide</h2>
 
+            <div class="warning-box">
+                <strong>⚠️ Testnet Coming Q2 2025</strong><br>
+                Masternodes cannot be run yet. The masternode network will launch with the testnet in Q2 2025. This guide shows how to set up a masternode when the network goes live.
+            </div>
+
             <h3>Prerequisites</h3>
             <ul>
                 <li>1,000+ TIME tokens (locked)</li>
@@ -923,7 +941,12 @@ time-node masternode ping</code></pre>
 
             <h2 id="wallet-setup">Wallet Setup</h2>
 
-            <h3>Installation</h3>
+            <div class="warning-box">
+                <strong>⚠️ Development Phase</strong><br>
+                Production wallets are not yet available. The wallet software is currently in development and will be released with the testnet launch in Q2 2025. The instructions below show how the wallet will work when released.
+            </div>
+
+            <h3>Installation (Coming Soon)</h3>
             <pre><code># Download for your platform
 # Linux:
 wget https://timecoin.io/downloads/time-wallet-linux
@@ -958,7 +981,13 @@ brew install timecoin/tap/time-wallet
 
             <h2 id="buying-time">Buying TIME</h2>
 
-            <h3>Supported Cryptocurrencies</h3>
+            <div class="warning-box">
+                <strong>⚠️ Feature Not Yet Available</strong><br>
+                The TIME coin purchase system is currently under development and will be available with the testnet launch in Q2 2025. This section describes how the system will work when it becomes available.
+            </div>
+
+            <h3>Planned Supported Cryptocurrencies</h3>
+            <p>When launched, TIME will be purchasable with:</p>
             <ul>
                 <li>Bitcoin (BTC)</li>
                 <li>Ethereum (ETH)</li>
@@ -966,7 +995,7 @@ brew install timecoin/tap/time-wallet
                 <li>USDT (ERC-20 or TRC-20)</li>
             </ul>
 
-            <h3>Purchase Process</h3>
+            <h3>How It Will Work (Coming Soon)</h3>
             <pre><code># 1. Initiate purchase
 time-wallet purchase init \
   --amount 1000 \
@@ -987,7 +1016,7 @@ time-wallet purchase status --id PUR_abc123
 # 4. Receive TIME (3-15 minutes)
 # Your wallet will automatically credit</code></pre>
 
-            <h3>Distribution Breakdown</h3>
+            <h3>Planned Distribution Breakdown</h3>
             <pre><code>For every 1000 TIME purchased ($5,000 at $5/TIME):
 
 User Receives:    900 TIME (90%)
@@ -1007,7 +1036,12 @@ Total Minted:   1,000 TIME</code></pre>
 
             <h2 id="sending">Sending TIME</h2>
 
-            <h3>Basic Transfer</h3>
+            <div class="warning-box">
+                <strong>⚠️ Feature Not Yet Available</strong><br>
+                Transaction functionality will be available when the testnet launches in Q2 2025. This section describes how transactions will work.
+            </div>
+
+            <h3>Basic Transfer (Coming Soon)</h3>
             <pre><code>time-wallet send \
   --to TIME1recipient_address \
   --amount 100 \
@@ -1034,7 +1068,12 @@ time-wallet send-many \
 
             <h2 id="api">API Reference</h2>
 
-            <h3>REST API Endpoints</h3>
+            <div class="info-box">
+                <strong>📘 API Documentation</strong><br>
+                The TIME Coin API is currently under development. Full API documentation will be available with the testnet launch. The examples below show the planned API structure.
+            </div>
+
+            <h3>REST API Endpoints (Planned)</h3>
 
             <h4>Get Account Balance</h4>
             <pre><code>GET /api/v1/account/{address}/balance
@@ -1096,7 +1135,12 @@ ws.onmessage = (event) => {
 
             <h2 id="sdk">SDK</h2>
 
-            <h3>JavaScript/TypeScript</h3>
+            <div class="info-box">
+                <strong>🛠️ SDK Development</strong><br>
+                Official SDKs for JavaScript, Python, and Rust are currently in development and will be released alongside the testnet launch in Q2 2025.
+            </div>
+
+            <h3>JavaScript/TypeScript (Coming Soon)</h3>
             <pre><code>npm install @timecoin/sdk
 
 import { TimeClient, Wallet } from '@timecoin/sdk';
