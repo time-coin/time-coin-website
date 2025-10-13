@@ -51,6 +51,11 @@
             background-clip: text;
         }
 
+        .logo a {
+            text-decoration: none;
+            color: inherit;
+        }
+
         .nav-links {
             display: flex;
             gap: 30px;
@@ -366,6 +371,11 @@
             .nav-links {
                 display: none;
             }
+
+            .cta-button {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
         }
     </style>
 </head>
@@ -373,7 +383,7 @@
     <!-- Navigation -->
     <nav>
         <div class="container">
-            <div class="logo">⏰ TIME</div>
+            <div class="logo"><a href="index.html">⏰ TIME</a></div>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
                 <li><a href="#masternodes">Masternodes</a></li>

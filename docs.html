@@ -16,6 +16,72 @@
             background: #0f0c29;
             color: #e0e0e0;
             line-height: 1.6;
+            padding-top: 70px;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(15, 12, 41, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+        }
+
+        .top-nav-logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-right: auto;
+        }
+
+        .top-nav-logo a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .top-nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .top-nav-links a {
+            color: #b8b8d4;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .top-nav-links a:hover {
+            color: #667eea;
+        }
+
+        .top-nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s;
+            margin-left: 20px;
+        }
+
+        .top-nav-button:hover {
+            transform: translateY(-2px);
         }
 
         .docs-container {
@@ -30,24 +96,18 @@
             border-right: 1px solid rgba(255, 255, 255, 0.1);
             padding: 30px 0;
             position: sticky;
-            top: 0;
-            height: 100vh;
+            top: 70px;
+            height: calc(100vh - 70px);
             overflow-y: auto;
         }
 
         .sidebar-logo {
             padding: 0 25px 20px;
-            font-size: 24px;
-            font-weight: bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .sidebar-logo a {
-            color: inherit;
-            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #667eea;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .nav-section {
@@ -231,18 +291,36 @@
             .content {
                 padding: 30px 20px;
             }
+
+            .top-nav-links {
+                display: none;
+            }
+
+            .top-nav {
+                padding: 0 20px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="top-nav-logo">
+            <a href="index.html">⏰ TIME</a>
+        </div>
+        <ul class="top-nav-links">
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#masternodes">Masternodes</a></li>
+            <li><a href="docs.html">Docs</a></li>
+            <li><a href="index.html#community">Community</a></li>
+        </ul>
+        <a href="#buying-time" class="top-nav-button">Buy TIME</a>
+    </nav>
+
     <div class="docs-container">
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
-            <div class="sidebar-logo">
-                <a href="index.html">⏰ TIME</a>
-            </div>
-
-            <a href="index.html" style="display: block; padding: 10px 25px; margin-bottom: 20px; background: rgba(102, 126, 234, 0.2); color: #667eea; text-decoration: none; border-radius: 5px; text-align: center; font-weight: 600;">← Back to Home</a>
+            <div class="sidebar-logo">Documentation</div>
 
             <nav>
                 <div class="nav-section">
