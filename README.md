@@ -3,8 +3,8 @@
 > Official website for TIME Coin - A revolutionary cryptocurrency featuring 24-hour blocks, instant transaction finality, and a fair-launch purchase-based minting system.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![Testnet](https://img.shields.io/badge/testnet-Q2%202025-blue.svg)]()
+[![Status](https://img.shields.io/badge/status-active-success.svg)](https://github.com/time-coin/time-coin-website)
+[![Testnet](https://img.shields.io/badge/testnet-Q2%202025-blue.svg)](roadmap.html)
 
 ## 🌐 Live Website
 
@@ -47,7 +47,7 @@ This repository contains the complete TIME Coin marketing and documentation webs
 
 ## 📂 Repository Structure
 
-```
+```text
 time-coin-website/
 ├── index.html          # Main landing page
 ├── docs.html           # Technical documentation
@@ -77,7 +77,7 @@ git clone https://github.com/time-coin/time-coin-website.git
 cd time-coin-website
 ```
 
-2. **Open in browser**
+1. **Open in browser**
 
 ```bash
 # Simple Python server (Python 3)
@@ -89,9 +89,9 @@ npx serve
 # Or just open index.html directly in your browser
 ```
 
-3. **View the site**
+1. **View the site**
 
-```
+```text
 http://localhost:8000
 ```
 
@@ -321,6 +321,6 @@ Planned improvements for the website:
 
 ---
 
-**Made with ⏰ by the TIME Coin community**
+### Made with ⏰ by the TIME Coin community
 
-*Last Updated: October 2025*
+#### Last Updated: October 2025
