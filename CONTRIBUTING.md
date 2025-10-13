@@ -329,7 +329,7 @@ Example:
 ### Staying Updated
 
 - **Watch** the repository for notifications
-- **Follow** [@TIMECoin](#) on Twitter
+- **Follow** [https://x.com/TIMEcoin515010](#) on Twitter
 - **Join** community channels for announcements
 
 ### Recognition
