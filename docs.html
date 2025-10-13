@@ -84,6 +84,77 @@
             transform: translateY(-2px);
         }
 
+        /* Mobile Menu Button */
+        .mobile-menu-button {
+            display: none;
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            margin-left: 20px;
+        }
+
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2999;
+        }
+
+        .mobile-menu-overlay.active {
+            display: block;
+        }
+
+        .mobile-sidebar {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100vh;
+            background: #0f0c29;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 3000;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            padding: 20px 0;
+        }
+
+        .mobile-sidebar.active {
+            right: 0;
+        }
+
+        .mobile-sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .mobile-sidebar-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .mobile-close-button {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
         .docs-container {
             display: grid;
             grid-template-columns: 280px 1fr;
@@ -151,6 +222,47 @@
             max-width: 900px;
         }
 
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px 15px;
+            }
+
+            .content h1 {
+                font-size: 32px;
+                margin-bottom: 15px;
+            }
+
+            .content h2 {
+                font-size: 26px;
+                margin-top: 40px;
+                margin-bottom: 15px;
+            }
+
+            .content h3 {
+                font-size: 20px;
+                margin-top: 30px;
+                margin-bottom: 12px;
+            }
+
+            .content p {
+                font-size: 15px;
+            }
+
+            .info-box, .warning-box, .success-box {
+                padding: 15px;
+                margin: 20px 0;
+                font-size: 14px;
+            }
+
+            .button {
+                padding: 10px 20px;
+                font-size: 14px;
+                display: block;
+                text-align: center;
+                margin: 10px 0;
+            }
+        }
+
         .content h1 {
             font-size: 42px;
             margin-bottom: 20px;
@@ -206,6 +318,14 @@
             overflow-x: auto;
             margin: 20px 0;
             border: 1px solid rgba(102, 126, 234, 0.2);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        @media (max-width: 768px) {
+            .content pre {
+                padding: 15px;
+                font-size: 13px;
+            }
         }
 
         .content pre code {
@@ -242,6 +362,15 @@
             width: 100%;
             border-collapse: collapse;
             margin: 25px 0;
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            table {
+                font-size: 14px;
+            }
         }
 
         th {
@@ -280,6 +409,10 @@
         }
 
         @media (max-width: 968px) {
+            body {
+                padding-top: 60px;
+            }
+
             .docs-container {
                 grid-template-columns: 1fr;
             }
@@ -288,16 +421,25 @@
                 display: none;
             }
 
-            .content {
-                padding: 30px 20px;
+            .top-nav {
+                height: 60px;
+                padding: 0 15px;
             }
 
             .top-nav-links {
                 display: none;
             }
 
-            .top-nav {
-                padding: 0 20px;
+            .top-nav-button {
+                display: none;
+            }
+
+            .mobile-menu-button {
+                display: block;
+            }
+
+            .mobile-sidebar {
+                display: block;
             }
         }
     </style>
@@ -315,7 +457,60 @@
             <li><a href="index.html#community">Community</a></li>
         </ul>
         <a href="#buying-time" class="top-nav-button">Buy TIME</a>
+        <button class="mobile-menu-button" onclick="toggleMobileMenu()">☰</button>
     </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="toggleMobileMenu()"></div>
+
+    <!-- Mobile Sidebar -->
+    <aside class="mobile-sidebar" id="mobileSidebar">
+        <div class="mobile-sidebar-header">
+            <div class="mobile-sidebar-title">Documentation</div>
+            <button class="mobile-close-button" onclick="toggleMobileMenu()">×</button>
+        </div>
+        <nav>
+            <div class="nav-section">
+                <div class="nav-title">Getting Started</div>
+                <a href="#introduction" class="nav-link" onclick="toggleMobileMenu()">Introduction</a>
+                <a href="#quick-start" class="nav-link" onclick="toggleMobileMenu()">Quick Start</a>
+                <a href="#installation" class="nav-link" onclick="toggleMobileMenu()">Installation</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Core Concepts</div>
+                <a href="#architecture" class="nav-link" onclick="toggleMobileMenu()">Architecture</a>
+                <a href="#blocks" class="nav-link" onclick="toggleMobileMenu()">24-Hour Blocks</a>
+                <a href="#transactions" class="nav-link" onclick="toggleMobileMenu()">Transactions</a>
+                <a href="#consensus" class="nav-link" onclick="toggleMobileMenu()">Consensus</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Masternodes</div>
+                <a href="#masternode-overview" class="nav-link" onclick="toggleMobileMenu()">Overview</a>
+                <a href="#masternode-setup" class="nav-link" onclick="toggleMobileMenu()">Setup Guide</a>
+                <a href="#masternode-rewards" class="nav-link" onclick="toggleMobileMenu()">Rewards</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Wallet & Usage</div>
+                <a href="#wallet-setup" class="nav-link" onclick="toggleMobileMenu()">Wallet Setup</a>
+                <a href="#buying-time" class="nav-link" onclick="toggleMobileMenu()">Buying TIME</a>
+                <a href="#sending" class="nav-link" onclick="toggleMobileMenu()">Sending TIME</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Development</div>
+                <a href="#api" class="nav-link" onclick="toggleMobileMenu()">API Reference</a>
+                <a href="#sdk" class="nav-link" onclick="toggleMobileMenu()">SDK</a>
+                <a href="#contributing" class="nav-link" onclick="toggleMobileMenu()">Contributing</a>
+            </div>
+        </nav>
+        
+        <div style="padding: 20px 25px; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 20px;">
+            <a href="index.html" style="display: block; padding: 12px; background: rgba(102, 126, 234, 0.2); color: #667eea; text-decoration: none; border-radius: 8px; text-align: center; font-weight: 600;">← Back to Home</a>
+        </div>
+    </aside>
 
     <div class="docs-container">
         <!-- Sidebar Navigation -->
@@ -1012,6 +1207,22 @@ cargo fmt</code></pre>
     </div>
 
     <script>
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const sidebar = document.getElementById('mobileSidebar');
+            
+            overlay.classList.toggle('active');
+            sidebar.classList.toggle('active');
+            
+            // Prevent body scroll when menu is open
+            if (sidebar.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
