@@ -45,6 +45,23 @@
         .logo {
             font-size: 28px;
             font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .logo-link {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+        
+        .logo-text {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -447,7 +464,10 @@
     <!-- Navigation -->
     <nav>
         <div class="container">
-            <div class="logo">⏰ TIME</div>
+            <a href="index.html" class="logo-link">
+                <img src="images/time-coin-logo.png" alt="TIME Coin Logo" class="logo-img">
+                <span class="logo-text">⏰ TIME</span>
+            </a>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
                 <li><a href="#masternodes">Masternodes</a></li>
