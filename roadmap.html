@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIME Coin - Development Roadmap</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            padding-top: 70px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        nav {
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background: rgba(15, 12, 41, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Header Section */
+        .roadmap-header {
+            text-align: center;
+            padding: 80px 0 60px;
+        }
+
+        .roadmap-header h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .roadmap-header p {
+            font-size: 20px;
+            color: #b8b8d4;
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        /* Progress Bar */
+        .progress-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .progress-title {
+            font-size: 24px;
+            color: #ffffff;
+        }
+
+        .progress-percentage {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        .progress-info {
+            color: #b8b8d4;
+            font-size: 14px;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 40px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            opacity: 0.3;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            width: 45%;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .timeline-content:hover {
+            border-color: rgba(102, 126, 234, 0.5);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-right: auto;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: auto;
+        }
+
+        .timeline-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            z-index: 10;
+            box-shadow: 0 0 0 8px rgba(15, 12, 41, 1);
+        }
+
+        .timeline-phase {
+            font-size: 14px;
+            font-weight: 600;
+            color: #667eea;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .timeline-title {
+            font-size: 24px;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .timeline-date {
+            font-size: 14px;
+            color: #fbbf24;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .timeline-description {
+            color: #b8b8d4;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .timeline-tasks {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .timeline-tasks li {
+            padding: 8px 0 8px 25px;
+            position: relative;
+            color: #b8b8d4;
+            font-size: 14px;
+        }
+
+        .timeline-tasks li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            background: rgba(102, 126, 234, 0.2);
+            border: 2px solid #667eea;
+        }
+
+        .timeline-tasks li.completed::before {
+            background: #4ade80;
+            border-color: #4ade80;
+        }
+
+        .timeline-tasks li.completed::after {
+            content: '✓';
+            position: absolute;
+            left: 3px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #0f0c29;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .timeline-tasks li.completed {
+            color: #4ade80;
+            text-decoration: line-through;
+        }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .status-completed {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+            border: 1px solid #4ade80;
+        }
+
+        .status-current {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid #fbbf24;
+        }
+
+        .status-upcoming {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            border: 1px solid #667eea;
+        }
+
+        /* CTA Section */
+        .roadmap-cta {
+            text-align: center;
+            padding: 80px 0;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 30px;
+            margin: 60px 0;
+        }
+
+        .roadmap-cta h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .roadmap-cta p {
+            color: #b8b8d4;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .secondary-button {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            display: inline-block;
+        }
+
+        .secondary-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 968px) {
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item {
+                flex-direction: column !important;
+                align-items: flex-start;
+            }
+
+            .timeline-content {
+                width: 100%;
+                margin-left: 60px !important;
+                margin-right: 0 !important;
+            }
+
+            .timeline-dot {
+                left: 20px;
+                transform: translateX(0);
+            }
+
+            .roadmap-header h1 {
+                font-size: 36px;
+            }
+
+            .progress-section {
+                padding: 25px;
+            }
+
+            .progress-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .cta-button {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo"><a href="index.html">⏰ TIME</a></div>
+            <ul class="nav-links">
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="index.html#masternodes">Masternodes</a></li>
+                <li><a href="docs.html">Docs</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+            </ul>
+            <a href="docs.html#introduction" class="cta-button">Learn More</a>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="roadmap-header">
+        <div class="container">
+            <h1>Development Roadmap</h1>
+            <p>Our journey to revolutionize cryptocurrency with time-based blocks and instant finality. Transparent progress tracking from concept to mainnet launch.</p>
+        </div>
+    </section>
+
+    <!-- Overall Progress -->
+    <section class="container">
+        <div class="progress-section">
+            <div class="progress-header">
+                <div class="progress-title">Overall Development Progress</div>
+                <div class="progress-percentage">35%</div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" style="width: 35%"></div>
+            </div>
+            <div class="progress-info">
+                Phase 1 & 2 Complete • Currently in Phase 3 Development • Testnet Target: Q2 2025
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="container">
+        <div class="timeline">
+            <!-- Phase 1 -->
+            <div class="timeline-item">
+                <div class="timeline-dot">✓</div>
+                <div class="timeline-content">
+                    <div class="timeline-phase">Phase 1 - Foundation</div>
+                    <h3 class="timeline-title">Core Blockchain Development</h3>
+                    <div class="timeline-date">Months 1-2 • Completed</div>
+                    <p class="timeline-description">Built the foundation of TIME's unique architecture with 24-hour blocks and instant transaction validation.</p>
+                    <ul class="timeline-tasks">
+                        <li class="completed">Core blockchain implementation</li>
+                        <li class="completed">24-hour block system</li>
+                        <li class="completed">Transaction validation logic</li>
+                        <li class="completed">P2P networking layer</li>
+                        <li class="completed">Initial test suite</li>
+                    </ul>
+                    <span class="status-badge status-completed">✓ Completed</span>
+                </div>
+            </div>
+
+            <!-- Phase 2 -->
+            <div class="timeline-item">
+                <div class="timeline-dot">✓</div>
+                <div class="timeline-content">
+                    <div class="timeline-phase">Phase 2 - State Management</div>
+                    <h3 class="timeline-title">UTXO & State Tracking</h3>
+                    <div class="timeline-date">Month 2-3 • Completed</div>
+                    <p class="timeline-description">Implemented robust state management for instant finality and efficient transaction processing.</p>
+                    <ul class="timeline-tasks">
+                        <li class="completed">UTXO model implementation</li>
+                        <li class="completed">State synchronization</li>
+                        <li class="completed">Balance tracking</li>
+                        <li class="completed">Double-spend prevention</li>
+                        <li class="completed">Database optimization</li>
+                    </ul>
+                    <span class="status-badge status-completed">✓ Completed</span>
+                </div>
+            </div>
+
+            <!-- Phase 3 -->
+            <div class="timeline-item">
+                <div class="timeline-dot">⏰</div>
+                <div class="timeline-content">
+                    <div class="timeline-phase">Phase 3 - Masternode Network</div>
+                    <h3 class="timeline-title">BFT Consensus & Masternodes</h3>
+                    <div class="timeline-date">Month 3-4 • In Progress</div>
+                    <p class="timeline-description">Implementing the three-tier masternode system with Byzantine Fault Tolerant consensus for instant transaction finality.</p>
+                    <ul class="timeline-tasks">
+                        <li class="completed">Masternode registration system</li>
+                        <li class="completed">Tier structure (1/2/3)</li>
+                        <li>BFT consensus protocol</li>
+                        <li>Reward distribution logic</li>
+                        <li>Slashing mechanism</li>
+                        <li>Governance voting</li>
+                    </ul>
+                    <span class="status-badge status-current">⏰ Current Phase</span>
+                </div>
+            </div>
+
+            <!-- Phase 4 -->
+            <div class="timeline-item">
+                <div class="timeline-dot">📅</div>
+                <div class="timeline-content">
+                    <div class="timeline-phase">Phase 4 - Purchase System</div>
+                    <h3 class="timeline-title">Crypto Purchase Integration</h3>
+                    <div class="timeline-date">Month 4-5 • Q1 2025</div>
+                    <p class="timeline-description">Enable TIME purchases with BTC, ETH, USDC, and USDT through secure, decentralized purchase verification.</p>
+                    <ul class="timeline-tasks">
+                        <li>Bitcoin integration</li>
+                        <li>Ethereum integration</li>
+                        <li>USDC/USDT support</li>
+                        <li>Price oracle system</li>
+                        <li>Multi-oracle verification</li>
+                        <li>Purchase confirmation logic</li>
+                    </ul>
+                    <span class="status-badge status-upcoming">Upcoming</span>
+                </div>
+            </div>
+
+            <!-- Phase 5 -->
+            <div class="timeline-item">
+                <div class="timeline-dot">📅</div>
+                <div class="timeline-content">
+                    <div class="timeline-phase">Phase 5 - Wallet Development</div>
+                    <h3 class="timeline-title">Multi-Platform Wallets</h3>
+                    <div class="timeline-date">Month 5 • Q1 2025</div>
+                    <p class="timeline-description">User-friendly wallet applications for desktop, mobile, and web platforms.</p>
+                    <ul class="timeline-tasks">
+                        <li>CLI wallet</li>
+                        <li>Desktop GUI wallet (Windows/Mac/Linux)</li>
+                        <li>Mobile wallet (iOS & Android)</li>
+                        <li>Web wallet interface</li>
+                        <li>Hardware wallet support</li>
+                        <li>Backup & recovery features</li>
+                    </ul>
+                    <span class="status-badge status-upcoming">Upcoming</span>
+                </div>
+            </div>
+
+            <!-- Phase 6 -->
+            <div class="timeline-item">
+                <div class="timeline-dot">📅</div>
+                <div class="timeline-content">
+                    <div class="timeline-phase">Phase 6 - Security Audits</div>
+                    <h3 class="timeline-title">Testing & Security Review</h3>
+                    <div class="timeline-date">Month 6 • Q2 2025</div>
+                    <p class="timeline-description">Comprehensive security audits and stress testing before testnet launch.</p>
+                    <ul class="timeline-tasks">
+                        <li>Third-party security audit</li>
+                        <li>Penetration testing</li>
+                        <li>Load & stress testing</li>
+                        <li>Bug bounty program launch</li>
+                        <li>Code review & optimization</li>
+                        <li>Documentation review</li>
+                    </ul>
+                    <span class="status-badge status-upcoming">Upcoming</span>
+                </div>
+            </div>
+
+            <!-- Phase 7 -->
+            <div class="timeline-item">
+                <div class="timeline-dot">🚀</div>
+                <div class="timeline-content">
+                    <div class="timeline-phase">Phase 7 - Public Testnet</div>
+                    <h3 class="timeline-title">Testnet Launch</h3>
+                    <div class="timeline-date">Month 7 • Q2 2025</div>
+                    <p class="timeline-description">Public testnet launch with full functionality - purchasing, masternodes, and transactions.</p>
+                    <ul class="timeline-tasks">
+                        <li>Testnet network launch</li>
+                        <li>Public masternode testing</li>
+                        <li>Test TIME purchases (with test crypto)</li>
+                        <li>Block explorer launch</li>
+                        <li>Community testing program</li>
+                        <li>Performance monitoring</li>
+                    </ul>
+                    <span class="status-badge status-upcoming">Target: Q2 2025</span>
+                </div>
+            </div>
+
+            <!-- Phase 8 -->
+            <div class="timeline-item">
+                <div class="timeline-dot">📅</div>
+                <div class="timeline-content">
+                    <div class="timeline-phase">Phase 8 - Mainnet Preparation</div>
+                    <h3 class="timeline-title">Final Testing & Launch Prep</h3>
+                    <div class="timeline-date">Month 8 • Q3 2025</div>
+                    <p class="timeline-description">Final preparations, community onboarding, and ecosystem development before mainnet.</p>
+                    <ul class="timeline-tasks">
+                        <li>Testnet bug fixes</li>
+                        <li>Performance optimization</li>
+                        <li>Genesis block preparation</li>
+                        <li>Initial masternode recruitment</li>
+                        <li>Exchange partnerships</li>
+                        <li>Marketing campaign</li>
+                    </ul>
+                    <span class="status-badge status-upcoming">Q3 2025</span>
+                </div>
+            </div>
+
+            <!-- Phase 9 -->
+            <div class="timeline-item">
+                <div class="timeline-dot">🎉</div>
+                <div class="timeline-content">
+                    <div class="timeline-phase">Phase 9 - Mainnet Launch</div>
+                    <h3 class="timeline-title">Official Network Launch</h3>
+                    <div class="timeline-date">Month 9 • Q3-Q4 2025</div>
+                    <p class="timeline-description">TIME Coin mainnet goes live with full purchasing and masternode capabilities.</p>
+                    <ul class="timeline-tasks">
+                        <li>Mainnet genesis block</li>
+                        <li>Live TIME purchases with real crypto</li>
+                        <li>Masternode network activation</li>
+                        <li>DEX listings</li>
+                        <li>Liquidity pools</li>
+                        <li>Community launch events</li>
+                    </ul>
+                    <span class="status-badge status-upcoming">Q3-Q4 2025</span>
+                </div>
+            </div>
+
+            <!-- Phase 10 -->
+            <div class="timeline-item">
+                <div class="timeline-dot">📅</div>
+                <div class="timeline-content">
+                    <div class="timeline-phase">Phase 10 - Ecosystem Growth</div>
+                    <h3 class="timeline-title">Expansion & Integration</h3>
+                    <div class="timeline-date">Months 10-12 • Q4 2025 - Q1 2026</div>
+                    <p class="timeline-description">Grow the TIME ecosystem with exchange listings, DeFi integrations, and developer tools.</p>
+                    <ul class="timeline-tasks">
+                        <li>CEX listings (Binance, Coinbase, etc.)</li>
+                        <li>Additional crypto support (SOL, ADA, etc.)</li>
+                        <li>DeFi protocol integrations</li>
+                        <li>Developer SDK releases</li>
+                        <li>API v2 with enhanced features</li>
+                        <li>Mobile app enhancements</li>
+                    </ul>
+                    <span class="status-badge status-upcoming">Q4 2025+</span>
+                </div>
+            </div>
+
+            <!-- Phase 11 -->
+            <div class="timeline-item">
+                <div class="timeline-dot">📅</div>
+                <div class="timeline-content">
+                    <div class="timeline-phase">Phase 11 - Fiat Integration</div>
+                    <h3 class="timeline-title">Fiat On-Ramps</h3>
+                    <div class="timeline-date">Month 12+ • 2026</div>
+                    <p class="timeline-description">Enable direct fiat purchases (USD, EUR) through regulated payment processors.</p>
+                    <ul class="timeline-tasks">
+                        <li>Payment processor partnerships</li>
+                        <li>KYC/AML system implementation</li>
+                        <li>Credit card purchases</li>
+                        <li>Bank transfer support</li>
+                        <li>Regional compliance</li>
+                        <li>Fiat withdrawal support</li>
+                    </ul>
+                    <span class="status-badge status-upcoming">2026</span>
+                </div>
+            </div>
+
+            <!-- Phase 12 -->
+            <div class="timeline-item">
+                <div class="timeline-dot">📅</div>
+                <div class="timeline-content">
+                    <div class="timeline-phase">Phase 12 - Advanced Features</div>
+                    <h3 class="timeline-title">Smart Contracts & DApps</h3>
+                    <div class="timeline-date">Future • 2026+</div>
+                    <p class="timeline-description">Explore advanced features like smart contracts, DApps, and cross-chain bridges.</p>
+                    <ul class="timeline-tasks">
+                        <li>Smart contract platform evaluation</li>
+                        <li>DApp development framework</li>
+                        <li>Cross-chain bridges</li>
+                        <li>Layer 2 scaling solutions</li>
+                        <li>Advanced governance features</li>
+                        <li>Enterprise partnerships</li>
+                    </ul>
+                    <span class="status-badge status-upcoming">2026+</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="container">
+        <div class="roadmap-cta">
+            <h2>Join Us on This Journey</h2>
+            <p>Be part of TIME's development from the ground up. Follow our progress and contribute to the future of time-based cryptocurrency.</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/time-coin" class="cta-button">View on GitHub</a>
+                <a href="faq.html" class="secondary-button">Read FAQ</a>
+                <a href="index.html" class="secondary-button">Back to Home</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Animate progress bar on load
+        window.addEventListener('load', () => {
+            const progressBar = document.querySelector('.progress-bar');
+            setTimeout(() => {
+                progressBar.style.width = '35%';
+            }, 300);
+        });
+
+        // Intersection Observer for timeline items
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            item.style.transition = 'all 0.6s ease';
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>
