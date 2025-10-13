@@ -1,279 +1,226 @@
 # Security Policy
 
-## Our Commitment
-
-TIME Coin takes the security of our website and codebase seriously. We appreciate the security research community's efforts to responsibly disclose vulnerabilities and work with us to protect our users.
-
 ## Supported Versions
 
-We actively maintain security updates for the following versions:
+We are committed to maintaining the security of the TIME Coin website. Currently, we support the following versions:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| Latest (main branch) | ✅ Yes |
-| Previous release | ✅ Yes |
-| Older versions | ❌ No |
+| Latest (main branch) | :white_check_mark: |
+| Development branches | :x: |
 
 ## Reporting a Vulnerability
 
-### When to Report
+We take the security of TIME Coin seriously. If you discover a security vulnerability, please help us protect our users by reporting it responsibly.
 
-Please report any security vulnerability if you discover:
+### Where to Report
 
-- **Cross-Site Scripting (XSS)** vulnerabilities
-- **Injection attacks** (SQL, HTML, CSS, etc.)
-- **Authentication or authorization** bypass
-- **Exposure of sensitive information**
-- **Security misconfigurations**
-- **Vulnerable dependencies**
-- **Any other security-related issues**
+**DO NOT** create a public GitHub issue for security vulnerabilities.
 
-### What NOT to Report
+Instead, please report security issues via:
 
-The following are **not** considered security vulnerabilities:
+- **Email**: security@time-coin.io
+- **Subject Line**: "SECURITY: Brief description of issue"
 
-- Bugs that don't have security implications
-- Feature requests
-- Issues with third-party services
-- Social engineering attempts
-- Physical security issues
-- Issues that require physical access to a user's device
+### What to Include
 
-## How to Report
+When reporting a vulnerability, please include:
 
-### Private Disclosure (Recommended)
+1. **Description**: Clear description of the vulnerability
+1. **Impact**: Potential impact and severity
+1. **Steps to Reproduce**: Detailed steps to reproduce the issue
+1. **Proof of Concept**: Code snippet or screenshot (if applicable)
+1. **Suggested Fix**: If you have ideas on how to fix it
+1. **Your Contact**: How we can reach you for follow-up
 
-For security vulnerabilities, please **do not** open a public GitHub issue. Instead:
-
-1. **Email**: <security@timecoin.io>
-2. **Subject**: "SECURITY: [Brief Description]"
-3. **Include**:
-   - Detailed description of the vulnerability
-   - Steps to reproduce the issue
-   - Potential impact assessment
-   - Suggested fix (if available)
-   - Your contact information
-
-### PGP Encryption (Optional)
-
-For highly sensitive reports, you may encrypt your email using our PGP key:
+### Example Report
 
 ```text
------BEGIN PGP PUBLIC KEY BLOCK-----
-[PGP Key will be added when available]
------END PGP PUBLIC KEY BLOCK-----
+To: security@time-coin.io
+Subject: SECURITY: XSS vulnerability in search function
+
+Description:
+Cross-site scripting vulnerability found in the FAQ search feature
+that allows execution of arbitrary JavaScript.
+
+Impact:
+An attacker could inject malicious scripts that execute in the
+context of other users' browsers.
+
+Steps to Reproduce:
+1. Navigate to /faq.html
+2. Enter the following in search: <script>alert('XSS')</script>
+3. Observe script execution
+
+Proof of Concept:
+[Screenshot or code example]
+
+Suggested Fix:
+Sanitize user input in searchFAQ() function before rendering.
+
+Contact:
+Your Name (yourname@email.com)
 ```
 
-### Response Timeline
+## Response Timeline
 
-We aim to respond to security reports according to the following timeline:
+We are committed to responding to security reports promptly:
 
 - **Initial Response**: Within 24 hours
-- **Assessment**: Within 3 business days
-- **Status Update**: Within 7 days
-- **Fix Timeline**: Depends on severity
+- **Status Update**: Within 3 business days
+- **Resolution Timeline**: Varies by severity
+  - **Critical**: 1-7 days
+  - **High**: 7-14 days
+  - **Medium**: 14-30 days
+  - **Low**: 30-90 days
 
-#### Severity Classification
-
-| Severity | Description | Response Time |
-|----------|-------------|---------------|
-| **Critical** | Can be exploited remotely; affects all users | 24-48 hours |
-| **High** | Significant impact; affects many users | 3-7 days |
-| **Medium** | Moderate impact; affects some users | 7-14 days |
-| **Low** | Minor impact; affects few users | 14-30 days |
-
-## Our Security Process
-
-### What Happens After You Report
-
-1. **Acknowledgment**: We'll confirm receipt of your report
-2. **Investigation**: We'll investigate and validate the issue
-3. **Fix Development**: We'll develop and test a fix
-4. **Disclosure**: We'll coordinate disclosure timing with you
-5. **Release**: We'll release the fix and publish a security advisory
-6. **Credit**: We'll credit you in our security advisories (if desired)
+## Disclosure Policy
 
 ### Coordinated Disclosure
 
-We follow responsible disclosure practices:
+We follow a coordinated disclosure process:
 
-- We'll work with you to understand the issue
-- We'll keep you informed of our progress
-- We'll coordinate public disclosure timing
-- We'll credit you appropriately (unless you prefer to remain anonymous)
-
-## Security Measures
-
-### Current Security Practices
-
-Our website implements the following security measures:
-
-- ✅ **HTTPS Everywhere** - All traffic encrypted via TLS
-- ✅ **Content Security Policy (CSP)** - Prevents XSS attacks
-- ✅ **No External Dependencies** - Vanilla HTML/CSS/JS only
-- ✅ **Input Validation** - All user inputs sanitized
-- ✅ **Regular Updates** - Dependencies kept current
-- ✅ **Security Headers** - Proper HTTP security headers
-- ✅ **Open Source** - Code publicly auditable
-
-### Planned Security Enhancements
-
-- [ ] Automated security scanning
-- [ ] Dependency vulnerability checks
-- [ ] Regular security audits
-- [ ] Bug bounty program (post-mainnet)
-
-## Security Best Practices for Contributors
-
-If you're contributing to the TIME Coin website, please:
-
-### Do's
-
-- ✅ **Validate all inputs** - Never trust user input
-- ✅ **Escape output** - Prevent XSS vulnerabilities
-- ✅ **Use HTTPS** - For all external resources
-- ✅ **Keep dependencies updated** - If any are added
-- ✅ **Follow secure coding practices** - OWASP guidelines
-- ✅ **Test for security issues** - Before submitting PRs
-
-### Don'ts
-
-- ❌ **Don't store sensitive data** - No API keys, passwords, etc.
-- ❌ **Don't use eval()** - Or other dangerous JavaScript functions
-- ❌ **Don't trust user input** - Always validate and sanitize
-- ❌ **Don't use inline JavaScript** - Use external scripts with CSP
-- ❌ **Don't include credentials** - Keep secrets out of the codebase
-- ❌ **Don't use vulnerable dependencies** - Check security advisories
-
-## Security Features
-
-### For Users
-
-- **No Data Collection**: We don't collect personal information on the website
-- **No Cookies**: Static website with no tracking
-- **No Forms**: No user input that could be exploited
-- **Static Content**: No dynamic server-side processing
-- **Open Source**: Code is publicly auditable
-
-### For Developers
-
-- **No localStorage/sessionStorage**: Prevents data leakage
-- **CSP Headers**: Prevents unauthorized script execution
-- **Secure Headers**: X-Content-Type-Options, X-Frame-Options, etc.
-- **HTTPS Only**: No mixed content allowed
-
-## Vulnerability Disclosure Policy
+1. **Report Received**: You report the vulnerability privately
+1. **Confirmation**: We confirm receipt and begin investigation
+1. **Updates**: We keep you informed of our progress
+1. **Fix Development**: We develop and test a fix
+1. **Release**: We release the fix to production
+1. **Public Disclosure**: After fix is deployed, we may publish details (with your permission)
 
 ### Public Disclosure Timeline
 
-After a vulnerability is fixed:
+- We aim to fix and deploy critical vulnerabilities within 7 days
+- We will work with you to coordinate public disclosure
+- Public disclosure will not occur until:
+  - A fix is deployed, or
+  - 90 days have passed (for lower severity issues)
 
-1. **Immediate**: Security advisory published on GitHub
-2. **Within 7 days**: Blog post with details (if applicable)
-3. **Within 30 days**: Full technical details shared
+## Security Best Practices
 
-### What We'll Disclose
+### For Contributors
 
-- Nature of the vulnerability
-- Affected versions
-- Fixed versions
-- Credit to the reporter (if desired)
-- Mitigation steps for users
+When contributing to the TIME Coin website, please:
 
-### What We Won't Disclose
+- ✅ Sanitize all user inputs
+- ✅ Avoid inline JavaScript
+- ✅ Use HTTPS for all external resources
+- ✅ Validate data on both client and server (when applicable)
+- ✅ Keep dependencies updated
+- ✅ Follow secure coding practices
+- ❌ Never commit sensitive data (API keys, passwords, etc.)
+- ❌ Don't use `eval()` or similar unsafe functions
+- ❌ Avoid storing sensitive data in localStorage
 
-- Detailed exploit code (for a reasonable period)
-- Information that could harm users still on old versions
-- Private information about the reporter
+### For Users
+
+To stay safe when using the TIME Coin website:
+
+- ✅ Always access via HTTPS (when deployed)
+- ✅ Keep your browser updated
+- ✅ Be cautious of phishing attempts
+- ✅ Verify you're on the official domain
+- ❌ Never share your wallet seed phrase
+- ❌ Don't trust unsolicited DMs claiming to be from TIME team
+
+## Known Security Considerations
+
+### Current Website Scope
+
+The TIME Coin website is currently a static HTML/CSS/JavaScript site. Security considerations include:
+
+1. **XSS Prevention**: All user input (search, forms) must be sanitized
+1. **Content Security Policy**: Implement CSP headers when deployed
+1. **HTTPS**: Site must be served over HTTPS in production
+1. **Dependencies**: Minimal external dependencies reduce attack surface
+
+### Future Considerations
+
+As the website evolves, additional security measures will be implemented:
+
+- Web Application Firewall (WAF)
+- DDoS protection (via Cloudflare)
+- Rate limiting for API endpoints
+- Security headers (CSP, HSTS, X-Frame-Options, etc.)
+- Regular security audits
+- Automated vulnerability scanning
+
+## Security Updates
+
+Security patches will be released as needed:
+
+- **Critical/High**: Immediate release
+- **Medium**: Next scheduled release
+- **Low**: Future release or as part of routine updates
 
 ## Bug Bounty Program
 
-### Current Status
+We are planning to launch a bug bounty program in the future. Details will be announced on:
 
-We currently **do not** have a formal bug bounty program.
+- Website: time-coin.io
+- Twitter: [@TIMEcoin](https://x.com/TIMEcoin515010)
+- Discord: discord.gg/timecoin
 
-### Future Plans
+### Scope (Future)
 
-Post-mainnet launch, we plan to implement:
+When launched, the bug bounty program will cover:
 
-- Structured bug bounty program
-- Defined reward tiers based on severity
-- Scope and rules of engagement
-- Eligibility criteria
+- ✅ Website (time-coin.io)
+- ✅ Web wallet (when released)
+- ✅ API endpoints (when released)
+- ❌ Third-party services
+- ❌ Social media accounts
+- ❌ Physical security
 
-If you discover a vulnerability now, we greatly appreciate the report and will:
+### Eligible Vulnerabilities
 
-- Acknowledge your contribution publicly
-- Credit you in our security advisories
-- Provide TIME tokens as a thank you (post-launch)
+- Cross-Site Scripting (XSS)
+- Cross-Site Request Forgery (CSRF)
+- SQL Injection (when applicable)
+- Authentication/Authorization flaws
+- Remote Code Execution
+- Server-Side Request Forgery (SSRF)
+- Sensitive Data Exposure
+
+### Ineligible Issues
+
+- Issues in third-party libraries (report to original maintainers)
+- Social engineering attacks
+- Denial of Service (DoS) attacks
+- Issues requiring physical access
+- Issues in deprecated or unsupported versions
+- Theoretical vulnerabilities without proof of concept
 
 ## Security Contacts
 
-### Primary Contact
+- **General Security**: security@time-coin.io
+- **Website Issues**: dev@time-coin.io
+- **Press/Media**: press@time-coin.io
 
-- **Email**: <security@timecoin.io>
-- **Response Time**: Within 24 hours
-- **For**: Security vulnerabilities only
+## Hall of Fame
 
-### Alternative Contacts
+We will recognize security researchers who responsibly disclose vulnerabilities:
 
-- **General Issues**: <dev@timecoin.io>
-- **GitHub Security Advisories**: Use GitHub's private vulnerability reporting
-- **Discord**: DM a moderator for urgent issues
+*No vulnerabilities reported yet.*
 
-## Security Resources
+<!-- Future entries:
+- **Date**: Researcher Name - Brief description
+-->
 
-### External Resources
+## Additional Resources
 
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
-- [Mozilla Web Security Guidelines](https://infosec.mozilla.org/guidelines/web_security)
-- [Security Headers Best Practices](https://securityheaders.com/)
-- [CSP Guidelines](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
-
-### Our Resources
-
-- [Contributing Guidelines](CONTRIBUTING.md)
-- [Code of Conduct](CODE_OF_CONDUCT.md)
-- [Technical Documentation](docs.html)
-
-## Legal
-
-### Safe Harbor
-
-TIME Coin commits to:
-
-- Not pursuing legal action against security researchers who:
-  - Act in good faith
-  - Follow this disclosure policy
-  - Don't violate privacy or laws
-  - Don't disrupt our services
-  - Don't access or modify others' data
-
-### Eligibility
-
-To be eligible for safe harbor:
-
-- Report vulnerabilities promptly
-- Give us reasonable time to fix issues
-- Don't publicly disclose before we've patched
-- Don't exploit the vulnerability
-- Don't access others' data or systems
-
-## Updates to This Policy
-
-This security policy may be updated periodically. Changes will be:
-
-- Committed to this repository
-- Announced in release notes
-- Shared with active security researchers
-
-**Last Updated**: October 2025
+- [CWE Top 25](https://cwe.mitre.org/top25/)
+- [Web Security Academy](https://portswigger.net/web-security)
 
 ## Questions?
 
-If you have questions about this security policy:
+If you have questions about our security policy:
 
-- Email: <security@timecoin.io>
-- Open a [GitHub Discussion](https://github.com/time-coin/time-coin-website/discussions)
+- Email: security@time-coin.io
+- Community: [Discord](https://discord.gg/timecoin) *(Coming Soon)*
 
-Thank you for helping keep TIME Coin and our users safe! 🔒⏰
+Thank you for helping keep TIME Coin and our community safe!
+
+---
+
+Last Updated: October 2025

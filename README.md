@@ -3,13 +3,13 @@
 > Official website for TIME Coin - A revolutionary cryptocurrency featuring 24-hour blocks, instant transaction finality, and a fair-launch purchase-based minting system.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Status](https://img.shields.io/badge/status-active-success.svg)](https://github.com/time-coin/time-coin-website)
-[![Testnet](https://img.shields.io/badge/testnet-Q2%202025-blue.svg)](roadmap.html)
+[![Status](https://img.shields.io/badge/status-active-success.svg)]()
+[![Testnet](https://img.shields.io/badge/testnet-Q2%202025-blue.svg)]()
 
 ## 🌐 Live Website
 
-**Main Site:** [https://timecoin.io](https://timecoin.io) *(Coming Soon)*  
-**GitHub Pages:** [https://time-coin.github.io/time-coin-website](https://time-coin.github.io/time-coin-website)
+**Main Site:** `https://time-coin.io`  
+**GitHub Pages:** `https://time-coin.github.io/time-coin-website` *(Mirror)*
 
 ## 📖 About TIME Coin
 
@@ -27,7 +27,6 @@ TIME Coin is a next-generation cryptocurrency that reimagines blockchain archite
 This repository contains the complete TIME Coin marketing and documentation website:
 
 ### Pages
-
 - **🏠 Home** (`index.html`) - Main marketing page with features and CTAs
 - **📚 Documentation** (`docs.html`) - Comprehensive technical documentation
 - **❓ FAQ** (`faq.html`) - 27 frequently asked questions across 5 categories
@@ -36,7 +35,6 @@ This repository contains the complete TIME Coin marketing and documentation webs
 - **📰 Press Kit** (`press.html`) - Media resources and brand assets
 
 ### Key Features
-
 - ✅ Responsive design (mobile, tablet, desktop)
 - ✅ Modern gradient UI with purple/blue theme
 - ✅ Smooth animations and transitions
@@ -51,11 +49,15 @@ This repository contains the complete TIME Coin marketing and documentation webs
 time-coin-website/
 ├── index.html          # Main landing page
 ├── docs.html           # Technical documentation
+├── whitepaper.html     # Technical whitepaper
 ├── faq.html            # FAQ page with search & filters
 ├── roadmap.html        # Development roadmap & timeline
 ├── community.html      # Community hub
+├── guidelines.html     # Community guidelines
 ├── press.html          # Press kit & media resources
 ├── README.md           # This file
+├── CONTRIBUTING.md     # Contribution guidelines
+├── SECURITY.md         # Security policy
 ├── LICENSE             # MIT License
 └── .gitignore          # Git ignore rules
 ```
@@ -63,7 +65,6 @@ time-coin-website/
 ## 🛠️ Development
 
 ### Prerequisites
-
 - Web browser (Chrome, Firefox, Safari, Edge)
 - Text editor (VS Code, Sublime, etc.)
 - Git for version control
@@ -71,14 +72,12 @@ time-coin-website/
 ### Local Development
 
 1. **Clone the repository**
-
 ```bash
 git clone https://github.com/time-coin/time-coin-website.git
 cd time-coin-website
 ```
 
-1. **Open in browser**
-
+2. **Open in browser**
 ```bash
 # Simple Python server (Python 3)
 python3 -m http.server 8000
@@ -89,55 +88,53 @@ npx serve
 # Or just open index.html directly in your browser
 ```
 
-1. **View the site**
-
-```text
+3. **View the site**
+```
 http://localhost:8000
 ```
 
 ### Making Changes
 
 1. Edit HTML/CSS/JavaScript files directly
-2. Refresh browser to see changes
-3. Test on multiple browsers and devices
-4. Commit changes to git
+1. Refresh browser to see changes
+1. Test on multiple browsers and devices
+1. Commit changes to git
 
 ## 🚀 Deployment
 
 ### Option 1: Cloudflare Pages (Recommended)
 
 1. Push code to GitHub
-2. Go to [Cloudflare Pages](https://pages.cloudflare.com)
-3. Connect your GitHub repository
-4. Deploy settings:
+1. Go to [Cloudflare Pages](https://pages.cloudflare.com)
+1. Connect your GitHub repository
+1. Deploy settings:
    - **Build command:** (leave empty)
    - **Build output directory:** `/`
-5. Click "Save and Deploy"
+1. Click "Save and Deploy"
 
 **Result:** Site live at `https://time-coin-website.pages.dev`
 
 ### Option 2: GitHub Pages
 
 1. Go to repository Settings
-2. Navigate to Pages section
-3. Source: Deploy from branch `main`
-4. Folder: `/ (root)`
-5. Save
+1. Navigate to Pages section
+1. Source: Deploy from branch `main`
+1. Folder: `/ (root)`
+1. Save
 
 **Result:** Site live at `https://time-coin.github.io/time-coin-website`
 
 ### Option 3: Vercel
 
 1. Push code to GitHub
-2. Import project on [Vercel](https://vercel.com)
-3. Deploy with default settings
+1. Import project on [Vercel](https://vercel.com)
+1. Deploy with default settings
 
 **Result:** Site live at `https://time-coin-website.vercel.app`
 
 ### Custom Domain
 
 After deploying, add your custom domain:
-
 - **Cloudflare:** Pages → Custom domains → Add domain
 - **GitHub Pages:** Settings → Pages → Custom domain
 - **Vercel:** Project settings → Domains → Add domain
@@ -145,7 +142,6 @@ After deploying, add your custom domain:
 ## 🎨 Design System
 
 ### Colors
-
 ```css
 Primary Purple:    #667eea
 Secondary Purple:  #764ba2
@@ -155,13 +151,11 @@ Warning Yellow:    #fbbf24
 ```
 
 ### Typography
-
 - **Font Family:** -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto
 - **Headings:** Bold, gradient text effect
 - **Body:** 16px base, 1.6 line-height
 
 ### Components
-
 - Gradient buttons with hover effects
 - Card-based layouts with subtle borders
 - Smooth transitions and animations
@@ -175,27 +169,21 @@ We welcome contributions to improve the TIME Coin website!
 
 1. **Fork the repository**
 2. **Create a feature branch**
-
    ```bash
    git checkout -b feature/your-feature-name
    ```
-
 3. **Make your changes**
    - Follow existing code style
    - Test on multiple browsers
    - Ensure mobile responsiveness
 4. **Commit your changes**
-
    ```bash
    git commit -m "Add: Brief description of changes"
    ```
-
 5. **Push to your fork**
-
    ```bash
    git push origin feature/your-feature-name
    ```
-
 6. **Open a Pull Request**
 
 ### Contribution Guidelines
@@ -236,19 +224,20 @@ We welcome contributions to improve the TIME Coin website!
 
 ## 🔗 Links
 
-- **Website:** [timecoin.io](https://timecoin.io) *(Coming Soon)*
+- **Website:** [time-coin.io](https://time-coin.io)
 - **Main Repository:** [github.com/time-coin/time-coin](https://github.com/time-coin/time-coin)
-- **Documentation:** [docs.html](docs.html)
+- **Documentation:** [time-coin.io/docs.html](https://time-coin.io/docs.html)
+- **Whitepaper:** [time-coin.io/whitepaper.html](https://time-coin.io/whitepaper.html)
+- **Twitter/X:** [@TIMEcoin](https://x.com/TIMEcoin515010)
 - **Community Discord:** [discord.gg/timecoin](https://discord.gg/timecoin) *(Coming Soon)*
-- **Twitter/X:** [@TIMECoin](https://twitter.com/TIMECoin) *(Coming Soon)*
 - **Telegram:** [t.me/timecoin](https://t.me/timecoin) *(Coming Soon)*
 
 ## 📧 Contact
 
-- **General Inquiries:** <hello@timecoin.io>
-- **Press/Media:** <press@timecoin.io>
-- **Development:** <dev@timecoin.io>
-- **Support:** <support@timecoin.io>
+- **General Inquiries:** hello@time-coin.io
+- **Press/Media:** press@time-coin.io
+- **Development:** dev@time-coin.io
+- **Support:** support@time-coin.io
 
 ## 📄 License
 
@@ -296,7 +285,6 @@ Planned improvements for the website:
 ## 💡 Development Notes
 
 ### Browser Compatibility
-
 - ✅ Chrome 90+
 - ✅ Firefox 88+
 - ✅ Safari 14+
@@ -304,7 +292,6 @@ Planned improvements for the website:
 - ✅ Mobile browsers (iOS Safari, Chrome Mobile)
 
 ### Performance
-
 - No external dependencies
 - Optimized images (when added)
 - Minimal JavaScript
@@ -312,7 +299,6 @@ Planned improvements for the website:
 - Lazy loading for images
 
 ### SEO
-
 - Semantic HTML5
 - Meta tags for all pages
 - Open Graph tags
@@ -321,6 +307,6 @@ Planned improvements for the website:
 
 ---
 
-### Made with ⏰ by the TIME Coin community
+Made with ⏰ by the TIME Coin community
 
-#### Last Updated: October 2025
+Last Updated: October 2025
