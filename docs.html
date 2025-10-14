@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TIME Coin Documentation</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- Header/Footer Includes -->
+    <script src="js/includes.js" defer></script>
+
     <style>
         * {
             margin: 0;
@@ -16,72 +29,7 @@
             background: #0f0c29;
             color: #e0e0e0;
             line-height: 1.6;
-            padding-top: 70px;
-        }
-
-        /* Top Navigation Bar */
-        .top-nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background: rgba(15, 12, 41, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            padding: 0 30px;
-        }
-
-        .top-nav-logo {
-            font-size: 24px;
-            font-weight: bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-right: auto;
-        }
-
-        .top-nav-logo a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .top-nav-links {
-            display: flex;
-            gap: 30px;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .top-nav-links a {
-            color: #b8b8d4;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .top-nav-links a:hover {
-            color: #667eea;
-        }
-
-        .top-nav-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: transform 0.3s;
-            margin-left: 20px;
-        }
-
-        .top-nav-button:hover {
-            transform: translateY(-2px);
+            padding-top: 110px;
         }
 
         /* Mobile Menu Button */
@@ -408,9 +356,18 @@
             transform: translateY(-2px);
         }
 
+        .docs-mobile-toggle {
+            display: none;
+            justify-content: flex-end;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 20px 0;
+        }
+
         @media (max-width: 968px) {
             body {
-                padding-top: 60px;
+                padding-top: 100px;
             }
 
             .docs-container {
@@ -421,21 +378,12 @@
                 display: none;
             }
 
-            .top-nav {
-                height: 60px;
-                padding: 0 15px;
-            }
-
-            .top-nav-links {
-                display: none;
-            }
-
-            .top-nav-button {
-                display: none;
+            .docs-mobile-toggle {
+                display: flex;
             }
 
             .mobile-menu-button {
-                display: block;
+                display: inline-flex;
             }
 
             .mobile-sidebar {
@@ -445,21 +393,11 @@
     </style>
 </head>
 <body>
-    <!-- Top Navigation -->
-    <nav class="top-nav">
-        <div class="top-nav-logo">
-            <a href="index.html">⏰ TIME</a>
-        </div>
-        <ul class="top-nav-links">
-            <li><a href="index.html#features">Features</a></li>
-            <li><a href="index.html#masternodes">Masternodes</a></li>
-            <li><a href="docs.html">Docs</a></li>
-            <li><a href="faq.html">FAQ</a></li>
-            <li><a href="index.html#community">Community</a></li>
-        </ul>
-        <a href="#buying-time" class="top-nav-button">Coming Soon</a>
-        <button class="mobile-menu-button" onclick="toggleMobileMenu()">☰</button>
-    </nav>
+    <!-- Header will be injected here by includes.js -->
+
+    <div class="docs-mobile-toggle">
+        <button class="mobile-menu-button" onclick="toggleMobileMenu()" aria-label="Open documentation navigation" aria-controls="mobileSidebar" aria-expanded="false">☰</button>
+    </div>
 
     <!-- Mobile Menu Overlay -->
     <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="toggleMobileMenu()"></div>
@@ -1257,10 +1195,16 @@ cargo fmt</code></pre>
         function toggleMobileMenu() {
             const overlay = document.getElementById('mobileMenuOverlay');
             const sidebar = document.getElementById('mobileSidebar');
-            
+            const toggleButton = document.querySelector('.mobile-menu-button');
+
             overlay.classList.toggle('active');
             sidebar.classList.toggle('active');
-            
+
+            if (toggleButton) {
+                const isActive = sidebar.classList.contains('active');
+                toggleButton.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+            }
+
             // Prevent body scroll when menu is open
             if (sidebar.classList.contains('active')) {
                 document.body.style.overflow = 'hidden';
@@ -1304,5 +1248,7 @@ cargo fmt</code></pre>
             });
         });
     </script>
+
+    <!-- Footer will be injected here by includes.js -->
 </body>
 </html>
