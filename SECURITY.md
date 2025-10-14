@@ -19,7 +19,7 @@ We take the security of TIME Coin seriously. If you discover a security vulnerab
 
 Instead, please report security issues via:
 
-- **Email**: security@time-coin.io
+- **Email**: <security@time-coin.io>
 - **Subject Line**: "SECURITY: Brief description of issue"
 
 ### What to Include
@@ -192,9 +192,9 @@ When launched, the bug bounty program will cover:
 
 ## Security Contacts
 
-- **General Security**: security@time-coin.io
-- **Website Issues**: dev@time-coin.io
-- **Press/Media**: press@time-coin.io
+- **General Security**: <security@time-coin.io>
+- **Website Issues**: <dev@time-coin.io>
+- **Press/Media**: <press@time-coin.io>
 
 ## Hall of Fame
 
@@ -216,7 +216,7 @@ We will recognize security researchers who responsibly disclose vulnerabilities:
 
 If you have questions about our security policy:
 
-- Email: security@time-coin.io
+- Email: <security@time-coin.io>
 - Community: [Discord](https://discord.gg/timecoin) *(Coming Soon)*
 
 Thank you for helping keep TIME Coin and our community safe!
