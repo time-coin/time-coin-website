@@ -48,7 +48,7 @@ Harassment, discrimination, or disrespectful behavior will not be tolerated.
 3. **Add upstream remote**:
 
    ```bash
-   git remote add upstream https://github.com/time-coin/time-coin-website.git
+   git remote add upstream https://github.com/time-coin/time-coin.git
    ```
 
 4. **Open the website** in your browser to test locally

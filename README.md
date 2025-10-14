@@ -73,7 +73,7 @@ time-coin-website/
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/time-coin/time-coin-website.git
+git clone https://github.com/time-coin/time-coin.git
 cd time-coin-website
 ```
 
