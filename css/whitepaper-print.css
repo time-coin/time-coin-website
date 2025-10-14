@@ -1,0 +1,290 @@
+/**
+ * TIME Coin Whitepaper - Print Stylesheet
+ * Professional PDF generation styles
+ */
+
+/* ============================================
+   PRINT MEDIA QUERY - PDF GENERATION
+   ============================================ */
+
+@media print {
+    /* Reset and Base Styles */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+    
+    body {
+        font-family: 'Georgia', 'Times New Roman', serif;
+        font-size: 11pt;
+        line-height: 1.6;
+        color: #000;
+        background: #fff;
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* Hide Web-Only Elements */
+    nav, 
+    header nav,
+    .download-section,
+    #header-placeholder,
+    #footer-placeholder,
+    footer,
+    button,
+    .no-print {
+        display: none !important;
+    }
+    
+    /* Container and Layout */
+    .container {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .whitepaper-content {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* Page Breaks */
+    h1, h2 {
+        page-break-after: avoid;
+        page-break-inside: avoid;
+    }
+    
+    h3, h4, h5, h6 {
+        page-break-after: avoid;
+    }
+    
+    p, li {
+        page-break-inside: avoid;
+        orphans: 3;
+        widows: 3;
+    }
+    
+    table, figure, img {
+        page-break-inside: avoid;
+    }
+    
+    /* Force page breaks before major sections */
+    section {
+        page-break-before: auto;
+    }
+    
+    /* Typography */
+    h1 {
+        font-size: 24pt;
+        font-weight: bold;
+        margin: 24pt 0 12pt 0;
+        color: #000;
+        text-align: center;
+    }
+    
+    h2 {
+        font-size: 18pt;
+        font-weight: bold;
+        margin: 20pt 0 10pt 0;
+        color: #000;
+        border-bottom: 1pt solid #333;
+        padding-bottom: 4pt;
+    }
+    
+    h3 {
+        font-size: 14pt;
+        font-weight: bold;
+        margin: 16pt 0 8pt 0;
+        color: #000;
+    }
+    
+    h4 {
+        font-size: 12pt;
+        font-weight: bold;
+        margin: 12pt 0 6pt 0;
+        color: #333;
+    }
+    
+    p {
+        margin: 0 0 10pt 0;
+        text-align: justify;
+    }
+    
+    /* Links - show URLs in print */
+    a {
+        color: #000;
+        text-decoration: none;
+    }
+    
+    a[href^="http"]:after {
+        content: " (" attr(href) ")";
+        font-size: 9pt;
+        color: #666;
+    }
+    
+    /* Lists */
+    ul, ol {
+        margin: 10pt 0;
+        padding-left: 20pt;
+    }
+    
+    li {
+        margin: 4pt 0;
+    }
+    
+    /* Tables */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12pt 0;
+        font-size: 10pt;
+    }
+    
+    th {
+        background: #f0f0f0;
+        border: 1pt solid #333;
+        padding: 6pt;
+        text-align: left;
+        font-weight: bold;
+    }
+    
+    td {
+        border: 1pt solid #666;
+        padding: 6pt;
+    }
+    
+    /* Code and Technical Content */
+    code {
+        font-family: 'Courier New', monospace;
+        font-size: 9pt;
+        background: #f5f5f5;
+        padding: 2pt 4pt;
+        border: 1pt solid #ddd;
+    }
+    
+    pre {
+        font-family: 'Courier New', monospace;
+        font-size: 9pt;
+        background: #f5f5f5;
+        border: 1pt solid #ddd;
+        padding: 8pt;
+        overflow: hidden;
+        page-break-inside: avoid;
+    }
+    
+    /* Abstract Section */
+    .abstract {
+        background: #f9f9f9;
+        border: 2pt solid #333;
+        padding: 12pt;
+        margin: 16pt 0;
+        page-break-inside: avoid;
+    }
+    
+    .abstract h2 {
+        margin-top: 0;
+        border-bottom: none;
+    }
+    
+    /* Table of Contents */
+    .toc {
+        page-break-after: always;
+        margin: 16pt 0;
+    }
+    
+    .toc ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .toc li {
+        margin: 6pt 0;
+    }
+    
+    .toc a {
+        color: #000;
+        text-decoration: none;
+    }
+    
+    .toc a:after {
+        content: none; /* Don't show URLs in TOC */
+    }
+    
+    /* References Section */
+    .references ol {
+        padding-left: 24pt;
+    }
+    
+    .references li {
+        margin: 8pt 0;
+        font-size: 10pt;
+    }
+    
+    /* Formulas and Math */
+    .formula {
+        text-align: center;
+        margin: 12pt 0;
+        font-family: 'Times New Roman', serif;
+        font-style: italic;
+        page-break-inside: avoid;
+    }
+    
+    /* Examples and Callouts */
+    .example,
+    .note,
+    .important {
+        border-left: 3pt solid #333;
+        padding-left: 10pt;
+        margin: 12pt 0;
+        page-break-inside: avoid;
+    }
+    
+    /* Footer/Page Numbers - Remove duplicate */
+    .page-footer {
+        display: none !important;
+    }
+    
+    /* Cover Page */
+    .cover-page {
+        page-break-after: always;
+        text-align: center;
+        padding-top: 30%;
+    }
+    
+    .cover-page h1 {
+        font-size: 32pt;
+        margin: 20pt 0;
+    }
+    
+    .cover-page .version {
+        font-size: 14pt;
+        margin: 10pt 0;
+        color: #666;
+    }
+    
+    .cover-page .date {
+        font-size: 12pt;
+        color: #666;
+    }
+}
+
+/* ============================================
+   SCREEN PREVIEW STYLES
+   ============================================ */
+
+@media screen {
+    /* Add subtle print preview indication */
+    body.print-preview {
+        background: #f5f5f5;
+    }
+    
+    body.print-preview .container {
+        max-width: 210mm; /* A4 width */
+        margin: 20px auto;
+        background: white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        padding: 20mm;
+    }
+}
