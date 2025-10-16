@@ -176,6 +176,32 @@
             color: #60a5fa;
         }
         
+        .security-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+        }
+        
+        .security-box h4 {
+            margin-top: 0;
+            color: #34d399;
+        }
+        
+        .warning-box {
+            background: rgba(251, 146, 60, 0.1);
+            border-left: 4px solid #fb923c;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+        }
+        
+        .warning-box h4 {
+            margin-top: 0;
+            color: #fb923c;
+        }
+        
         .highlight-box {
             background: rgba(167, 139, 250, 0.1);
             border: 2px solid rgba(167, 139, 250, 0.3);
@@ -309,6 +335,23 @@
             color: #10b981;
             font-weight: bold;
         }
+        
+        .auth-flow {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+            border-left: 3px solid #10b981;
+        }
+        
+        .security-layer {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+        }
     </style>
 </head>
 <body>
@@ -331,15 +374,15 @@
                 Get the complete TIME Coin Overview Whitepaper as a PDF
             </p>
             
-            <a href="downloads/TIME-Coin-Whitepaper.pdf" 
+            <a href="downloads/TIME-Coin-Overview-Whitepaper-v3.0.pdf" 
                class="btn"
-               download="TIME-Coin-Whitepaper.pdf">
+               download="TIME-Coin-Overview-Whitepaper-v3.0.pdf">
                 <span style="font-size: 1.5rem;">📥</span>
                 Download PDF (v3.0)
             </a>
             
             <p style="color: #64748b; font-size: 0.9rem; margin-top: 1.5rem;">
-                Last updated: October 2025 • 26 pages • ~2 MB
+                Last updated: October 2025 • 30+ pages • ~2 MB
             </p>
         </div>
 
@@ -380,6 +423,7 @@
             <ol class="toc-list">
                 <li><a href="#problem">The Problem We're Solving</a></li>
                 <li><a href="#solution">The TIME Solution</a></li>
+                <li><a href="#security-auth">SMS/Email Security & Authentication</a></li>
                 <li><a href="#technical">Technical Highlights</a></li>
                 <li><a href="#use-cases">Use Cases</a></li>
                 <li><a href="#participation">Network Participation</a></li>
@@ -448,14 +492,15 @@ Confirmed in &lt;3 seconds → Irreversible finality</code></pre>
             <h3>Universal Accessibility</h3>
             
             <h4>SMS Payments</h4>
-            <pre><code>Text: "SEND 10 TIME to @alice"
+            <pre><code>Text: "SEND 10 TIME to @alice PIN:1234"
 Receive: "Sent! Balance: 40 TIME"</code></pre>
             <p>Works on any phone, even basic feature phones. No internet required.</p>
             
             <h4>Email Payments</h4>
             <pre><code>To: payments@time.network
 Subject: SEND
-Body: 25 TIME to bob@example.com</code></pre>
+Body: 25 TIME to @alice
+PIN: 1234</code></pre>
             <p>Familiar interface, works on any device.</p>
             
             <h4>Web & Mobile</h4>
@@ -581,6 +626,380 @@ Year 10: ~510,000+ TIME/year</code></pre>
             </p>
         </section>
         
+        <!-- NEW SECTION: SMS/Email Security -->
+        <section id="security-auth">
+            <h2>SMS/Email Security & Authentication</h2>
+            
+            <div class="security-box">
+                <h4>🔐 Multi-Layer Authentication</h4>
+                <p>
+                    TIME Coin's SMS and email payment channels implement robust security measures to prevent spoofing, 
+                    unauthorized access, and fraud while maintaining ease of use.
+                </p>
+            </div>
+            
+            <h3>1. Registration & Linking (One-Time Setup)</h3>
+            <p>
+                Before using SMS or email payments, users must register their contact methods through the secure 
+                web or mobile application:
+            </p>
+            
+            <div class="auth-flow">
+<strong>Registration Flow:</strong>
+1. User initiates registration in web/mobile app
+2. User enters phone number or email address
+3. Gateway sends verification code to contact method
+4. User confirms ownership by entering code
+5. User sets unique PIN (6-8 digits) for that contact
+6. System cryptographically links contact → wallet address
+7. Device/carrier metadata recorded for validation
+8. Registration complete - contact method activated
+            </div>
+            
+            <p><strong>Security Features:</strong></p>
+            <ul>
+                <li><strong>Ownership Verification:</strong> Must prove control of phone/email</li>
+                <li><strong>Unique PIN:</strong> Separate from wallet password, specific to contact method</li>
+                <li><strong>Cryptographic Binding:</strong> Contact address hashed and signed with wallet key</li>
+                <li><strong>One Contact Per Wallet:</strong> Each phone/email can only link to one wallet</li>
+                <li><strong>Revocation:</strong> Can be unlinked anytime through secure app</li>
+            </ul>
+            
+            <h3>2. Transaction Authentication</h3>
+            <p>Every payment request must include authentication credentials:</p>
+            
+            <h4>SMS Transaction Format</h4>
+            <pre><code>SEND 10 TIME to @alice PIN:1234
+
+Gateway Response:
+"✓ Sent 10 TIME to @alice
+Balance: 40 TIME
+Ref: TX-A9B2C4"</code></pre>
+            
+            <h4>Email Transaction Format</h4>
+            <pre><code>To: payments@time.network
+Subject: SEND
+Body:
+10 TIME to @alice
+PIN: 1234
+
+Gateway Response:
+"✓ Transaction Confirmed
+Sent: 10 TIME to @alice
+Balance: 40 TIME
+Reference: TX-A9B2C4"</code></pre>
+            
+            <h4>Gateway Verification Process</h4>
+            <div class="security-layer">
+                <strong>Step 1:</strong> Verify sender identity
+                <ul style="margin: 0.5rem 0;">
+                    <li>Confirm phone number/email matches registered contact</li>
+                    <li>Validate carrier/provider authentication headers</li>
+                    <li>Check against blacklist and fraud patterns</li>
+                </ul>
+            </div>
+            
+            <div class="security-layer">
+                <strong>Step 2:</strong> Authenticate transaction
+                <ul style="margin: 0.5rem 0;">
+                    <li>Extract and verify PIN from message</li>
+                    <li>Compare against stored hash for that contact</li>
+                    <li>Check rate limits and daily transaction caps</li>
+                </ul>
+            </div>
+            
+            <div class="security-layer">
+                <strong>Step 3:</strong> Validate transaction
+                <ul style="margin: 0.5rem 0;">
+                    <li>Parse transaction details (amount, recipient)</li>
+                    <li>Verify sufficient balance</li>
+                    <li>Check transaction limits for contact method</li>
+                </ul>
+            </div>
+            
+            <div class="security-layer">
+                <strong>Step 4:</strong> Execute or reject
+                <ul style="margin: 0.5rem 0;">
+                    <li>If all checks pass: submit to masternode network</li>
+                    <li>If any check fails: reject and notify user</li>
+                    <li>Log attempt for fraud detection</li>
+                </ul>
+            </div>
+            
+            <h3>3. Two-Way Confirmation (High-Value Transactions)</h3>
+            <p>For transactions above threshold limits, the system requires explicit confirmation:</p>
+            
+            <div class="auth-flow">
+<strong>Confirmation Flow Example:</strong>
+
+User → Gateway:
+"SEND 500 TIME to @alice PIN:1234"
+
+Gateway → User:
+"⚠️  CONFIRM HIGH-VALUE TRANSACTION
+Send: 500 TIME
+To: @alice
+Reply with: YES-1234
+(Expires in 2 minutes)"
+
+User → Gateway:
+"YES-1234"
+
+Gateway → User:
+"✓ Confirmed! Sent 500 TIME to @alice
+Balance: 1,200 TIME"
+            </div>
+            
+            <p><strong>Confirmation Triggers:</strong></p>
+            <ul>
+                <li>Transactions &gt; 100 TIME (adjustable by user)</li>
+                <li>First transaction to a new recipient</li>
+                <li>Transactions that exceed 50% of daily limit</li>
+                <li>Any transaction after multiple failed PIN attempts</li>
+            </ul>
+            
+            <h3>4. Carrier & Provider Verification</h3>
+            
+            <h4>SMS Security</h4>
+            <ul>
+                <li><strong>Carrier Authentication:</strong> Verify message origin through carrier network APIs</li>
+                <li><strong>SIM Registration:</strong> Track SIM card identifier, detect SIM swaps</li>
+                <li><strong>Location Validation:</strong> Flag transactions from unexpected geographic locations</li>
+                <li><strong>No Caller ID Spoofing:</strong> Backend verification, not reliant on displayed number</li>
+                <li><strong>Shortcode Security:</strong> Messages must come through registered carrier channels</li>
+            </ul>
+            
+            <h4>Email Security</h4>
+            <ul>
+                <li><strong>SPF Verification:</strong> Sender Policy Framework validates sending server</li>
+                <li><strong>DKIM Signatures:</strong> DomainKeys Identified Mail cryptographic verification</li>
+                <li><strong>DMARC Enforcement:</strong> Domain-based Message Authentication policy</li>
+                <li><strong>Header Analysis:</strong> Inspect full email headers for tampering</li>
+                <li><strong>TLS Encryption:</strong> Require encrypted transport</li>
+            </ul>
+            
+            <div class="warning-box">
+                <h4>⚠️ Automatic Rejection</h4>
+                <p>Messages are automatically rejected if they:</p>
+                <ul>
+                    <li>Fail carrier/provider authentication</li>
+                    <li>Come from unregistered contact information</li>
+                    <li>Lack required authentication (PIN)</li>
+                    <li>Contain malformed transaction syntax</li>
+                    <li>Originate from blacklisted sources</li>
+                </ul>
+            </div>
+            
+            <h3>5. Transaction Limits & Controls</h3>
+            <p>SMS and email channels have built-in limits to minimize risk:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Limit Type</th>
+                        <th>Default Value</th>
+                        <th>Adjustable Via App</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Per-Transaction Maximum</td>
+                        <td>100 TIME</td>
+                        <td>Yes (up to 1,000)</td>
+                    </tr>
+                    <tr>
+                        <td>Daily Transaction Limit</td>
+                        <td>500 TIME</td>
+                        <td>Yes (up to 5,000)</td>
+                    </tr>
+                    <tr>
+                        <td>Transactions Per Hour</td>
+                        <td>10 transactions</td>
+                        <td>No (security)</td>
+                    </tr>
+                    <tr>
+                        <td>Failed PIN Attempts</td>
+                        <td>3 attempts</td>
+                        <td>No (security)</td>
+                    </tr>
+                    <tr>
+                        <td>Confirmation Required</td>
+                        <td>&gt; 100 TIME</td>
+                        <td>Yes</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <p><strong>Limit Enforcement:</strong></p>
+            <ul>
+                <li>Tracked per-contact method (SMS and email separate limits)</li>
+                <li>Resets daily at midnight UTC</li>
+                <li>Cannot be disabled, only adjusted within ranges</li>
+                <li>Exceeding limits triggers automatic account freeze</li>
+                <li>Higher limits require app-based verification</li>
+            </ul>
+            
+            <h3>6. Fraud Detection & Prevention</h3>
+            <p>Real-time monitoring and machine learning detect suspicious activity:</p>
+            
+            <h4>Monitored Patterns</h4>
+            <ul>
+                <li><strong>Velocity Checks:</strong> Unusual frequency or volume of transactions</li>
+                <li><strong>Geographic Anomalies:</strong> Transactions from unexpected locations</li>
+                <li><strong>Device Changes:</strong> SIM swaps or email access from new devices</li>
+                <li><strong>Recipient Patterns:</strong> Sending to many new recipients suddenly</li>
+                <li><strong>Failed Authentication:</strong> Multiple wrong PIN attempts</li>
+                <li><strong>Timing Analysis:</strong> Transactions at unusual times</li>
+            </ul>
+            
+            <h4>Automated Responses</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Threat Level</th>
+                        <th>Action Taken</th>
+                        <th>User Notification</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Low Risk</td>
+                        <td>Log and monitor</td>
+                        <td>None</td>
+                    </tr>
+                    <tr>
+                        <td>Medium Risk</td>
+                        <td>Require confirmation</td>
+                        <td>SMS/Email alert</td>
+                    </tr>
+                    <tr>
+                        <td>High Risk</td>
+                        <td>Temporary freeze (2 hours)</td>
+                        <td>Immediate alert + app notification</td>
+                    </tr>
+                    <tr>
+                        <td>Critical Risk</td>
+                        <td>Full account freeze</td>
+                        <td>Alert + require app unlock</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>7. Account Recovery & PIN Reset</h3>
+            
+            <h4>PIN Reset Process</h4>
+            <p>Users can reset their SMS/email PIN through the secure app:</p>
+            <ol>
+                <li>Log into web/mobile app with full credentials</li>
+                <li>Navigate to Contact Method settings</li>
+                <li>Request PIN reset for specific contact</li>
+                <li>Verify identity (2FA, biometric, or security questions)</li>
+                <li>Set new PIN</li>
+                <li>Confirmation code sent to contact method</li>
+            </ol>
+            
+            <div class="security-box">
+                <h4>🛡️ Security Lockout</h4>
+                <p>
+                    After 3 failed PIN attempts, the contact method is locked for 24 hours. The user receives 
+                    immediate notification and must unlock via the secure app. This prevents brute-force attacks.
+                </p>
+            </div>
+            
+            <h4>Compromise Response</h4>
+            <p>If a user suspects their SMS/email has been compromised:</p>
+            <ol>
+                <li>Immediately freeze SMS/email payments via app</li>
+                <li>Review recent transaction history</li>
+                <li>Unlink compromised contact method</li>
+                <li>Report to carrier/email provider</li>
+                <li>Register new contact method with new PIN</li>
+            </ol>
+            
+            <h3>8. Advanced Security Features</h3>
+            
+            <h4>Optional Enhancements</h4>
+            <ul>
+                <li><strong>Whitelist Mode:</strong> Only allow transactions to pre-approved recipients</li>
+                <li><strong>Time Windows:</strong> Only allow SMS/email transactions during specific hours</li>
+                <li><strong>Geographic Fencing:</strong> Reject transactions from outside home region</li>
+                <li><strong>Dual Authorization:</strong> Require PIN + secondary code from app</li>
+                <li><strong>Session Tokens:</strong> Time-limited tokens for multiple transactions</li>
+            </ul>
+            
+            <h4>Session Token Example</h4>
+            <pre><code>User → Gateway via App:
+"Generate session token for SMS"
+
+Gateway → User via SMS:
+"Session token: X9K2M5
+Valid for 1 hour, 10 transactions max"
+
+User → Gateway via SMS:
+"SEND 20 TIME to @alice TOKEN:X9K2M5"
+
+(No PIN required during session)</code></pre>
+            
+            <h3>9. Security Best Practices</h3>
+            
+            <div class="info-box">
+                <h4>💡 User Guidelines</h4>
+                <ul>
+                    <li><strong>Keep PIN Secret:</strong> Never share your SMS/email PIN with anyone</li>
+                    <li><strong>Use Strong PIN:</strong> Avoid obvious numbers (1234, birthdate)</li>
+                    <li><strong>Monitor Activity:</strong> Check transaction confirmations immediately</li>
+                    <li><strong>Report Suspicious Activity:</strong> Contact support if anything unusual</li>
+                    <li><strong>Secure Your Devices:</strong> Use device locks on phones</li>
+                    <li><strong>Update Contact Info:</strong> Keep carrier and email provider info current</li>
+                    <li><strong>Use App for Large Amounts:</strong> SMS/email for small, convenient payments only</li>
+                </ul>
+            </div>
+            
+            <h3>10. Comparison: Security Levels</h3>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Access Method</th>
+                        <th>Security Level</th>
+                        <th>Best For</th>
+                        <th>Transaction Limit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>SMS/Email + PIN</td>
+                        <td>Medium</td>
+                        <td>Daily payments, remittances</td>
+                        <td>100 TIME default</td>
+                    </tr>
+                    <tr>
+                        <td>Web/Mobile App</td>
+                        <td>High</td>
+                        <td>Regular transactions</td>
+                        <td>1,000 TIME default</td>
+                    </tr>
+                    <tr>
+                        <td>Hardware Wallet</td>
+                        <td>Very High</td>
+                        <td>Large amounts, storage</td>
+                        <td>Unlimited</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="security-box">
+                <h4>✓ Security Summary</h4>
+                <p>
+                    TIME Coin's SMS and email channels achieve security through <strong>defense in depth</strong>: 
+                    multi-factor authentication, carrier/provider verification, rate limiting, fraud detection, 
+                    and transaction limits. While convenient, these channels are designed for everyday transactions, 
+                    not large-value transfers. The system makes security invisible to users while maintaining 
+                    robust protection against spoofing, phishing, and unauthorized access.
+                </p>
+            </div>
+        </section>
+        
         <!-- Technical Highlights -->
         <section id="technical">
             <h2>Technical Highlights</h2>
@@ -611,6 +1030,7 @@ Year 10: ~510,000+ TIME/year</code></pre>
                 <li>Network security (BFT consensus)</li>
                 <li>Sequential nonce system (prevents double-spending)</li>
                 <li>Global state synchronization (&lt;500ms)</li>
+                <li>SMS/Email gateway authentication (see dedicated section above)</li>
             </ul>
             <p>
                 <strong>Attack Cost:</strong> Requires $15M+ and control of 67%+ of network weight - economically irrational.
@@ -1033,9 +1453,9 @@ Year 10: ~510,000+ TIME/year</code></pre>
                 Save the complete whitepaper for offline reading
             </p>
             
-            <a href="downloads/TIME-Coin-Whitepaper.pdf" 
+            <a href="downloads/TIME-Coin-Overview-Whitepaper-v3.0.pdf" 
                class="btn"
-               download="TIME-Coin-Whitepaper.pdf">
+               download="TIME-Coin-Overview-Whitepaper-v3.0.pdf">
                 <span style="font-size: 1.5rem;">📥</span>
                 Download PDF (v3.0)
             </a>
