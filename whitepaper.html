@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TIME Coin - Technical Whitepaper v1.1</title>
+    <title>TIME Coin - Overview Whitepaper v3.0</title>
     
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
@@ -73,7 +73,7 @@
             color: #a78bfa;
         }
         
-        .abstract {
+        .executive-summary {
             background: rgba(102, 126, 234, 0.1);
             padding: 2rem;
             border-radius: 12px;
@@ -81,11 +81,30 @@
             margin: 2rem 0;
         }
         
+        .key-innovations {
+            display: grid;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .innovation-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .innovation-item strong {
+            color: #a78bfa;
+        }
+        
         h2 {
             font-size: 2rem;
             margin-top: 3rem;
             margin-bottom: 1.5rem;
             color: #ffffff;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.3);
         }
         
         h3 {
@@ -99,13 +118,6 @@
             font-size: 1.2rem;
             margin-top: 1.5rem;
             margin-bottom: 0.75rem;
-            color: #cbd5e1;
-        }
-        
-        h5 {
-            font-size: 1.1rem;
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
             color: #cbd5e1;
         }
         
@@ -151,46 +163,31 @@
             background: rgba(255, 255, 255, 0.05);
         }
         
-        .formula {
-            background: rgba(102, 126, 234, 0.1);
-            border-left: 4px solid #667eea;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            font-family: 'Courier New', monospace;
-            line-height: 1.8;
-            border-radius: 8px;
-        }
-        
-        .formula strong {
-            color: #a78bfa;
-            font-size: 1.1em;
-        }
-        
-        .info-box, .warning-box, .success-box {
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
             padding: 1.5rem;
             margin: 1.5rem 0;
             border-radius: 12px;
-            border-left: 4px solid;
         }
         
-        .info-box {
-            background: rgba(59, 130, 246, 0.1);
-            border-color: #3b82f6;
-        }
-        
-        .warning-box {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: #ef4444;
-        }
-        
-        .success-box {
-            background: rgba(34, 197, 94, 0.1);
-            border-color: #10b981;
-        }
-        
-        .info-box h4, .warning-box h4, .success-box h4 {
+        .info-box h4 {
             margin-top: 0;
-            margin-bottom: 1rem;
+            color: #60a5fa;
+        }
+        
+        .highlight-box {
+            background: rgba(167, 139, 250, 0.1);
+            border: 2px solid rgba(167, 139, 250, 0.3);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .highlight-box h3 {
+            color: #a78bfa;
+            margin-top: 0;
         }
         
         .toc {
@@ -219,29 +216,37 @@
             color: #a78bfa;
         }
         
-        .toc-list ul {
-            margin-top: 0.5rem;
-            padding-left: 2rem;
-        }
-        
         .download-section {
             text-align: center;
-            padding: 3rem 0;
-            background: rgba(255, 255, 255, 0.05);
+            padding: 3rem 2rem;
+            background: rgba(102, 126, 234, 0.1);
             border-radius: 16px;
-            margin: 2rem 0;
+            margin: 3rem 0;
+            border: 2px solid rgba(102, 126, 234, 0.2);
         }
         
         .download-section h2 {
             margin-top: 0;
+            border: none;
         }
         
-        .warning-row {
-            background: rgba(239, 68, 68, 0.1) !important;
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 1.1rem;
         }
         
-        .success-row {
-            background: rgba(34, 197, 94, 0.1) !important;
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
         }
         
         code {
@@ -250,19 +255,59 @@
             border-radius: 4px;
             font-family: 'Courier New', monospace;
             font-size: 0.9em;
+            color: #a78bfa;
         }
         
         pre {
             background: rgba(255, 255, 255, 0.05);
-            padding: 1rem;
+            padding: 1.5rem;
             border-radius: 8px;
             overflow-x: auto;
             margin: 1rem 0;
+            border-left: 3px solid #667eea;
         }
         
         pre code {
             background: none;
             padding: 0;
+            color: #cbd5e1;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .comparison-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .comparison-card h4 {
+            color: #a78bfa;
+            margin-top: 0;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .feature-list li {
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -274,1968 +319,732 @@
         
         <div class="whitepaper-header">
             <h1 class="whitepaper-title">TIME Coin</h1>
-            <p class="whitepaper-subtitle">Technical Whitepaper</p>
-            <p class="whitepaper-meta">Version 1.1 • October 2025 • Elastic Supply with Treasury Governance</p>
+            <p class="whitepaper-subtitle">Universal Payment Network</p>
+            <p class="whitepaper-subtitle">Overview Whitepaper</p>
+            <p class="whitepaper-meta">Version 3.0 • October 2025</p>
         </div>
         
-        <!-- Abstract -->
-        <section class="abstract">
-            <h2>Abstract</h2>
-            <p>
-                TIME Coin introduces a revolutionary blockchain architecture that fundamentally reimagines 
-                how cryptocurrency networks operate. By implementing 24-hour block intervals combined with 
-                instant transaction finality, TIME creates a system that aligns with natural human cycles 
-                while maintaining the security and decentralization expected of modern cryptocurrencies.
+        <!-- Download Section at Top -->
+        <div class="download-section">
+            <h2>📄 Download Complete Whitepaper</h2>
+            <p style="color: #94a3b8; margin-bottom: 2rem;">
+                Get the complete TIME Coin Overview Whitepaper as a PDF
             </p>
-            <p>
-                The network employs a Byzantine Fault Tolerant (BFT) consensus mechanism with a weighted 
-                three-tier masternode system, where voting power is determined by both collateral stake and 
-                operational longevity. This design ensures that even if malicious actors control a majority 
-                of nodes by count, they cannot compromise the network without massive economic investment 
-                exceeding 5-10× the honest network's capital commitment.
+            
+            <a href="downloads/TIME-Coin-Whitepaper.pdf" 
+               class="btn"
+               download="TIME-Coin-Whitepaper.pdf">
+                <span style="font-size: 1.5rem;">📥</span>
+                Download PDF (v3.0)
+            </a>
+            
+            <p style="color: #64748b; font-size: 0.9rem; margin-top: 1.5rem;">
+                Last updated: October 2025 • 26 pages • ~2 MB
             </p>
+        </div>
+
+        <!-- Executive Summary -->
+        <section class="executive-summary">
+            <h2>Executive Summary</h2>
             <p>
-                TIME Coin features a fair launch model with zero pre-mine and elastic supply, where coins are 
-                minted exclusively through cryptocurrency purchases. The supply grows naturally with adoption 
-                while transaction fees fund a community-governed treasury for ecosystem development. This 
-                creates a self-sustaining network where growth funds further growth. This paper presents the 
-                technical architecture, consensus mechanism, economic model, and security analysis of the 
-                TIME Coin network.
+                TIME Coin is building the world's most accessible cryptocurrency payment network. With instant transactions, 
+                multi-channel access (SMS, email, web, mobile), and a community-governed infrastructure, TIME makes digital 
+                payments available to anyone, anywhere.
             </p>
+            
+            <div class="key-innovations">
+                <div class="innovation-item">
+                    <strong>⚡ Instant Finality:</strong> Transactions confirmed in under 3 seconds
+                </div>
+                <div class="innovation-item">
+                    <strong>📱 Universal Access:</strong> Send crypto via SMS or email - no smartphone required
+                </div>
+                <div class="innovation-item">
+                    <strong>🛡️ Community Governed:</strong> Democratic decision-making through masternode voting
+                </div>
+                <div class="innovation-item">
+                    <strong>🌍 Global Reach:</strong> Designed for billions, not just tech-savvy users
+                </div>
+                <div class="innovation-item">
+                    <strong>♻️ Sustainable:</strong> No mining, efficient 24-hour settlement blocks
+                </div>
+                <div class="innovation-item">
+                    <strong>🔒 Secure:</strong> Byzantine Fault Tolerant consensus with economic security
+                </div>
+            </div>
         </section>
         
         <!-- Table of Contents -->
         <div class="toc">
             <h2>Table of Contents</h2>
             <ol class="toc-list">
-                <li><a href="#introduction">1. Introduction</a></li>
-                <li><a href="#problem">2. The Problem</a></li>
-                <li><a href="#solution">3. TIME's Solution</a></li>
-                <li><a href="#architecture">4. Technical Architecture</a></li>
-                <li><a href="#consensus">5. Consensus Mechanism</a>
-                    <ul>
-                        <li><a href="#consensus-bft">5.1 Byzantine Fault Tolerance</a></li>
-                        <li><a href="#consensus-finality">5.2 Instant Finality</a></li>
-                        <li><a href="#consensus-weights">5.3 Weighted Voting System</a></li>
-                    </ul>
-                </li>
-                <li><a href="#economics">6. Economic Model</a></li>
-                <li><a href="#masternodes">7. Masternode System</a>
-                    <ul>
-                        <li><a href="#masternode-tiers">7.1 Three-Tier Structure</a></li>
-                        <li><a href="#masternode-rewards">7.2 Rewards & Incentives</a></li>
-                        <li><a href="#masternode-slashing">7.3 Slashing Mechanism</a></li>
-                        <li><a href="#masternode-weights">7.4 Masternode Voting Weights</a></li>
-                    </ul>
-                </li>
-                <li><a href="#security">8. Security Analysis</a>
-                    <ul>
-                        <li><a href="#security-attacks">8.1 Attack Vectors</a></li>
-                        <li><a href="#security-mitigation">8.2 Mitigation Strategies</a></li>
-                        <li><a href="#security-comparison">8.3 Comparative Analysis</a></li>
-                        <li><a href="#security-weights">8.4 Weight-Based Attack Resistance</a></li>
-                    </ul>
-                </li>
-                <li><a href="#governance">9. Governance Framework</a></li>
-                <li><a href="#roadmap">10. Development Roadmap</a></li>
-                <li><a href="#conclusion">11. Conclusion</a></li>
-                <li><a href="#references">References</a></li>
+                <li><a href="#problem">The Problem We're Solving</a></li>
+                <li><a href="#solution">The TIME Solution</a></li>
+                <li><a href="#technical">Technical Highlights</a></li>
+                <li><a href="#use-cases">Use Cases</a></li>
+                <li><a href="#participation">Network Participation</a></li>
+                <li><a href="#roadmap">Roadmap</a></li>
+                <li><a href="#competitive">Competitive Advantages</a></li>
+                <li><a href="#token-utility">Token Utility</a></li>
+                <li><a href="#why-succeed">Why TIME Will Succeed</a></li>
+                <li><a href="#get-involved">Get Involved</a></li>
             </ol>
         </div>
         
-        <!-- 1. Introduction -->
-        <section id="introduction">
-            <h2>1. Introduction</h2>
-            <p>
-                The cryptocurrency landscape has evolved significantly since Bitcoin's inception in 2009, yet 
-                fundamental challenges remain in achieving the ideal balance between security, scalability, and 
-                decentralization. TIME Coin addresses these challenges through a novel approach centered on 
-                time-based consensus and weighted masternode governance.
-            </p>
-            
-            <h3>1.1 Core Innovation</h3>
-            <p>
-                TIME Coin's primary innovation lies in its 24-hour block interval system, which differs 
-                fundamentally from traditional rapid-block blockchains. This extended timeframe, combined with 
-                instant transaction finality through BFT consensus, creates a unique security model that 
-                discourages spam, reduces energy consumption, and aligns with human operational cycles.
-            </p>
-            
-            <h3>1.2 Key Features</h3>
-            <ul>
-                <li><strong>24-Hour Blocks:</strong> Daily block production aligned with natural time cycles</li>
-                <li><strong>Instant Finality:</strong> Transactions confirmed in under 5 seconds via BFT consensus</li>
-                <li><strong>Weighted Masternodes:</strong> Three-tier system with longevity-based voting power</li>
-                <li><strong>Fair Launch:</strong> Zero pre-mine, purchase-based coin creation only</li>
-                <li><strong>Elastic Supply:</strong> Grows with demand, sustainable long-term</li>
-                <li><strong>Community Treasury:</strong> Fees fund ecosystem development via masternode governance</li>
-                <li><strong>High Performance:</strong> Built with Rust for maximum security and efficiency</li>
-                <li><strong>Economic Security:</strong> Attack-resistant through weighted voting requiring 5-10× honest network investment</li>
-            </ul>
-            
-            <h3>1.3 Design Philosophy</h3>
-            <p>
-                TIME Coin's design philosophy centers on three core principles: alignment with human time cycles, 
-                economic security through incentive design, and long-term sustainability over short-term gains. 
-                Unlike blockchains optimized for maximum throughput, TIME prioritizes thoughtful transaction 
-                processing that rewards patience and penalizes spam.
-            </p>
-        </section>
-        
-        <!-- 2. The Problem -->
+        <!-- The Problem -->
         <section id="problem">
-            <h2>2. The Problem</h2>
-            <p>
-                Current blockchain systems face several fundamental challenges that limit their effectiveness 
-                as global financial infrastructure:
-            </p>
+            <h2>The Problem We're Solving</h2>
             
-            <h3>2.1 Block Time Dilemma</h3>
+            <h3>Financial Exclusion</h3>
             <p>
-                Traditional cryptocurrencies face a tradeoff between fast block times and security. Bitcoin's 
-                10-minute blocks provide security but slow confirmation. Faster blockchains sacrifice 
-                decentralization or introduce complex finality mechanisms. Neither approach is optimal.
+                <strong>2.5 billion people lack access to traditional banking</strong>, yet most own basic mobile phones. 
+                Current cryptocurrency solutions require:
             </p>
+            <ul>
+                <li>Smartphones with internet access</li>
+                <li>Technical knowledge of wallets and keys</li>
+                <li>Understanding of complex blockchain concepts</li>
+                <li>Reliable power and connectivity</li>
+            </ul>
+            <p>This excludes billions from participating in the digital economy.</p>
             
-            <h3>2.2 Pre-mine and Initial Distribution</h3>
-            <p>
-                Most new cryptocurrencies launch with pre-mined supplies allocated to founders and early 
-                investors, creating unfair distributions and centralization of power. This undermines the 
-                decentralization premise of cryptocurrency.
-            </p>
+            <h3>Slow Transaction Speeds</h3>
+            <p>Traditional cryptocurrencies suffer from:</p>
+            <ul>
+                <li>Bitcoin: 10+ minutes for basic confirmation</li>
+                <li>Ethereum: 15+ minutes for finality</li>
+                <li>High fees during network congestion</li>
+                <li>Poor user experience for payments</li>
+            </ul>
             
-            <h3>2.3 Sybil Attack Vulnerability</h3>
-            <p>
-                Many consensus mechanisms are vulnerable to Sybil attacks where an adversary creates numerous 
-                fake identities to gain disproportionate influence. Traditional solutions either require 
-                proof-of-work (energy intensive) or simple proof-of-stake (vulnerable to wealth concentration).
-            </p>
-            
-            <h3>2.4 Short-Term Thinking</h3>
-            <p>
-                Current incentive structures often reward short-term participation over long-term commitment, 
-                leading to high operator turnover and reduced network stability. This creates security risks 
-                and governance challenges.
-            </p>
+            <h3>Centralized Control</h3>
+            <p>Most cryptocurrencies are controlled by:</p>
+            <ul>
+                <li>Founding teams with massive pre-mines</li>
+                <li>Venture capital firms with allocation advantages</li>
+                <li>Mining pools with geographic concentration</li>
+                <li>Foundations making unilateral decisions</li>
+            </ul>
         </section>
         
-        <!-- 3. TIME's Solution -->
+        <!-- The Solution -->
         <section id="solution">
-            <h2>3. TIME's Solution</h2>
+            <h2>The TIME Solution</h2>
+            
+            <h3>Instant Transaction Finality</h3>
+            <h4>Byzantine Fault Tolerant Consensus</h4>
+            <p>TIME uses modified BFT consensus where masternode operators validate transactions in real-time:</p>
+            <pre><code>User sends transaction → Broadcast to network → Validators confirm → 
+Confirmed in &lt;3 seconds → Irreversible finality</code></pre>
             <p>
-                TIME Coin addresses these challenges through an integrated approach combining time-based 
-                consensus, weighted governance, and fair economic design.
+                <strong>No waiting for block confirmations.</strong> No probabilistic finality. When you see the 
+                confirmation, it's permanent.
+            </p>
+            <p>
+                <strong>Dynamic Quorum Selection:</strong> As the network scales to 100,000+ masternodes, intelligent 
+                quorum selection maintains sub-3-second finality.
             </p>
             
-            <h3>3.1 24-Hour Block Paradigm</h3>
-            <p>
-                By extending block intervals to 24 hours while maintaining instant transaction finality through 
-                BFT consensus, TIME decouples block production from transaction confirmation. Users get 
-                immediate certainty while the network benefits from reduced spam and lower operational overhead.
-            </p>
+            <h3>Universal Accessibility</h3>
             
-            <h3>3.2 Weighted Masternode System</h3>
-            <p>
-                TIME implements a three-tier masternode system where voting power is determined by both collateral 
-                stake (Bronze 1×, Silver 10×, Gold 100×) and operational longevity (up to 3× multiplier over 4 years). 
-                This makes Sybil attacks economically prohibitive while rewarding long-term commitment.
-            </p>
+            <h4>SMS Payments</h4>
+            <pre><code>Text: "SEND 10 TIME to @alice"
+Receive: "Sent! Balance: 40 TIME"</code></pre>
+            <p>Works on any phone, even basic feature phones. No internet required.</p>
             
-            <h3>3.3 Purchase-Based Minting with Treasury Funding</h3>
-            <p>
-                TIME has zero pre-mine and elastic supply. New coins are only minted when purchased with 
-                supported cryptocurrencies (BTC, ETH, USDC, USDT), creating a fair launch and natural price 
-                discovery mechanism. This ensures no founder advantage and organic growth. The unlimited 
-                supply allows the network to scale without artificial constraints, while transaction fees 
-                fund a community-governed treasury that supports ecosystem development, creating a 
-                self-sustaining growth model.
-            </p>
+            <h4>Email Payments</h4>
+            <pre><code>To: payments@time.network
+Subject: SEND
+Body: 25 TIME to bob@example.com</code></pre>
+            <p>Familiar interface, works on any device.</p>
             
-            <h3>3.4 Economic Attack Resistance</h3>
-            <p>
-                The weighted voting system creates an economic barrier where attackers must invest 5-10× more 
-                capital than the honest network, and any successful attack would immediately destroy the value 
-                of their massive holdings. This makes attacks not just difficult but economically irrational.
-            </p>
-        </section>
-        
-        <!-- 4. Technical Architecture -->
-        <section id="architecture">
-            <h2>4. Technical Architecture</h2>
-            <p>
-                TIME Coin is built on a modern, high-performance architecture designed for security, scalability, 
-                and maintainability.
-            </p>
-            
-            <h3>4.1 Core Components</h3>
+            <h4>Web & Mobile</h4>
             <ul>
-                <li><strong>Consensus Layer:</strong> BFT-based consensus with weighted voting</li>
-                <li><strong>Network Layer:</strong> Peer-to-peer gossip protocol for transaction propagation</li>
-                <li><strong>Storage Layer:</strong> UTXO-based transaction model with efficient state management</li>
-                <li><strong>Execution Layer:</strong> Transaction validation and state transition logic</li>
-                <li><strong>Masternode Layer:</strong> Three-tier masternode network for consensus participation</li>
+                <li>Progressive web app (no download required)</li>
+                <li>Native iOS and Android apps</li>
+                <li>Hardware wallet support</li>
+                <li>Biometric authentication</li>
             </ul>
             
-            <h3>4.2 Technology Stack</h3>
-            <p>
-                TIME Coin is implemented in Rust, chosen for its memory safety guarantees, performance 
-                characteristics, and growing blockchain ecosystem. Key dependencies include:
-            </p>
-            <ul>
-                <li><strong>Rust:</strong> Core implementation language</li>
-                <li><strong>libp2p:</strong> Networking and peer discovery</li>
-                <li><strong>RocksDB:</strong> High-performance key-value storage</li>
-                <li><strong>Ed25519:</strong> Cryptographic signatures</li>
-                <li><strong>Blake3:</strong> Fast cryptographic hashing</li>
-            </ul>
-            
-            <h3>4.3 Data Structures</h3>
-            <h4>Block Structure</h4>
-            <pre><code>Block {
-    header: BlockHeader,
-    transactions: Vec&lt;Transaction&gt;,
-    masternode_signatures: Vec&lt;Signature&gt;,
-    timestamp: u64,
-}
+            <h3>Efficient Architecture</h3>
+            <h4>24-Hour Settlement Blocks</h4>
+            <p>Unlike traditional blockchains that create millions of blocks per year:</p>
+            <pre><code>TIME: 365 blocks/year (one per day)
+Bitcoin: 52,560 blocks/year
+Ethereum: 2,628,000 blocks/year
 
-BlockHeader {
-    version: u32,
-    previous_hash: Hash,
-    merkle_root: Hash,
-    timestamp: u64,
-    height: u64,
-}</code></pre>
+Result: 99.99% less blockchain bloat</code></pre>
             
-            <h4>Transaction Structure</h4>
-            <pre><code>Transaction {
-    version: u32,
-    inputs: Vec&lt;TxInput&gt;,
-    outputs: Vec&lt;TxOutput&gt;,
-    signatures: Vec&lt;Signature&gt;,
-    timestamp: u64,
-}</code></pre>
-        </section>
-        
-        <!-- 5. Consensus Mechanism -->
-        <section id="consensus">
-            <h2>5. Consensus Mechanism</h2>
-            <p>
-                TIME Coin employs a Byzantine Fault Tolerant (BFT) consensus mechanism enhanced with weighted 
-                voting to achieve instant finality while maintaining exceptional security guarantees.
-            </p>
+            <p><strong>Benefits:</strong></p>
+            <ul>
+                <li>Manageable blockchain size (GB instead of TB)</li>
+                <li>Easy for new nodes to sync</li>
+                <li>Efficient long-term storage</li>
+                <li>Instant transactions PLUS daily settlement</li>
+            </ul>
             
-            <h3 id="consensus-bft">5.1 Byzantine Fault Tolerance</h3>
-            <p>
-                BFT consensus allows the network to reach agreement even when up to 1/3 of participating nodes 
-                are malicious or faulty. TIME Coin implements a practical BFT variant optimized for the 
-                24-hour block structure, where masternodes vote on transaction inclusion and block validity.
-            </p>
-            
-            <h4>BFT Process</h4>
+            <p><strong>How it works:</strong></p>
             <ol>
-                <li><strong>Transaction Broadcast:</strong> Users broadcast transactions to the masternode network</li>
-                <li><strong>Validation:</strong> Masternodes independently validate transactions</li>
-                <li><strong>Voting:</strong> Masternodes vote on transaction validity (weighted by their voting power)</li>
-                <li><strong>Finality:</strong> Once 67% of voting weight approves, transaction is finalized</li>
-                <li><strong>Block Formation:</strong> After 24 hours, finalized transactions are packaged into a block</li>
+                <li>Transactions validated instantly by BFT consensus</li>
+                <li>Users see confirmation in &lt;3 seconds</li>
+                <li>Every 24 hours, validated transactions aggregate into a block</li>
+                <li>Permanent settlement and historical record</li>
             </ol>
             
-            <h3 id="consensus-finality">5.2 Instant Finality</h3>
-            <p>
-                Unlike probabilistic finality in proof-of-work systems, TIME Coin provides deterministic 
-                finality. Once a transaction is confirmed by the masternode network (67% of weight), it is 
-                irreversible within 5 seconds, providing certainty for users and merchants.
-            </p>
-            
-            <h4>Finality Guarantees</h4>
-            <ul>
-                <li><strong>No Reorganizations:</strong> Confirmed transactions cannot be reversed</li>
-                <li><strong>Instant Certainty:</strong> Users know immediately if transaction succeeded</li>
-                <li><strong>Merchant Safety:</strong> No waiting for multiple confirmations</li>
-                <li><strong>Smart Contract Composability:</strong> Enables complex DeFi applications</li>
-            </ul>
-            
-            <h3 id="consensus-weights">5.3 Weighted Voting System</h3>
-            <p>
-                TIME Coin implements a sophisticated weighted voting system that prevents Sybil attacks and 
-                ensures that malicious actors cannot compromise the network simply by controlling a majority 
-                of masternodes by count. The weighting system considers both the tier level and operational 
-                longevity of each masternode.
-            </p>
-            
-            <h4>Weighting Formula</h4>
-            <p>Each masternode's voting weight is calculated as:</p>
-            
-            <div class="formula">
-                <strong>Total Weight = Tier Weight × Longevity Multiplier</strong>
+            <h3>Fair Launch Model</h3>
+            <div class="highlight-box">
+                <h3>No Pre-Mine. No VCs. No Insider Allocation.</h3>
             </div>
             
-            <h4>Tier Weights</h4>
+            <p>TIME tokens are created through <strong>purchase-based minting</strong>:</p>
+            <pre><code>User purchases TIME with fiat/crypto
+        ↓
+Payment verified by network
+        ↓
+New tokens minted
+        ↓
+Distribution:
+  - 90% to purchaser
+  - 8% to network operators (service fees)
+  - 2% to development treasury</code></pre>
             <p>
-                Tier weights are proportional to the collateral requirement, reflecting the economic 
-                commitment to the network:
+                <strong>Everyone starts equal.</strong> No founders with billions of tokens. No early investors 
+                dumping on retail.
             </p>
+            
+            <h3>Community Governance</h3>
+            <h4>Three-Tier Masternode System</h4>
+            <p>Network operators provide infrastructure and earn service fees:</p>
             
             <table>
                 <thead>
                     <tr>
                         <th>Tier</th>
                         <th>Collateral</th>
-                        <th>Base Weight</th>
-                        <th>Rationale</th>
+                        <th>Services</th>
+                        <th>Voting Power</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>Bronze</td>
                         <td>1,000 TIME</td>
-                        <td>1</td>
-                        <td>Base unit (1× stake)</td>
+                        <td>Basic validation, routing</td>
+                        <td>1×</td>
                     </tr>
                     <tr>
                         <td>Silver</td>
                         <td>10,000 TIME</td>
-                        <td>10</td>
-                        <td>10× stake = 10× weight</td>
+                        <td>Full validation, governance</td>
+                        <td>10×</td>
                     </tr>
                     <tr>
                         <td>Gold</td>
                         <td>100,000 TIME</td>
-                        <td>100</td>
-                        <td>100× stake = 100× weight</td>
+                        <td>Full consensus, proposals</td>
+                        <td>100×</td>
                     </tr>
                 </tbody>
             </table>
             
-            <h4>Longevity Multiplier</h4>
             <p>
-                The longevity multiplier rewards masternodes for continuous, reliable operation, 
-                incentivizing long-term network commitment:
+                <strong>Longevity Rewards:</strong> Operators who run nodes long-term earn up to 3× multiplier on 
+                rewards (vests over 4 years).
+            </p>
+            <p>
+                <strong>Democratic Voting:</strong> All network parameters, protocol upgrades, and treasury spending 
+                require masternode approval (60% threshold).
             </p>
             
-            <div class="formula">
-                <strong>Longevity Multiplier = 1 + (Days Active ÷ 365) × 0.5</strong><br>
-                <em>Maximum multiplier: 3.0× (achieved after 4 years)</em>
-            </div>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>Time Active</th>
-                        <th>Longevity Multiplier</th>
-                        <th>Example: Gold Tier Weight</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>0-30 days (new)</td>
-                        <td>1.0×</td>
-                        <td>100</td>
-                    </tr>
-                    <tr>
-                        <td>6 months</td>
-                        <td>1.25×</td>
-                        <td>125</td>
-                    </tr>
-                    <tr>
-                        <td>1 year</td>
-                        <td>1.5×</td>
-                        <td>150</td>
-                    </tr>
-                    <tr>
-                        <td>2 years</td>
-                        <td>2.0×</td>
-                        <td>200</td>
-                    </tr>
-                    <tr>
-                        <td>4+ years</td>
-                        <td>3.0× (max)</td>
-                        <td>300</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <div class="info-box">
-                <h4>💡 Key Insight</h4>
-                <p>
-                    A single Gold tier masternode running for 4 years has the same voting weight as 
-                    <strong>300 newly-launched Bronze tier masternodes</strong>.
-                </p>
-            </div>
-            
-            <h4>Consensus Threshold</h4>
-            <p>
-                For a block to be confirmed, it must be approved by masternodes representing at least 
-                <strong>67% of the total network weight</strong> (not 67% of node count). This weight-based 
-                threshold makes the network highly resistant to attacks.
-            </p>
-            
-            <div class="formula">
-                <strong>Block Approval Condition:</strong><br>
-                Sum(Approving Nodes' Weights) ≥ 0.67 × Sum(All Nodes' Weights)
-            </div>
-            
-            <h4>Attack Resistance Analysis</h4>
-            <p>
-                Consider a scenario where a malicious actor attempts to compromise the network by 
-                controlling a 2/3 majority of masternodes by count:
-            </p>
-            
-            <h5>Scenario: Sybil Attack with Bronze Nodes</h5>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>Actor</th>
-                        <th>Masternodes</th>
-                        <th>Composition</th>
-                        <th>Total Weight</th>
-                        <th>% of Total Weight</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="warning-row">
-                        <td><strong>Attacker</strong></td>
-                        <td>67</td>
-                        <td>67 new Bronze (1× each)</td>
-                        <td>67</td>
-                        <td><strong>2.1%</strong></td>
-                    </tr>
-                    <tr class="success-row">
-                        <td><strong>Honest Network</strong></td>
-                        <td>33</td>
-                        <td>20 Gold (1yr) + 13 Silver (1yr)</td>
-                        <td>3,000 + 195 = 3,195</td>
-                        <td><strong>97.9%</strong></td>
-                    </tr>
-                    <tr>
-                        <td colspan="3"><strong>Total Network</strong></td>
-                        <td><strong>3,262</strong></td>
-                        <td>100%</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <div class="warning-box">
-                <h4>⚠️ Attack Failure</h4>
-                <p>
-                    Despite controlling <strong>67% of nodes by count</strong>, the attacker only controls 
-                    <strong>2.1% of voting weight</strong>. The attack fails completely as the attacker 
-                    cannot reach the 67% weight threshold required for consensus.
-                </p>
-                <p>
-                    <strong>Cost Analysis:</strong> The attacker invested 67,000 TIME but honest operators 
-                    collectively invested 2,130,000 TIME (31.8× more capital at risk).
-                </p>
-            </div>
-            
-            <h5>Required Attack Investment</h5>
-            <p>To successfully attack the network in the above scenario, the attacker would need:</p>
-            
-            <div class="formula">
-                <strong>Required Weight = 2 × Honest Network Weight</strong><br>
-                <strong>Required Weight = 2 × 3,195 = 6,390</strong>
-            </div>
-            
-            <p>Using new Bronze nodes, the attacker would need:</p>
-            <ul>
-                <li><strong>6,390 Bronze masternodes</strong></li>
-                <li><strong>Total investment: 6,390,000 TIME</strong></li>
-                <li>Cost: 6,390,000 TIME × market price</li>
-                <li>Approximately <strong>95× more than the honest network's investment</strong></li>
-            </ul>
-            
-            <div class="info-box">
-                <h4>🛡️ Economic Security</h4>
-                <p>
-                    The weighted voting system creates an economic barrier that makes attacks prohibitively 
-                    expensive. An attacker must invest far more capital than the honest network, and any 
-                    attack would immediately devalue their massive holdings, creating a strong disincentive.
-                </p>
-            </div>
-            
-            <h4>Long-Term Incentive Alignment</h4>
-            <p>The weighting system creates powerful incentives for network security:</p>
+            <h4>Proposal System:</h4>
             <ol>
-                <li>
-                    <strong>Capital Commitment:</strong> Higher-tier masternodes have significantly more 
-                    capital at risk, aligning their interests with network security.
-                </li>
-                <li>
-                    <strong>Long-Term Thinking:</strong> Longevity multipliers reward operators who 
-                    maintain reliable infrastructure over years, not days.
-                </li>
-                <li>
-                    <strong>Sybil Resistance:</strong> Spinning up many low-tier nodes provides minimal 
-                    voting power compared to established, high-tier nodes.
-                </li>
-                <li>
-                    <strong>Attack Deterrence:</strong> The cost of a successful attack far exceeds any 
-                    potential benefit, especially considering the attacker's holdings would crash in value.
-                </li>
-                <li>
-                    <strong>Natural Decentralization:</strong> Rewards distributed by weight encourage 
-                    diverse participation across all tiers and long-term commitment.
-                </li>
+                <li>Gold tier operator creates proposal</li>
+                <li>14-day discussion period</li>
+                <li>7-day voting period</li>
+                <li>Community approves or rejects</li>
+                <li>Implemented if passed</li>
             </ol>
             
-            <h4>Weight Calculation Examples</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Masternode Type</th>
-                        <th>Tier Weight</th>
-                        <th>Age</th>
-                        <th>Longevity</th>
-                        <th>Total Weight</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>New Bronze</td>
-                        <td>1</td>
-                        <td>1 day</td>
-                        <td>1.0×</td>
-                        <td><strong>1</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Bronze (1 year)</td>
-                        <td>1</td>
-                        <td>365 days</td>
-                        <td>1.5×</td>
-                        <td><strong>1.5</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Silver (6 months)</td>
-                        <td>10</td>
-                        <td>180 days</td>
-                        <td>1.25×</td>
-                        <td><strong>12.5</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Gold (new)</td>
-                        <td>100</td>
-                        <td>1 day</td>
-                        <td>1.0×</td>
-                        <td><strong>100</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Gold (2 years)</td>
-                        <td>100</td>
-                        <td>730 days</td>
-                        <td>2.0×</td>
-                        <td><strong>200</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Gold (4+ years)</td>
-                        <td>100</td>
-                        <td>1460+ days</td>
-                        <td>3.0×</td>
-                        <td><strong>300</strong></td>
-                    </tr>
-                </tbody>
-            </table>
+            <h3>Self-Funding Treasury</h3>
+            <p>The network funds its own development through:</p>
+            <p><strong>Dynamic Block Rewards:</strong> 5-25 TIME/day to treasury (scales with network size, capped at 10,000+ nodes)</p>
+            <p><strong>Transaction Fees:</strong> 5% of all transaction fees</p>
             
-            <h4>Implementation Details</h4>
-            <p>The weighted voting system is implemented with the following safeguards:</p>
+            <p><strong>Projected Growth:</strong></p>
+            <pre><code>Year 1: ~4,000 TIME/year
+Year 5: ~190,000 TIME/year  
+Year 10: ~510,000+ TIME/year</code></pre>
+            
+            <p>
+                <strong>Transparent Spending:</strong> All treasury expenditures require governance approval and are 
+                publicly auditable.
+            </p>
+        </section>
+        
+        <!-- Technical Highlights -->
+        <section id="technical">
+            <h2>Technical Highlights</h2>
+            
+            <h3>Consensus Mechanism</h3>
+            <h4>Modified Byzantine Fault Tolerant (BFT)</h4>
             <ul>
-                <li>
-                    <strong>Age Tracking:</strong> Masternode age is tracked from initial registration 
-                    and resets on any downtime exceeding 72 hours.
-                </li>
-                <li>
-                    <strong>Immutable History:</strong> Voting weight history is stored on-chain and 
-                    cannot be manipulated.
-                </li>
-                <li>
-                    <strong>Real-Time Calculation:</strong> Weights are recalculated for each consensus 
-                    round to reflect current network state.
-                </li>
-                <li>
-                    <strong>Transparent Verification:</strong> Any node can verify the weight calculations 
-                    independently.
-                </li>
-                <li>
-                    <strong>Slashing Protection:</strong> Malicious behavior results in slashing that 
-                    removes both collateral and accumulated longevity weight.
-                </li>
+                <li>Tolerates up to 33% malicious nodes</li>
+                <li>Instant and deterministic finality</li>
+                <li>No possibility of chain reorganizations</li>
+                <li>Dynamic quorum selection for scalability</li>
+                <li>Weighted voting by tier and longevity</li>
             </ul>
             
-            <h4>Mathematical Security Proof</h4>
-            <p>Let's formally prove the system's resistance to 2/3 attacks:</p>
+            <h3>Scalability</h3>
+            <ul>
+                <li><strong>Target Capacity:</strong> 5,000+ transactions per second</li>
+                <li><strong>Current Design:</strong> Scales to 100,000+ masternodes</li>
+                <li><strong>Confirmation Time:</strong> &lt;3 seconds (maintained at scale)</li>
+                <li><strong>Annual Blocks:</strong> 365 (vs millions for other chains)</li>
+            </ul>
             
-            <div class="formula">
-                <strong>Given:</strong><br>
-                • Total masternodes: N<br>
-                • Honest masternodes: H with average weight W<sub>h</sub><br>
-                • Attacker masternodes: A with average weight W<sub>a</sub><br>
-                • Consensus threshold: 67% of total weight<br><br>
+            <h3>Security</h3>
+            <h4>Multi-Layer Protection:</h4>
+            <ul>
+                <li>Economic security (collateral requirements)</li>
+                <li>Cryptographic security (Ed25519 signatures)</li>
+                <li>Network security (BFT consensus)</li>
+                <li>Sequential nonce system (prevents double-spending)</li>
+                <li>Global state synchronization (&lt;500ms)</li>
+            </ul>
+            <p>
+                <strong>Attack Cost:</strong> Requires $15M+ and control of 67%+ of network weight - economically irrational.
+            </p>
+            
+            <h3>Token Economics</h3>
+            <h4>Supply Model:</h4>
+            <ul>
+                <li>No fixed maximum supply</li>
+                <li>Organic growth through purchase-minting</li>
+                <li>Masternode collateral reduces circulating supply</li>
+                <li>Dynamic block rewards cap inflation at 182,500 TIME/year</li>
+            </ul>
+            
+            <h4>Fee Distribution:</h4>
+            <ul>
+                <li>95% to masternode operators (proportional to service)</li>
+                <li>5% to network treasury (governance-controlled)</li>
+            </ul>
+        </section>
+        
+        <!-- Use Cases -->
+        <section id="use-cases">
+            <h2>Use Cases</h2>
+            
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <h4>Peer-to-Peer Payments</h4>
+                    <p><strong>Send money instantly to anyone, anywhere:</strong></p>
+                    <ul class="feature-list">
+                        <li>Family remittances without Western Union fees</li>
+                        <li>Split bills with friends via SMS</li>
+                        <li>Pay freelancers internationally</li>
+                        <li>Send emergency funds in seconds</li>
+                    </ul>
+                </div>
                 
-                <strong>Proof:</strong><br>
-                1. Total weight = (H × W<sub>h</sub>) + (A × W<sub>a</sub>)<br>
-                2. Required attack weight = 0.67 × [(H × W<sub>h</sub>) + (A × W<sub>a</sub>)]<br>
-                3. If W<sub>a</sub> = 1 (new Bronze) and W<sub>h</sub> ≫ W<sub>a</sub>:<br>
-                   • Attack weight = A × 1 = A<br>
-                   • Honest weight = H × W<sub>h</sub><br>
-                4. For attack success: A ≥ 0.67 × (H × W<sub>h</sub> + A)<br>
-                5. Solving: A ≥ 2.03 × H × W<sub>h</sub><br><br>
+                <div class="comparison-card">
+                    <h4>Merchant Payments</h4>
+                    <p><strong>Accept crypto payments with instant confirmation:</strong></p>
+                    <ul class="feature-list">
+                        <li>No chargebacks (irreversible finality)</li>
+                        <li>Lower fees than credit cards (0.1-1% vs 2-3%)</li>
+                        <li>Instant settlement (vs 2-3 day bank transfers)</li>
+                        <li>Global customer base</li>
+                    </ul>
+                </div>
                 
-                <strong>Conclusion:</strong><br>
-                The attacker must control weight equal to <strong>2× the honest network's weight</strong>, 
-                making attacks exponentially more expensive than the honest network's investment.
+                <div class="comparison-card">
+                    <h4>Cross-Border Transfers</h4>
+                    <p><strong>Replace expensive wire transfers:</strong></p>
+                    <ul class="feature-list">
+                        <li>Send $10 or $10,000 with same low fee</li>
+                        <li>Arrives in seconds, not days</li>
+                        <li>No intermediary banks</li>
+                        <li>No currency conversion fees</li>
+                    </ul>
+                </div>
+                
+                <div class="comparison-card">
+                    <h4>Microtransactions</h4>
+                    <p><strong>Enable new business models:</strong></p>
+                    <ul class="feature-list">
+                        <li>Pay per article (journalism)</li>
+                        <li>Tip content creators directly</li>
+                        <li>Pay for API calls</li>
+                        <li>Streaming micropayments</li>
+                    </ul>
+                </div>
+                
+                <div class="comparison-card">
+                    <h4>Accessibility Banking</h4>
+                    <p><strong>Bring financial services to the unbanked:</strong></p>
+                    <ul class="feature-list">
+                        <li>SMS-based wallets for feature phones</li>
+                        <li>No minimum balance requirements</li>
+                        <li>No monthly fees</li>
+                        <li>Instant global transfers</li>
+                    </ul>
+                </div>
             </div>
         </section>
         
-        <!-- 6. Economic Model -->
-        <section id="economics">
-            <h2>6. Economic Model</h2>
-            <p>
-                TIME Coin implements an elastic supply model with a community-governed treasury system. 
-                This creates a sustainable economic model where network usage directly funds ecosystem 
-                development, creating a virtuous cycle of growth.
-            </p>
+        <!-- Network Participation -->
+        <section id="participation">
+            <h2>Network Participation</h2>
             
-            <h3>6.1 Supply Dynamics</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Parameter</th>
-                        <th>Value</th>
-                        <th>Notes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Maximum Supply</td>
-                        <td>Unlimited (Elastic)</td>
-                        <td>Grows with purchase demand</td>
-                    </tr>
-                    <tr>
-                        <td>Initial Supply</td>
-                        <td>0 TIME</td>
-                        <td>Zero pre-mine</td>
-                    </tr>
-                    <tr>
-                        <td>Minting Method</td>
-                        <td>Purchase-based</td>
-                        <td>BTC/ETH/USDC/USDT → TIME</td>
-                    </tr>
-                    <tr>
-                        <td>Block Reward</td>
-                        <td>100 TIME</td>
-                        <td>95% masternodes, 5% treasury</td>
-                    </tr>
-                    <tr>
-                        <td>Block Time</td>
-                        <td>24 hours</td>
-                        <td>365 blocks per year</td>
-                    </tr>
-                    <tr>
-                        <td>Annual Issuance</td>
-                        <td>36,500 TIME</td>
-                        <td>From block rewards only</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <h3>6.2 Elastic Supply Mechanism</h3>
-            <p>
-                TIME Coin's supply model is designed to grow naturally with adoption while remaining 
-                sustainably inflationary to ensure continuous rewards for network participants.
-            </p>
-            
-            <h4>Supply Growth</h4>
-            <ul>
-                <li><strong>Purchase Minting:</strong> Primary growth - new TIME created when users purchase with supported cryptocurrencies</li>
-                <li><strong>Block Rewards:</strong> 100 TIME per 24-hour block (36,500 TIME annually)</li>
-                <li><strong>Unlimited Ceiling:</strong> No artificial cap prevents network growth</li>
-            </ul>
-            
-            <h4>Inflation Rate</h4>
-            <p>
-                Block reward inflation decreases proportionally as supply grows:
-            </p>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>Total Supply</th>
-                        <th>Annual Block Rewards</th>
-                        <th>Inflation Rate</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>10M TIME</td>
-                        <td>36,500 TIME</td>
-                        <td>0.365%</td>
-                    </tr>
-                    <tr>
-                        <td>50M TIME</td>
-                        <td>36,500 TIME</td>
-                        <td>0.073%</td>
-                    </tr>
-                    <tr>
-                        <td>100M TIME</td>
-                        <td>36,500 TIME</td>
-                        <td>0.037%</td>
-                    </tr>
-                    <tr>
-                        <td>500M TIME</td>
-                        <td>36,500 TIME</td>
-                        <td>0.007%</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <div class="info-box">
-                <h4>💡 Sustainable Inflation</h4>
-                <p>
-                    Block reward inflation approaches zero as the network matures, while purchase-based 
-                    minting ensures supply grows with real demand. This creates a healthy, growing economy 
-                    rather than artificial scarcity.
-                </p>
-            </div>
-            
-            <h3>6.3 Fee Structure & Distribution</h3>
-            <p>Transaction fees are minimal, predictable, and fund both network operations and ecosystem development:</p>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>Transaction Type</th>
-                        <th>Fee</th>
-                        <th>Masternode Share</th>
-                        <th>Treasury Share</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Standard Transaction</td>
-                        <td>0.001 TIME</td>
-                        <td>50%</td>
-                        <td>50%</td>
-                    </tr>
-                    <tr>
-                        <td>Purchase Transaction</td>
-                        <td>1% of amount</td>
-                        <td>50%</td>
-                        <td>50%</td>
-                    </tr>
-                    <tr>
-                        <td>Masternode Registration</td>
-                        <td>1 TIME</td>
-                        <td>0%</td>
-                        <td>100%</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <h4>Why 50/50 Split?</h4>
+            <h3>For Users</h3>
+            <h4>Getting Started is Simple:</h4>
             <ol>
-                <li><strong>Operational Sustainability:</strong> Masternodes need income for infrastructure costs</li>
-                <li><strong>Ecosystem Growth:</strong> Treasury funds development, marketing, and partnerships</li>
-                <li><strong>Balanced Incentives:</strong> Neither operations nor growth starved of resources</li>
-                <li><strong>Fair Governance:</strong> Masternodes vote on treasury spending, aligning interests</li>
-                <li><strong>Self-Funding:</strong> No pre-mine or foundation needed - network funds itself</li>
+                <li>Purchase TIME through verified gateways</li>
+                <li>Receive via SMS, email, or app</li>
+                <li>Start sending payments instantly</li>
+                <li>Access from any device</li>
             </ol>
             
-            <h4>Treasury Accumulation Projections</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Phase</th>
-                        <th>Daily Transactions</th>
-                        <th>Daily Fees</th>
-                        <th>Treasury (50%)</th>
-                        <th>Annual Treasury</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Year 1 (Launch)</td>
-                        <td>10,000</td>
-                        <td>10 TIME</td>
-                        <td>5 TIME/day</td>
-                        <td>1,825 TIME</td>
-                    </tr>
-                    <tr>
-                        <td>Year 3 (Growing)</td>
-                        <td>50,000</td>
-                        <td>50 TIME</td>
-                        <td>25 TIME/day</td>
-                        <td>9,125 TIME</td>
-                    </tr>
-                    <tr>
-                        <td>Year 5 (Established)</td>
-                        <td>100,000</td>
-                        <td>100 TIME</td>
-                        <td>50 TIME/day</td>
-                        <td>18,250 TIME</td>
-                    </tr>
-                    <tr>
-                        <td>Year 10 (Mature)</td>
-                        <td>500,000</td>
-                        <td>500 TIME</td>
-                        <td>250 TIME/day</td>
-                        <td>91,250 TIME</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <p><em>Note: Excludes block reward treasury allocation (5 TIME/day = 1,825 TIME/year)</em></p>
-            
-            <div class="success-box">
-                <h4>✅ Virtuous Cycle</h4>
-                <p>
-                    More network usage → More treasury funds → More ecosystem development → 
-                    More adoption → More network usage. The treasury creates a self-reinforcing 
-                    growth mechanism.
-                </p>
-            </div>
-            
-            <h3>6.4 Community Treasury System</h3>
-            <p>
-                The TIME Coin treasury is a community-governed fund that supports ecosystem development 
-                through a transparent, on-chain governance process.
-            </p>
-            
-            <h4>Treasury Income Sources</h4>
+            <h4>Features:</h4>
             <ul>
-                <li><strong>Transaction Fees:</strong> 50% of all transaction fees</li>
-                <li><strong>Block Rewards:</strong> 5 TIME per block (1,825 TIME/year minimum)</li>
-                <li><strong>Masternode Registration:</strong> 1 TIME per registration</li>
-                <li><strong>Slashing Penalties:</strong> Confiscated collateral from malicious nodes</li>
+                <li>Human-readable addresses (@alice)</li>
+                <li>Multi-language support (20+ languages)</li>
+                <li>Transaction templates for recurring payments</li>
+                <li>Instant confirmation notifications</li>
             </ul>
             
-            <h4>Treasury Use Cases</h4>
-            
-            <h5>Business Development Grants</h5>
+            <h3>For Merchants</h3>
+            <h4>Accept TIME Payments:</h4>
             <ul>
-                <li>Exchange integrations and listings</li>
-                <li>Payment processor partnerships</li>
-                <li>Merchant adoption programs</li>
-                <li>Wallet development and maintenance</li>
-                <li>Block explorer and infrastructure tools</li>
+                <li>Point-of-sale integrations</li>
+                <li>E-commerce plugins</li>
+                <li>Invoice systems</li>
+                <li>API for custom implementations</li>
             </ul>
             
-            <h5>Technical Development</h5>
+            <h4>Benefits:</h4>
             <ul>
-                <li>Core protocol improvements</li>
-                <li>Developer tools and SDKs</li>
-                <li>Libraries and client implementations</li>
-                <li>Testing infrastructure</li>
-                <li>Technical documentation</li>
+                <li>Instant settlement (no waiting for confirmations)</li>
+                <li>Lower fees than traditional processors</li>
+                <li>No chargebacks</li>
+                <li>Global customer reach</li>
             </ul>
             
-            <h5>Security & Audits</h5>
+            <h3>For Network Operators</h3>
+            <h4>Become a Masternode Operator:</h4>
+            
+            <p><strong>Requirements:</strong></p>
             <ul>
-                <li>Third-party security audits</li>
-                <li>Bug bounty programs</li>
-                <li>Penetration testing</li>
-                <li>Code reviews by experts</li>
-                <li>Security monitoring tools</li>
+                <li>Technical expertise (Linux server administration)</li>
+                <li>Infrastructure (VPS or dedicated server)</li>
+                <li>Collateral (1,000 - 100,000 TIME)</li>
+                <li>Time commitment (5-40 hours/month)</li>
             </ul>
             
-            <h5>Marketing & Growth</h5>
+            <p><strong>Services Provided:</strong></p>
             <ul>
-                <li>Conference sponsorships</li>
-                <li>Educational content creation</li>
-                <li>Community programs and events</li>
-                <li>Brand partnerships</li>
-                <li>Regional adoption campaigns</li>
+                <li>Transaction validation</li>
+                <li>Network routing</li>
+                <li>Data availability</li>
+                <li>Governance participation</li>
             </ul>
             
-            <h5>Research & Innovation</h5>
+            <p><strong>Compensation:</strong></p>
             <ul>
-                <li>Academic research partnerships</li>
-                <li>Protocol research and optimization</li>
-                <li>Economic modeling and analysis</li>
-                <li>Scaling solutions development</li>
-                <li>Advanced feature research</li>
+                <li>Service fees from transactions processed</li>
+                <li>Proportional to tier and longevity</li>
+                <li>Additional fees for specialized services (purchase verification)</li>
             </ul>
-            
-            <h4>Treasury Governance Process</h4>
             
             <div class="info-box">
-                <h4>📋 Proposal Lifecycle</h4>
-                <ol>
-                    <li><strong>Submission (Cost: 10 TIME):</strong> Anyone can submit proposals with clear scope, budget, timeline, and deliverables</li>
-                    <li><strong>Discussion (14 days):</strong> Public community discussion and proposal refinement</li>
-                    <li><strong>Voting (7 days):</strong> Masternodes vote weighted by their voting power</li>
-                    <li><strong>Approval (51% threshold):</strong> Proposals require majority of voting weight</li>
-                    <li><strong>Execution:</strong> Approved proposals funded via milestone-based payments</li>
-                    <li><strong>Accountability:</strong> Regular progress reports and community oversight</li>
-                </ol>
-            </div>
-            
-            <h4>Treasury Protection Mechanisms</h4>
-            <ul>
-                <li><strong>Multi-Signature Control:</strong> No single entity can access treasury</li>
-                <li><strong>On-Chain Transparency:</strong> All transactions publicly auditable</li>
-                <li><strong>Milestone Payments:</strong> Funds released as deliverables are completed</li>
-                <li><strong>Clawback Provisions:</strong> Non-delivery results in fund recovery</li>
-                <li><strong>Spending Limits:</strong> Maximum % of treasury per proposal</li>
-                <li><strong>Veto Power:</strong> Emergency governance for obvious fraud</li>
-            </ul>
-            
-            <h3>6.5 Masternode Economics</h3>
-            <p>
-                Masternodes earn rewards from both block rewards and transaction fees, creating 
-                multiple income streams proportional to their voting weight.
-            </p>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>Tier</th>
-                        <th>Investment</th>
-                        <th>Base APY</th>
-                        <th>Max APY (4yr)</th>
-                        <th>Income Sources</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Bronze</td>
-                        <td>1,000 TIME</td>
-                        <td>18%</td>
-                        <td>54%</td>
-                        <td>Block rewards + 50% fees</td>
-                    </tr>
-                    <tr>
-                        <td>Silver</td>
-                        <td>10,000 TIME</td>
-                        <td>24%</td>
-                        <td>72%</td>
-                        <td>Block rewards + 50% fees</td>
-                    </tr>
-                    <tr>
-                        <td>Gold</td>
-                        <td>100,000 TIME</td>
-                        <td>30%</td>
-                        <td>90%</td>
-                        <td>Block rewards + 50% fees</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <div class="info-box">
-                <h4>💡 Reward Calculation</h4>
+                <h4>💡 Important Note</h4>
                 <p>
-                    Masternode rewards depend on network weight distribution:<br>
-                    <strong>Node Reward = (Node Weight ÷ Total Network Weight) × (Block Reward + Fee Pool)</strong>
-                </p>
-                <p>
-                    As network usage grows, fee income becomes an increasingly significant portion 
-                    of masternode revenue.
-                </p>
-            </div>
-            
-            <h3>6.6 Long-Term Economic Sustainability</h3>
-            <p>
-                The elastic supply with treasury model ensures TIME Coin remains economically viable 
-                and continuously improving indefinitely.
-            </p>
-            
-            <h4>Early Phase (Years 1-3)</h4>
-            <ul>
-                <li><strong>Supply:</strong> Growing through purchases and block rewards</li>
-                <li><strong>Treasury:</strong> Modest funding (~2-10K TIME/year)</li>
-                <li><strong>Focus:</strong> Core development, initial partnerships</li>
-                <li><strong>Growth:</strong> Bootstrap phase, community building</li>
-            </ul>
-            
-            <h4>Growth Phase (Years 3-7)</h4>
-            <ul>
-                <li><strong>Supply:</strong> Accelerating purchase minting with adoption</li>
-                <li><strong>Treasury:</strong> Substantial funding (~10-50K TIME/year)</li>
-                <li><strong>Focus:</strong> Business development, ecosystem expansion</li>
-                <li><strong>Growth:</strong> Rapid adoption, major partnerships</li>
-            </ul>
-            
-            <h4>Mature Phase (Years 7+)</h4>
-            <ul>
-                <li><strong>Supply:</strong> Stable growth matching economic activity</li>
-                <li><strong>Treasury:</strong> Significant funding (50K+ TIME/year)</li>
-                <li><strong>Focus:</strong> Innovation, research, global expansion</li>
-                <li><strong>Growth:</strong> Established ecosystem, sustained development</li>
-            </ul>
-            
-            <div class="success-box">
-                <h4>✅ Economic Design Goals Achieved</h4>
-                <ul>
-                    <li><strong>Fair Launch:</strong> Zero pre-mine, purchase-only minting</li>
-                    <li><strong>Unlimited Growth:</strong> No artificial supply cap limits adoption</li>
-                    <li><strong>Self-Funding:</strong> Treasury eliminates need for foundation or VCs</li>
-                    <li><strong>Productive Fees:</strong> All fees fund either operations or development</li>
-                    <li><strong>Real Governance:</strong> Masternodes control meaningful resources</li>
-                    <li><strong>Sustainable Model:</strong> Network funds its own improvement perpetually</li>
-                </ul>
-            </div>
-            
-            <h4>Comparison with Traditional Models</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Feature</th>
-                        <th>VC-Funded Projects</th>
-                        <th>Pre-Mine Projects</th>
-                        <th>TIME Coin</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Initial Distribution</td>
-                        <td>Insiders get majority</td>
-                        <td>Team pre-mine</td>
-                        <td><strong>Fair launch, zero pre-mine</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Development Funding</td>
-                        <td>VC investment</td>
-                        <td>Sell pre-mined coins</td>
-                        <td><strong>Community treasury</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Governance</td>
-                        <td>VC control</td>
-                        <td>Team control</td>
-                        <td><strong>Masternode voting</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Long-term Sustainability</td>
-                        <td>Depends on profitability</td>
-                        <td>Depends on reserves</td>
-                        <td><strong>Self-funding perpetually</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Incentive Alignment</td>
-                        <td>Exit-focused</td>
-                        <td>Token price focused</td>
-                        <td><strong>Ecosystem growth focused</strong></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-        
-        <!-- 7. Masternode System -->
-        <section id="masternodes">
-            <h2>7. Masternode System</h2>
-            <p>
-                The TIME Coin network is secured by a three-tier masternode system, where operators stake 
-                collateral to participate in consensus and earn rewards proportional to their commitment.
-            </p>
-            
-            <h3 id="masternode-tiers">7.1 Three-Tier Structure</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Tier</th>
-                        <th>Collateral</th>
-                        <th>APY</th>
-                        <th>Min Hardware</th>
-                        <th>Bandwidth</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Bronze</td>
-                        <td>1,000 TIME</td>
-                        <td>18%</td>
-                        <td>2 CPU / 4GB RAM / 50GB SSD</td>
-                        <td>100 Mbps</td>
-                    </tr>
-                    <tr>
-                        <td>Silver</td>
-                        <td>10,000 TIME</td>
-                        <td>24%</td>
-                        <td>4 CPU / 8GB RAM / 100GB SSD</td>
-                        <td>250 Mbps</td>
-                    </tr>
-                    <tr>
-                        <td>Gold</td>
-                        <td>100,000 TIME</td>
-                        <td>30%</td>
-                        <td>8 CPU / 16GB RAM / 250GB SSD</td>
-                        <td>1 Gbps</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <h3 id="masternode-rewards">7.2 Rewards & Incentives</h3>
-            <p>
-                Masternode rewards are distributed based on voting weight, not node count, ensuring fair 
-                compensation for both capital commitment and operational reliability. Rewards come from 
-                both block rewards and transaction fees.
-            </p>
-            
-            <h4>Reward Distribution</h4>
-            <p>Each 24-hour block distributes rewards as follows:</p>
-            <ul>
-                <li><strong>95 TIME:</strong> Distributed by weight to active masternodes</li>
-                <li><strong>5 TIME:</strong> Community treasury (governance-controlled)</li>
-                <li><strong>Transaction Fees (50%):</strong> Additional income distributed by weight to masternodes</li>
-            </ul>
-            
-            <p>
-                As network usage grows, transaction fee income becomes an increasingly significant 
-                portion of masternode revenue, ensuring long-term sustainability even as block reward 
-                inflation becomes negligible relative to total supply.
-            </p>
-            
-            <h3 id="masternode-slashing">7.3 Slashing Mechanism</h3>
-            <p>
-                Malicious or negligent behavior results in slashing penalties to protect network integrity. 
-                Slashed collateral is transferred to the community treasury to fund ecosystem development.
-            </p>
-            
-            <h4>Slashing Conditions</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Violation</th>
-                        <th>Penalty</th>
-                        <th>Additional Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Double Signing</td>
-                        <td>100% collateral loss → Treasury</td>
-                        <td>Permanent ban</td>
-                    </tr>
-                    <tr>
-                        <td>Invalid Vote</td>
-                        <td>50% collateral loss → Treasury</td>
-                        <td>Weight reset</td>
-                    </tr>
-                    <tr>
-                        <td>Extended Downtime (&gt;72hr)</td>
-                        <td>10% collateral loss → Treasury</td>
-                        <td>Weight reset</td>
-                    </tr>
-                    <tr>
-                        <td>Repeated Downtime</td>
-                        <td>25% collateral loss → Treasury</td>
-                        <td>30-day suspension</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <div class="info-box">
-                <h4>💡 Productive Penalties</h4>
-                <p>
-                    Unlike traditional slashing where penalties are burned (value destruction), TIME Coin's 
-                    slashed collateral goes to the treasury. This turns malicious behavior into funding for 
-                    ecosystem improvement—a more productive use of penalties.
-                </p>
-            </div>
-            
-            <h3 id="masternode-weights">7.4 Masternode Voting Weights</h3>
-            <p>
-                Each masternode tier and operational duration contributes differently to network consensus 
-                through a weighted voting system. This ensures that masternodes with greater economic 
-                commitment and proven reliability have proportionally greater influence.
-            </p>
-            
-            <h4>Weight Distribution by Tier</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Tier</th>
-                        <th>Collateral</th>
-                        <th>Base Weight</th>
-                        <th>Max Weight (4yr)</th>
-                        <th>% of Single Gold</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Bronze</td>
-                        <td>1,000 TIME</td>
-                        <td>1</td>
-                        <td>3</td>
-                        <td>1%</td>
-                    </tr>
-                    <tr>
-                        <td>Silver</td>
-                        <td>10,000 TIME</td>
-                        <td>10</td>
-                        <td>30</td>
-                        <td>10%</td>
-                    </tr>
-                    <tr>
-                        <td>Gold</td>
-                        <td>100,000 TIME</td>
-                        <td>100</td>
-                        <td>300</td>
-                        <td>100%</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <h4>Implications for Network Distribution</h4>
-            <p>
-                In a healthy network with diverse participation, the weight distribution might look like:
-            </p>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>Network Scenario</th>
-                        <th>Bronze Nodes</th>
-                        <th>Silver Nodes</th>
-                        <th>Gold Nodes</th>
-                        <th>Total Weight</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Example Distribution</td>
-                        <td>500 (avg 1yr)</td>
-                        <td>150 (avg 1yr)</td>
-                        <td>50 (avg 2yr)</td>
-                        <td>11,875</td>
-                    </tr>
-                    <tr>
-                        <td>Weight Breakdown</td>
-                        <td>750 (6.3%)</td>
-                        <td>1,875 (15.8%)</td>
-                        <td>10,000 (84.2%)</td>
-                        <td>100%</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <div class="info-box">
-                <h4>💡 Network Security Implication</h4>
-                <p>
-                    In this distribution, <strong>Gold tier masternodes control 84.2% of voting weight</strong> 
-                    despite representing only <strong>7.1% of nodes by count</strong>. This concentration 
-                    of influence among high-stake, long-term operators creates strong economic security.
-                </p>
-            </div>
-            
-            <h4>Rewards Distribution by Weight</h4>
-            <p>
-                Block rewards are distributed proportionally by weight, ensuring fair compensation for both 
-                capital commitment and operational reliability:
-            </p>
-            
-            <div class="formula">
-                <strong>Node Reward = (Node Weight ÷ Total Network Weight) × Block Reward</strong>
-            </div>
-            
-            <p>
-                Using the example network above, a single Gold masternode (2yr) with weight 200 would receive:
-            </p>
-            
-            <div class="formula">
-                Reward = (200 ÷ 11,875) × 100 TIME = 1.68 TIME per block
-            </div>
-            
-            <h4>Weight Reset Conditions</h4>
-            <p>To maintain network integrity, longevity weights are reset under specific conditions:</p>
-            <ul>
-                <li><strong>Downtime > 72 hours:</strong> Complete weight reset to base tier weight</li>
-                <li><strong>Slashing event:</strong> Weight reset plus collateral penalty</li>
-                <li><strong>Voluntary exit and re-entry:</strong> Treated as new masternode</li>
-                <li><strong>Tier downgrade:</strong> Longevity preserved, but tier weight reduced</li>
-            </ul>
-            
-            <div class="warning-box">
-                <h4>⚠️ Weight Preservation Incentive</h4>
-                <p>
-                    Masternode operators have strong incentives to maintain continuous uptime. A Gold 
-                    masternode with 4 years of operation (weight 300) that experiences extended downtime 
-                    loses its longevity multiplier and drops to weight 100 — a <strong>67% reduction 
-                    in voting power and rewards</strong>.
+                    <strong>This is an active service business</strong>, not passive income. Operators compete on 
+                    reliability, uptime, and service quality.
                 </p>
             </div>
         </section>
         
-        <!-- 8. Security Analysis -->
-        <section id="security">
-            <h2>8. Security Analysis</h2>
-            <p>
-                TIME Coin's security model combines multiple layers of protection to create a robust, 
-                attack-resistant network.
-            </p>
-            
-            <h3 id="security-attacks">8.1 Attack Vectors</h3>
-            <p>Common attack vectors and their mitigation in TIME Coin:</p>
-            
-            <h4>51% Attack</h4>
-            <p>
-                In traditional PoW, controlling 51% of hash power enables chain reorganization. TIME Coin 
-                requires 67% of voting <em>weight</em> (not node count), making such attacks economically 
-                prohibitive due to the massive capital requirement.
-            </p>
-            
-            <h4>Long-Range Attack</h4>
-            <p>
-                Attackers cannot rewrite old blocks because:
-                <ul>
-                    <li>BFT finality makes old blocks immutable</li>
-                    <li>Longevity weights are tied to real-time operation, not historical state</li>
-                    <li>24-hour checkpoints provide additional protection</li>
-                </ul>
-            </p>
-            
-            <h4>Nothing-at-Stake</h4>
-            <p>
-                Masternodes cannot vote on multiple chains because:
-                <ul>
-                    <li>Double-signing results in 100% collateral loss</li>
-                    <li>BFT consensus provides finality, eliminating multiple valid chains</li>
-                    <li>Slashing happens immediately upon detection</li>
-                </ul>
-            </p>
-            
-            <h3 id="security-mitigation">8.2 Mitigation Strategies</h3>
-            <p>TIME Coin employs multiple defense mechanisms:</p>
-            
-            <ul>
-                <li><strong>Economic Security:</strong> High collateral requirements deter attacks</li>
-                <li><strong>Weighted Voting:</strong> Sybil attacks neutralized by weight-based consensus</li>
-                <li><strong>Instant Finality:</strong> No chain reorganization possible</li>
-                <li><strong>Slashing:</strong> Severe penalties for malicious behavior</li>
-                <li><strong>Monitoring:</strong> Real-time network health tracking</li>
-                <li><strong>Longevity Incentives:</strong> Long-term operators have more influence</li>
-            </ul>
-            
-            <h3 id="security-comparison">8.3 Comparative Analysis</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Feature</th>
-                        <th>Bitcoin (PoW)</th>
-                        <th>Ethereum (PoS)</th>
-                        <th>TIME Coin</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Finality</td>
-                        <td>Probabilistic (6 blocks)</td>
-                        <td>~15 minutes</td>
-                        <td><strong>&lt;5 seconds</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Attack Cost</td>
-                        <td>51% hash power</td>
-                        <td>33% stake</td>
-                        <td><strong>67% weight (5-10× capital)</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Sybil Resistance</td>
-                        <td>PoW inherent</td>
-                        <td>High stake required</td>
-                        <td><strong>Weight-based (very high)</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Energy Usage</td>
-                        <td>Very High</td>
-                        <td>Low</td>
-                        <td><strong>Very Low</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Decentralization</td>
-                        <td>Mining pools</td>
-                        <td>Stake concentration</td>
-                        <td><strong>Three-tier diversity</strong></td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <h3 id="security-weights">8.4 Weight-Based Attack Resistance</h3>
-            <p>
-                TIME Coin's weighted voting system provides multiple layers of defense against various 
-                attack vectors, making it economically infeasible for bad actors to compromise the network.
-            </p>
-            
-            <h4>Sybil Attack Analysis</h4>
-            <p>
-                Traditional BFT systems are vulnerable to Sybil attacks where an adversary creates many 
-                identities. TIME Coin's weighted system neutralizes this vector:
-            </p>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>Attack Type</th>
-                        <th>Traditional BFT</th>
-                        <th>TIME Coin (Weighted)</th>
-                        <th>Mitigation Factor</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Sybil (Many Bronze Nodes)</td>
-                        <td>Vulnerable</td>
-                        <td>Resistant</td>
-                        <td>~100-300×</td>
-                    </tr>
-                    <tr>
-                        <td>Stake Concentration</td>
-                        <td>Moderate Risk</td>
-                        <td>Low Risk</td>
-                        <td>~10-30×</td>
-                    </tr>
-                    <tr>
-                        <td>Long-Range Attack</td>
-                        <td>Vulnerable</td>
-                        <td>Highly Resistant</td>
-                        <td>Longevity weighting</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <h4>Attack Cost Analysis - Mature Network</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Network Age</th>
-                        <th>Honest Network</th>
-                        <th>Required Attack Investment</th>
-                        <th>Cost Multiplier</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1-Year Network</td>
-                        <td>Total: 9,300 weight</td>
-                        <td>18,600,000 TIME</td>
-                        <td><strong>5.3× honest investment</strong></td>
-                    </tr>
-                    <tr>
-                        <td>2-Year Network</td>
-                        <td>Total: 9,900 weight</td>
-                        <td>19,800,000 TIME</td>
-                        <td><strong>6.7× honest investment</strong></td>
-                    </tr>
-                    <tr>
-                        <td>4-Year Network</td>
-                        <td>Total: 11,100 weight</td>
-                        <td>22,200,000 TIME</td>
-                        <td><strong>8.6× honest investment</strong></td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <div class="warning-box">
-                <h4>⚠️ Economic Impossibility</h4>
-                <p>
-                    In a mature network, an attacker would need to acquire <strong>8-10× more capital</strong> 
-                    than the combined honest network investment. This creates an economic paradox:
-                </p>
-                <ul>
-                    <li>Acquiring sufficient TIME would require buying >50% of circulating supply</li>
-                    <li>This would drive prices to astronomical levels</li>
-                    <li>The attacker's holdings would immediately crash if attack detected</li>
-                    <li>Net result: Massive loss with zero probability of profit</li>
-                </ul>
-            </div>
-            
-            <h4>Game-Theoretic Security</h4>
-            <p>The weighted system creates a game-theoretic equilibrium that strongly favors honest behavior:</p>
-            
-            <ol>
-                <li>
-                    <strong>Rational Actor Assumption:</strong> Masternode operators are profit-maximizing 
-                    and risk-averse.
-                </li>
-                <li>
-                    <strong>Honest Behavior Payoff:</strong> 
-                    <ul>
-                        <li>Steady rewards proportional to weight</li>
-                        <li>Increasing rewards as weight grows over time</li>
-                        <li>Capital preservation and appreciation</li>
-                        <li>Network fees and additional incentives</li>
-                    </ul>
-                </li>
-                <li>
-                    <strong>Attack Payoff:</strong>
-                    <ul>
-                        <li>Requires 67%+ weight acquisition (massive cost)</li>
-                        <li>Immediate detection and counteraction by honest nodes</li>
-                        <li>Complete loss of capital as TIME value crashes</li>
-                        <li>Criminal prosecution risk</li>
-                        <li>Zero long-term benefit</li>
-                    </ul>
-                </li>
-                <li>
-                    <strong>Nash Equilibrium:</strong> Honest operation is the dominant strategy for all 
-                    rational actors.
-                </li>
-            </ol>
-            
-            <div class="formula">
-                <strong>Expected Value Calculation:</strong><br><br>
-                EV(Honest) = Rewards × Time × P(Success) - Operating Costs<br>
-                EV(Honest) ≈ <strong>Positive and growing</strong><br><br>
-                
-                EV(Attack) = (Attack Payoff × P(Success)) - Attack Cost - (Capital Loss × P(Detection))<br>
-                EV(Attack) ≈ <strong>Highly negative</strong> (P(Detection) ≈ 1, P(Success) ≈ 0)<br><br>
-                
-                <strong>Conclusion:</strong> EV(Honest) >> EV(Attack) for all rational actors
-            </div>
-            
-            <h4>Defense in Depth</h4>
-            <p>TIME Coin implements multiple overlapping security layers:</p>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>Layer</th>
-                        <th>Mechanism</th>
-                        <th>Protection Against</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1. Economic</td>
-                        <td>High collateral requirements</td>
-                        <td>Sybil attacks, spam</td>
-                    </tr>
-                    <tr>
-                        <td>2. Weight-Based</td>
-                        <td>Tier and longevity weighting</td>
-                        <td>Node count attacks</td>
-                    </tr>
-                    <tr>
-                        <td>3. BFT Consensus</td>
-                        <td>67% threshold + Byzantine tolerance</td>
-                        <td>Coordination attacks</td>
-                    </tr>
-                    <tr>
-                        <td>4. Slashing</td>
-                        <td>Collateral confiscation + weight loss</td>
-                        <td>Malicious behavior</td>
-                    </tr>
-                    <tr>
-                        <td>5. Time-Based</td>
-                        <td>24-hour blocks with checkpoints</td>
-                        <td>Long-range attacks</td>
-                    </tr>
-                    <tr>
-                        <td>6. Network Monitoring</td>
-                        <td>Real-time anomaly detection</td>
-                        <td>Attack attempts</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <div class="success-box">
-                <h4>🛡️ Security Conclusion</h4>
-                <p>
-                    TIME Coin's weighted voting system, combined with economic incentives and BFT consensus, 
-                    creates a security model where attacks are not only technically difficult but economically 
-                    irrational. The system becomes more secure over time as the network matures and weight 
-                    concentrates among proven, long-term operators.
-                </p>
-            </div>
-        </section>
-        
-        <!-- 9. Governance Framework -->
-        <section id="governance">
-            <h2>9. Governance Framework</h2>
-            <p>
-                TIME Coin implements comprehensive on-chain governance where masternode operators vote on 
-                network parameters, protocol upgrades, and most importantly, treasury spending. Voting 
-                power is weighted by masternode tier and longevity, ensuring those with greatest stake 
-                and commitment have proportional influence.
-            </p>
-            
-            <h3>9.1 Governance Scope</h3>
-            <p>Masternode voting controls the following aspects of the network:</p>
-            
-            <h4>Treasury Proposals (Primary)</h4>
-            <ul>
-                <li>Grant funding for ecosystem development</li>
-                <li>Business partnership investments</li>
-                <li>Security audit funding</li>
-                <li>Marketing campaign budgets</li>
-                <li>Research grants</li>
-                <li>Infrastructure improvements</li>
-            </ul>
-            
-            <h4>Network Parameters</h4>
-            <ul>
-                <li>Transaction fee adjustments</li>
-                <li>Block reward distribution ratios</li>
-                <li>Masternode collateral requirements</li>
-                <li>Slashing penalty amounts</li>
-                <li>Treasury fee split percentage</li>
-            </ul>
-            
-            <h4>Protocol Upgrades</h4>
-            <ul>
-                <li>Consensus mechanism improvements</li>
-                <li>Feature additions</li>
-                <li>Security enhancements</li>
-                <li>Performance optimizations</li>
-                <li>Bug fixes requiring hard fork</li>
-            </ul>
-            
-            <h3>9.2 Treasury Proposal Process</h3>
-            <p>
-                The treasury proposal system is the primary governance mechanism, allowing anyone to 
-                request funding for projects that benefit the TIME Coin ecosystem.
-            </p>
-            
-            <h4>Step 1: Proposal Submission</h4>
-            <ul>
-                <li><strong>Who:</strong> Any community member or organization</li>
-                <li><strong>Cost:</strong> 10 TIME (prevents spam, refunded if approved)</li>
-                <li><strong>Required Information:</strong>
-                    <ul>
-                        <li>Project title and summary</li>
-                        <li>Detailed scope and deliverables</li>
-                        <li>Budget breakdown with justification</li>
-                        <li>Timeline with milestones</li>
-                        <li>Team credentials and experience</li>
-                        <li>Success metrics and KPIs</li>
-                    </ul>
-                </li>
-            </ul>
-            
-            <h4>Step 2: Community Discussion (14 Days)</h4>
-            <ul>
-                <li>Public forum discussion</li>
-                <li>Technical review by community developers</li>
-                <li>Budget scrutiny and suggestions</li>
-                <li>Proposal refinement based on feedback</li>
-                <li>Q&A with proposers</li>
-            </ul>
-            
-            <h4>Step 3: Masternode Voting (7 Days)</h4>
-            <ul>
-                <li>Weighted voting by masternode voting power</li>
-                <li>Options: Approve, Reject, Abstain</li>
-                <li>Real-time vote tracking</li>
-                <li>Vote can be changed during voting period</li>
-                <li>Transparent on-chain voting records</li>
-            </ul>
-            
-            <h4>Step 4: Approval Threshold</h4>
-            <ul>
-                <li><strong>Standard Proposals:</strong> 51% of voting weight</li>
-                <li><strong>Large Grants (&gt;10% treasury):</strong> 67% of voting weight</li>
-                <li><strong>Network Parameter Changes:</strong> 67% of voting weight</li>
-                <li><strong>Protocol Upgrades:</strong> 75% of voting weight</li>
-            </ul>
-            
-            <h4>Step 5: Fund Distribution</h4>
-            <ul>
-                <li>Milestone-based payments</li>
-                <li>Initial payment: 25% upon approval</li>
-                <li>Progress payments: 25% per milestone</li>
-                <li>Final payment: 25% upon completion and verification</li>
-                <li>Multi-signature treasury wallet control</li>
-            </ul>
-            
-            <h4>Step 6: Accountability & Reporting</h4>
-            <ul>
-                <li>Monthly progress reports required</li>
-                <li>Public milestone verification</li>
-                <li>Community oversight and feedback</li>
-                <li>Failure to deliver triggers clawback vote</li>
-                <li>Successful completion enables future proposals</li>
-            </ul>
-            
-            <div class="info-box">
-                <h4>📋 Proposal Template</h4>
-                <pre><code>Title: [Project Name]
-Category: [Development/Business/Marketing/Security/Research]
-Requested Amount: [X TIME]
-Duration: [Y months]
-
-Summary:
-[Brief 2-3 sentence overview]
-
-Problem Statement:
-[What problem does this solve for TIME Coin?]
-
-Proposed Solution:
-[Detailed description of what you'll build/do]
-
-Deliverables:
-1. [Specific deliverable 1]
-2. [Specific deliverable 2]
-...
-
-Milestones:
-- Month 1: [Milestone 1] - [X TIME]
-- Month 2: [Milestone 2] - [X TIME]
-...
-
-Budget Breakdown:
-- Development: [X TIME]
-- Design: [X TIME]
-- Marketing: [X TIME]
-...
-
-Team:
-[Team member credentials and relevant experience]
-
-Success Metrics:
-[How will success be measured?]
-
-Portfolio:
-[Links to previous work]</code></pre>
-            </div>
-            
-            <h3>9.3 Treasury Protection Mechanisms</h3>
-            <p>Multiple safeguards protect the treasury from misuse:</p>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>Protection</th>
-                        <th>Mechanism</th>
-                        <th>Purpose</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Multi-Signature</td>
-                        <td>5-of-9 multi-sig wallet</td>
-                        <td>No single point of control</td>
-                    </tr>
-                    <tr>
-                        <td>Spending Limits</td>
-                        <td>Max 20% per proposal</td>
-                        <td>Prevents treasury drain</td>
-                    </tr>
-                    <tr>
-                        <td>Milestone Payments</td>
-                        <td>25% per milestone</td>
-                        <td>Pay for results, not promises</td>
-                    </tr>
-                    <tr>
-                        <td>Clawback Votes</td>
-                        <td>Emergency governance</td>
-                        <td>Recover funds from non-delivery</td>
-                    </tr>
-                    <tr>
-                        <td>On-Chain Transparency</td>
-                        <td>All transactions public</td>
-                        <td>Community audit capability</td>
-                    </tr>
-                    <tr>
-                        <td>Reputation System</td>
-                        <td>Track proposal success</td>
-                        <td>Reward good actors</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <h3>9.4 Parameter Change Proposals</h3>
-            <p>
-                Network parameters can be adjusted through governance to respond to changing conditions:
-            </p>
-            
-            <h4>Adjustable Parameters</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Parameter</th>
-                        <th>Current Value</th>
-                        <th>Approval Required</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Transaction Fee</td>
-                        <td>0.001 TIME</td>
-                        <td>67%</td>
-                    </tr>
-                    <tr>
-                        <td>Treasury Fee Split</td>
-                        <td>50%</td>
-                        <td>67%</td>
-                    </tr>
-                    <tr>
-                        <td>Block Reward Split</td>
-                        <td>95% MN / 5% Treasury</td>
-                        <td>67%</td>
-                    </tr>
-                    <tr>
-                        <td>Bronze Collateral</td>
-                        <td>1,000 TIME</td>
-                        <td>75%</td>
-                    </tr>
-                    <tr>
-                        <td>Silver Collateral</td>
-                        <td>10,000 TIME</td>
-                        <td>75%</td>
-                    </tr>
-                    <tr>
-                        <td>Gold Collateral</td>
-                        <td>100,000 TIME</td>
-                        <td>75%</td>
-                    </tr>
-                    <tr>
-                        <td>Slashing Penalties</td>
-                        <td>Various</td>
-                        <td>67%</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <h3>9.5 Emergency Governance</h3>
-            <p>
-                For critical security issues or obvious fraud, expedited governance procedures exist:
-            </p>
-            
-            <ul>
-                <li><strong>Security Vulnerabilities:</strong> 48-hour voting period, 67% approval</li>
-                <li><strong>Treasury Fraud:</strong> Immediate fund freeze, 3-day voting, 51% approval</li>
-                <li><strong>Network Attacks:</strong> Emergency masternode coordination off-chain</li>
-                <li><strong>Bug Fixes:</strong> Fast-track proposals for critical bugs</li>
-            </ul>
-            
-            <h3>9.6 Governance Evolution</h3>
-            <p>
-                The governance system itself can be improved through proposals:
-            </p>
-            
-            <ul>
-                <li>Voting mechanism enhancements</li>
-                <li>Proposal template improvements</li>
-                <li>New proposal categories</li>
-                <li>Threshold adjustments</li>
-                <li>Additional protection mechanisms</li>
-            </ul>
-            
-            <div class="success-box">
-                <h4>✅ Governance Design Principles</h4>
-                <ul>
-                    <li><strong>Weighted Voting:</strong> Influence proportional to stake and longevity</li>
-                    <li><strong>Transparency:</strong> All votes and spending on-chain and public</li>
-                    <li><strong>Accountability:</strong> Milestone-based payments with verification</li>
-                    <li><strong>Protection:</strong> Multiple safeguards against misuse</li>
-                    <li><strong>Flexibility:</strong> System can evolve through governance itself</li>
-                    <li><strong>Participation:</strong> Anyone can propose, masternodes decide</li>
-                </ul>
-            </div>
-        </section>
-        
-        <!-- 10. Development Roadmap -->
+        <!-- Roadmap -->
         <section id="roadmap">
-            <h2>10. Development Roadmap</h2>
-            <p>
-                TIME Coin follows a phased development approach with clear milestones and deliverables.
-            </p>
+            <h2>Roadmap</h2>
             
-            <h3>Current Status: 35% Complete</h3>
-            <p>As of October 2025, TIME Coin has completed Phase 1-2 and is actively developing Phase 3.</p>
-            
-            <h3>Completed Phases</h3>
+            <h3>Q4 2025 - Foundation</h3>
             <ul>
-                <li><strong>Phase 1 - Foundation (Complete):</strong> Core blockchain, 24-hour blocks, P2P networking</li>
-                <li><strong>Phase 2 - State Management (Complete):</strong> UTXO model, balance tracking, double-spend prevention</li>
+                <li>✅ Core protocol design complete</li>
+                <li>✅ Three-tier masternode architecture</li>
+                <li>✅ Dynamic block reward system</li>
+                <li>✅ BFT consensus with dynamic quorum</li>
+                <li>🔄 Alpha testnet launch</li>
+                <li>🔄 Documentation and developer resources</li>
             </ul>
             
-            <h3>Current Phase</h3>
+            <h3>Q1 2026 - Testnet</h3>
             <ul>
-                <li><strong>Phase 3 - Masternode Network (In Progress):</strong> BFT consensus, weighted voting, three-tier system</li>
+                <li>Public testnet with 50+ masternodes</li>
+                <li>SMS/Email gateway testing</li>
+                <li>Security audits (3+ independent firms)</li>
+                <li>Community testing program</li>
+                <li>Bug bounty launch ($50K pool)</li>
             </ul>
             
-            <h3>Upcoming Phases</h3>
+            <h3>Q2 2026 - Mainnet Launch</h3>
             <ul>
-                <li><strong>Q1 2025 - Phase 4:</strong> Purchase system (BTC, ETH, USDC, USDT integration)</li>
-                <li><strong>Q1 2025 - Phase 5:</strong> Wallet development (desktop, mobile, web)</li>
-                <li><strong>Q2 2025 - Phase 6:</strong> Security audits and bug bounty program</li>
-                <li><strong>Q2 2025 - Phase 7:</strong> Public testnet launch</li>
-                <li><strong>Q3 2025 - Phase 8:</strong> Mainnet preparation and exchange partnerships</li>
-                <li><strong>Q3-Q4 2025 - Phase 9:</strong> Mainnet launch and live purchasing</li>
-                <li><strong>Q4 2025+ - Phase 10:</strong> Ecosystem growth and CEX listings</li>
-                <li><strong>2026 - Phase 11:</strong> Fiat integration (credit cards, bank transfers)</li>
-                <li><strong>2026+ - Phase 12:</strong> Smart contracts and advanced features</li>
-            </ul>
-        </section>
-        
-        <!-- 11. Conclusion -->
-        <section id="conclusion">
-            <h2>11. Conclusion</h2>
-            <p>
-                TIME Coin represents a fundamental rethinking of blockchain consensus, economic design, and 
-                security architecture. By combining 24-hour blocks with instant transaction finality, weighted 
-                masternode governance, and fair launch economics, TIME creates a sustainable, secure, and 
-                truly decentralized cryptocurrency network.
-            </p>
-            
-            <h3>Key Innovations</h3>
-            <ul>
-                <li><strong>Time-Based Consensus:</strong> 24-hour blocks aligned with human cycles</li>
-                <li><strong>Weighted Voting:</strong> Economic security through tier and longevity weighting</li>
-                <li><strong>Attack Resistance:</strong> Requires 5-10× honest network investment to compromise</li>
-                <li><strong>Fair Launch:</strong> Zero pre-mine, purchase-based minting only</li>
-                <li><strong>Elastic Supply:</strong> Grows with adoption, sustainable long-term</li>
-                <li><strong>Treasury Governance:</strong> Self-funding ecosystem via masternode-controlled grants</li>
-                <li><strong>Sustainable Economics:</strong> Network funds its own perpetual improvement</li>
+                <li>Mainnet genesis with 100+ operators</li>
+                <li>Web and mobile apps</li>
+                <li>Purchase portals activated</li>
+                <li>First governance proposals</li>
+                <li>Exchange discussions</li>
             </ul>
             
-            <h3>Future Vision</h3>
-            <p>
-                TIME Coin's roadmap extends beyond basic cryptocurrency functionality. Future developments 
-                will include smart contract capabilities, cross-chain bridges, fiat integration, and advanced 
-                DeFi primitives. The weighted governance system ensures the network can evolve while maintaining 
-                its core principles.
-            </p>
-            
-            <h3>Call to Action</h3>
-            <p>
-                TIME Coin is open source and welcomes contributions from developers, researchers, and community 
-                members. Join us in building the future of time-based cryptocurrency.
-            </p>
-            
+            <h3>Q3-Q4 2026 - Growth</h3>
             <ul>
-                <li><strong>Website:</strong> https://time-coin.io</li>
-                <li><strong>GitHub:</strong> https://github.com/time-coin/time-coin</li>
-                <li><strong>Discord:</strong> https://discord.gg/timecoin</li>
-                <li><strong>Telegram:</strong> https://t.co/ISNmAW8gMV</li>
-                <li><strong>Twitter:</strong> https://x.com/TIMEcoin515010</li>
+                <li>Tier-2 exchange listings (3-5 exchanges)</li>
+                <li>Payment processor partnerships</li>
+                <li>Merchant adoption program</li>
+                <li>International expansion</li>
+                <li>500-1,000 masternodes</li>
+            </ul>
+            
+            <h3>2027+ - Scale</h3>
+            <ul>
+                <li>Tier-1 exchange listings</li>
+                <li>DeFi integrations</li>
+                <li>Cross-chain bridges</li>
+                <li>Banking partnerships</li>
+                <li>10,000+ masternodes</li>
+                <li>Global payment infrastructure</li>
             </ul>
         </section>
         
-        <!-- Download Section -->
-        <div class="download-section">
-            <h2>Download Whitepaper</h2>
+        <!-- Competitive Advantages -->
+        <section id="competitive">
+            <h2>Competitive Advantages</h2>
+            
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <h4>vs Bitcoin</h4>
+                    <ul class="feature-list">
+                        <li>⚡ 200× faster (3s vs 10min)</li>
+                        <li>📱 SMS/email access (vs technical wallets)</li>
+                        <li>🛡️ Democratic governance (vs contentious forks)</li>
+                        <li>♻️ 99.99% less blockchain bloat</li>
+                    </ul>
+                </div>
+                
+                <div class="comparison-card">
+                    <h4>vs Ethereum</h4>
+                    <ul class="feature-list">
+                        <li>⚡ 300× faster finality (3s vs 15min)</li>
+                        <li>💰 Lower fees (fixed vs gas wars)</li>
+                        <li>📊 Simpler model (payments vs smart contracts)</li>
+                        <li>🗳️ More democratic (no foundation control)</li>
+                    </ul>
+                </div>
+                
+                <div class="comparison-card">
+                    <h4>vs Fast Chains (Solana, Avalanche)</h4>
+                    <ul class="feature-list">
+                        <li>✅ True instant finality (vs probabilistic)</li>
+                        <li>💾 Much smaller blockchain (365 vs millions of blocks)</li>
+                        <li>🌍 More decentralized (100k nodes vs hundreds)</li>
+                        <li>🔒 Proven BFT security (vs experimental)</li>
+                    </ul>
+                </div>
+                
+                <div class="comparison-card">
+                    <h4>vs Other Masternodes (Dash)</h4>
+                    <ul class="feature-list">
+                        <li>⚡ Actually instant (vs 6-block wait)</li>
+                        <li>🌍 Universal access (vs wallet-only)</li>
+                        <li>📱 Modern architecture (vs legacy PoW)</li>
+                        <li>📈 Dynamic rewards (vs fixed, declining APY)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Token Utility -->
+        <section id="token-utility">
+            <h2>Token Utility</h2>
+            <p>TIME tokens power the network through multiple utilities:</p>
+            
+            <h3>1. Medium of Exchange</h3>
+            <p>Primary use case - sending and receiving payments globally</p>
+            
+            <h3>2. Transaction Fees</h3>
+            <p>Required to process transactions on the network</p>
+            
+            <h3>3. Masternode Collateral</h3>
+            <p>Required deposit to operate network infrastructure (returned upon exit)</p>
+            
+            <h3>4. Governance Rights</h3>
+            <p>Vote on network parameters, upgrades, and treasury spending</p>
+            
+            <h3>5. Gateway Access</h3>
+            <p>Required for SMS/email gateway services</p>
+            
+            <h3>6. Service Payments</h3>
+            <p>Pay for advanced features and priority services</p>
+        </section>
+        
+        <!-- Why TIME Will Succeed -->
+        <section id="why-succeed">
+            <h2>Why TIME Will Succeed</h2>
+            
+            <h3>Real Utility</h3>
+            <ul>
+                <li>Solves actual problems (accessibility, speed, cost)</li>
+                <li>Genuine use cases beyond speculation</li>
+                <li>Growing network effects</li>
+            </ul>
+            
+            <h3>Superior Technology</h3>
+            <ul>
+                <li>Instant finality competitive advantage</li>
+                <li>Scalable to 100,000+ nodes</li>
+                <li>Efficient blockchain design</li>
+                <li>Proven BFT consensus</li>
+            </ul>
+            
+            <h3>Fair Distribution</h3>
+            <ul>
+                <li>No insider dumping</li>
+                <li>Organic growth</li>
+                <li>Community alignment</li>
+                <li>Long-term incentives (longevity multipliers)</li>
+            </ul>
+            
+            <h3>Sustainable Economics</h3>
+            <ul>
+                <li>Self-funding treasury</li>
+                <li>Dynamic rewards maintain operator incentives</li>
+                <li>Fee-based long-term model</li>
+                <li>Capped inflation (182,500 TIME/year max)</li>
+            </ul>
+            
+            <h3>Community Governance</h3>
+            <ul>
+                <li>Democratic decision-making</li>
+                <li>Transparent processes</li>
+                <li>Aligned incentives</li>
+                <li>Active participation rewards</li>
+            </ul>
+            
+            <h3>Market Timing</h3>
+            <ul>
+                <li>Billions still unbanked</li>
+                <li>Crypto adoption growing</li>
+                <li>Payment innovation needed</li>
+                <li>Instant finality rare and valuable</li>
+            </ul>
+        </section>
+        
+        <!-- Get Involved -->
+        <section id="get-involved">
+            <h2>Get Involved</h2>
+            
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <h4>Users</h4>
+                    <ul>
+                        <li>Join waitlist for early access</li>
+                        <li>Follow development updates</li>
+                        <li>Participate in testnet</li>
+                        <li>Provide feedback</li>
+                    </ul>
+                </div>
+                
+                <div class="comparison-card">
+                    <h4>Developers</h4>
+                    <ul>
+                        <li>Contribute to open-source code</li>
+                        <li>Build on TIME APIs</li>
+                        <li>Create tools and integrations</li>
+                        <li>Submit improvement proposals</li>
+                    </ul>
+                </div>
+                
+                <div class="comparison-card">
+                    <h4>Network Operators</h4>
+                    <ul>
+                        <li>Review technical requirements</li>
+                        <li>Prepare infrastructure</li>
+                        <li>Join testnet as operator</li>
+                        <li>Earn service fees at launch</li>
+                    </ul>
+                </div>
+                
+                <div class="comparison-card">
+                    <h4>Community</h4>
+                    <ul>
+                        <li>Join Discord/Telegram</li>
+                        <li>Spread awareness</li>
+                        <li>Translate documentation</li>
+                        <li>Help onboard new users</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Learn More -->
+        <section>
+            <h2>Learn More</h2>
+            <p><strong>Website:</strong> <a href="https://time-coin.io" style="color: #667eea;">https://time-coin.io</a><br>
+            <strong>Email:</strong> <a href="mailto:info@time-coin.io" style="color: #667eea;">info@time-coin.io</a><br>
+            <strong>GitHub:</strong> <a href="https://github.com/time-coin/time-coin" style="color: #667eea;">https://github.com/time-coin/time-coin</a><br>
+            <strong>Telegram:</strong> <a href="https://t.me/+CaN6EflYM-83OTY0" style="color: #667eea;">https://t.me/+CaN6EflYM-83OTY0</a><br>
+            <strong>Twitter:</strong> <a href="https://x.com/TIMEcoin515010" style="color: #667eea;">@TIMEcoin515010</a></p>
+            
+            <p style="margin-top: 2rem;">
+                <strong>Technical Details:</strong> See <a href="whitepaper.html" style="color: #667eea;">Technical Specification Whitepaper</a><br>
+                <strong>Security Analysis:</strong> See Security Architecture Whitepaper
+            </p>
+        </section>
+        
+        <!-- Conclusion -->
+        <section>
+            <h2>Conclusion</h2>
+            <p>
+                TIME Coin represents the next evolution in cryptocurrency: a payment network that is 
+                <strong>fast, accessible, fair, and community-governed</strong>.
+            </p>
+            <p>
+                By combining instant BFT finality, universal multi-channel access, and democratic governance, 
+                TIME solves the fundamental challenges preventing cryptocurrency mass adoption.
+            </p>
+            
+            <div class="highlight-box">
+                <h3>No pre-mine. No VCs. No insider advantage.</h3>
+                <p>Join us in building the future of global payments.</p>
+            </div>
+            
+            <p style="text-align: center; font-size: 1.3rem; margin-top: 3rem; color: #a78bfa;">
+                <strong>⏰ TIME is money. Make it accessible.</strong>
+            </p>
+        </section>
+        
+        <!-- Download Section at Bottom -->
+        <div class="download-section" style="margin-top: 4rem;">
+            <h2>📄 Download Whitepaper</h2>
             <p style="color: #94a3b8; margin-bottom: 2rem;">
-                Download the complete TIME Coin technical whitepaper as a PDF document
+                Save the complete whitepaper for offline reading
             </p>
             
-            <a href="downloads/TIME-Coin-Whitepaper-v1.1.pdf" 
-               class="btn btn-primary" 
-               download="TIME-Coin-Whitepaper-v1.1.pdf"
-               style="display: inline-flex; align-items: center; gap: 0.5rem;">
-                <span style="font-size: 1.5rem;">📄</span>
-                Download PDF (v1.1)
+            <a href="downloads/TIME-Coin-Whitepaper.pdf" 
+               class="btn"
+               download="TIME-Coin-Whitepaper.pdf">
+                <span style="font-size: 1.5rem;">📥</span>
+                Download PDF (v3.0)
             </a>
             
-            <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 1rem;">
-                Last updated: October 2025 • Version 1.1 • ~2-3 MB
+            <p style="color: #64748b; font-size: 0.9rem; margin-top: 1.5rem;">
+                Version 3.0 - October 2025<br>
+                For technical specifications, see the <a href="whitepaper.html" style="color: #667eea;">Technical Whitepaper</a>
             </p>
         </div>
-        
-        <!-- References -->
-        <section id="references">
-            <h2>References</h2>
-            <ol>
-                <li>Nakamoto, S. (2008). Bitcoin: A Peer-to-Peer Electronic Cash System</li>
-                <li>Castro, M., & Liskov, B. (1999). Practical Byzantine Fault Tolerance</li>
-                <li>Wood, G. (2014). Ethereum: A Secure Decentralised Generalised Transaction Ledger</li>
-                <li>Bonneau, J., et al. (2015). SoK: Research Perspectives on Bitcoin and Second-Generation Cryptocurrencies</li>
-                <li>Gilad, Y., et al. (2017). Algorand: Scaling Byzantine Agreements for Cryptocurrencies</li>
-                <li>Kwon, J. (2014). Tendermint: Consensus without Mining</li>
-                <li>Buterin, V. (2017). Casper the Friendly Finality Gadget</li>
-                <li>Pass, R., & Shi, E. (2017). The Sleepy Model of Consensus</li>
-            </ol>
-        </section>
     </div>
     
     <!-- Footer will be injected here by includes.js -->
