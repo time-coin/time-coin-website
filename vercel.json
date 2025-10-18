@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/api/peers", "destination": "/api/peers.json" }
+  ]
+}
