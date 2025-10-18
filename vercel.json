@@ -1,7 +1,13 @@
 {
-  "headers": [
+  "rewrites": [
     {
       "source": "/api/peers",
+      "destination": "/api/peers.json"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/peers.json",
       "headers": [
         {
           "key": "Content-Type",
@@ -9,7 +15,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=300, s-maxage=300"
+          "value": "public, max-age=300"
         },
         {
           "key": "Access-Control-Allow-Origin",
