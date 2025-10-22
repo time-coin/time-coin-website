@@ -1,5 +1,16 @@
 {
   "rewrites": [
-    { "source": "/api/peers", "destination": "/api/peers.json" }
+    { "source": "/api/peers", "destination": "/peers.json" },
+    { "source": "/peers",      "destination": "/peers.json" },
+    { "source": "/peers.json", "destination": "/peers.json" }
+  ],
+  "headers": [
+    {
+      "source": "/peers.json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/json; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=60, stale-while-revalidate=300" }
+      ]
+    }
   ]
 }
