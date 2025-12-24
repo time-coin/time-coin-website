@@ -3,6 +3,10 @@
     {
       "source": "/api/peers",
       "destination": "/peers.json"
+    },
+    {
+      "source": "/api/testnet/peers",
+      "destination": "/testnet-peers.json"
     }
   ]
 }
