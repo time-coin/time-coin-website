@@ -144,7 +144,24 @@
             <h2 class="text-center mb-2">Masternode Tiers</h2>
             <p class="text-center mb-3" style="color: #b8b8d4;">Earn rewards by securing the network</p>
             
-            <div class="grid grid-3">
+            <div class="grid grid-4">
+                <!-- Free Tier -->
+                <div class="masternode-card card">
+                    <div class="tier-badge free">Free</div>
+                    <h3>Community</h3>
+                    <div class="tier-requirement">
+                        <strong>0 TIME</strong>
+                        <span>No Stake Required</span>
+                    </div>
+                    <ul class="tier-features">
+                        <li>✓ Shared Reward Pool</li>
+                        <li>✓ Transaction Validation</li>
+                        <li>✓ Network Participation</li>
+                        <li>✓ 2GB RAM / 1 vCPU</li>
+                    </ul>
+                    <a href="docs.html#masternode-setup" class="btn btn-secondary btn-block">Setup Guide</a>
+                </div>
+
                 <!-- Bronze Tier -->
                 <div class="masternode-card card">
                     <div class="tier-badge bronze">Bronze</div>
@@ -314,6 +331,9 @@
             margin-bottom: 15px;
         }
 
+        .tier-badge.free {
+            background: linear-gradient(135deg, #4b5563, #6b7280);
+        }
         .tier-badge.bronze {
             background: rgba(205, 127, 50, 0.2);
             color: #cd7f32;

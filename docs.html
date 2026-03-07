@@ -700,31 +700,37 @@ time-wallet send \
 
             <h2 id="masternode-overview">Masternode Overview</h2>
 
-            <h3>Three-Tier System</h3>
+            <h3>Four-Tier System</h3>
             <table>
                 <tr>
                     <th>Tier</th>
                     <th>Stake Required</th>
-                    <th>APY</th>
-                    <th>Voting Power</th>
+                    <th>Reward Pool</th>
+                    <th>Voting Weight</th>
                 </tr>
                 <tr>
-                    <td>Tier 1</td>
+                    <td>Free</td>
+                    <td>0 TIME</td>
+                    <td>8 TIME/block (shared)</td>
+                    <td>1x (no governance)</td>
+                </tr>
+                <tr>
+                    <td>Bronze</td>
                     <td>1,000 TIME</td>
-                    <td>18%</td>
-                    <td>None</td>
+                    <td>14 TIME/block</td>
+                    <td>10x (1x governance)</td>
                 </tr>
                 <tr>
-                    <td>Tier 2</td>
+                    <td>Silver</td>
                     <td>10,000 TIME</td>
-                    <td>24%</td>
-                    <td>1x</td>
+                    <td>18 TIME/block</td>
+                    <td>100x (10x governance)</td>
                 </tr>
                 <tr>
-                    <td>Tier 3</td>
+                    <td>Gold</td>
                     <td>100,000 TIME</td>
-                    <td>30%</td>
-                    <td>10x</td>
+                    <td>25 TIME/block</td>
+                    <td>1,000x (100x governance)</td>
                 </tr>
             </table>
 
@@ -733,20 +739,20 @@ time-wallet send \
                 <li>Validate incoming transactions</li>
                 <li>Participate in BFT consensus rounds</li>
                 <li>Maintain network connectivity</li>
-                <li>Vote on governance proposals (Tier 2+)</li>
-                <li>Produce daily blocks (selected randomly)</li>
+                <li>Vote on governance proposals (Bronze tier and above)</li>
+                <li>Produce checkpoint blocks (selected randomly)</li>
             </ul>
 
             <h3>Rewards Distribution</h3>
             <pre><code>Block Rewards:
-└─ 100 TIME per block (distributed each block)
+└─ 100 TIME per block + transaction fees
 
-Distribution:
-├─ 50% to Tier 3 nodes
-├─ 30% to Tier 2 nodes
-└─ 20% to Tier 1 nodes
-
-(Weighted by stake and uptime)</code></pre>
+Distribution per block:
+├─ 35 TIME to block producer (VRF-selected)
+├─ 25 TIME to Gold tier pool
+├─ 18 TIME to Silver tier pool
+├─ 14 TIME to Bronze tier pool
+└─ 8 TIME shared among Free tier nodes</code></pre>
 
             <h2 id="masternode-setup">Masternode Setup Guide</h2>
 

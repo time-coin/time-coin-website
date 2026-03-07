@@ -18,7 +18,7 @@ TIME Coin is a next-generation cryptocurrency that reimagines blockchain archite
 - **10-Minute Blocks** - Regular immutable checkpoints, not transaction gatekeepers
 - **Instant Finality** - Transactions confirmed in under 5 seconds via BFT consensus
 - **No Pre-Mine** — all TIME created through block rewards distributed to masternodes
-- **Three-Tier Masternodes** - Earn 18-30% APY with accessible entry requirements
+- **four-tier masternodes** - Earn 18-30% APY with accessible entry requirements
 - **Built in Rust** - Memory-safe, high-performance implementation
 - **Open Source** - Fully transparent development
 
