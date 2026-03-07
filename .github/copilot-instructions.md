@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is the official marketing and documentation website for TIME Coin, a cryptocurrency featuring 24-hour blocks, instant transaction finality via BFT consensus, and a three-tier masternode system. It is a **pure static site** — vanilla HTML, CSS, and JavaScript with no framework or build toolchain.
+This is the official marketing and documentation website for TIME Coin, a cryptocurrency featuring 10-minute blocks, instant transaction finality via TimeVote (BFT) consensus, and a three-tier masternode system. It is a **pure static site** — vanilla HTML, CSS, and JavaScript with no framework or build toolchain.
 
 ## Local Development
 

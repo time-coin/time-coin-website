@@ -1,6 +1,6 @@
 # TIME Coin Website ⏰
 
-> Official website for TIME Coin - A revolutionary cryptocurrency featuring 24-hour blocks, instant transaction finality, and a fair-launch purchase-based minting system.
+> Official website for TIME Coin - A revolutionary cryptocurrency featuring 10-minute blocks, instant transaction finality, and a block reward emission system.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
@@ -15,9 +15,9 @@
 
 TIME Coin is a next-generation cryptocurrency that reimagines blockchain architecture:
 
-- **24-Hour Blocks** - Daily immutable checkpoints, not transaction gatekeepers
+- **10-Minute Blocks** - Regular immutable checkpoints, not transaction gatekeepers
 - **Instant Finality** - Transactions confirmed in under 5 seconds via BFT consensus
-- **No Pre-Mine** - 100% fair launch with purchase-based token creation
+- **No Pre-Mine** — all TIME created through block rewards distributed to masternodes
 - **Three-Tier Masternodes** - Earn 18-30% APY with accessible entry requirements
 - **Built in Rust** - Memory-safe, high-performance implementation
 - **Open Source** - Fully transparent development
@@ -214,7 +214,6 @@ We welcome contributions to improve the TIME Coin website!
 - ✅ Phase 1: Core blockchain (Complete)
 - ✅ Phase 2: State management (Complete)
 - ⏰ Phase 3: Masternode network (In Progress)
-- 📅 Phase 4: Purchase system (Q1 2025)
 - 📅 Phase 5: Wallet development (Q1 2025)
 - 📅 Phase 6: Security audits (Q2 2025)
 - 🚀 Phase 7: Public testnet (Q2 2025)

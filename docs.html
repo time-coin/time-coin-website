@@ -419,7 +419,7 @@
             <div class="nav-section">
                 <div class="nav-title">Core Concepts</div>
                 <a href="#architecture" class="nav-link" onclick="toggleMobileMenu()">Architecture</a>
-                <a href="#blocks" class="nav-link" onclick="toggleMobileMenu()">24-Hour Blocks</a>
+                <a href="#blocks" class="nav-link" onclick="toggleMobileMenu()">10-Minute Blocks</a>
                 <a href="#transactions" class="nav-link" onclick="toggleMobileMenu()">Transactions</a>
                 <a href="#consensus" class="nav-link" onclick="toggleMobileMenu()">Consensus</a>
             </div>
@@ -467,7 +467,7 @@
                 <div class="nav-section">
                     <div class="nav-title">Core Concepts</div>
                     <a href="#architecture" class="nav-link">Architecture</a>
-                    <a href="#blocks" class="nav-link">24-Hour Blocks</a>
+                    <a href="#blocks" class="nav-link">10-Minute Blocks</a>
                     <a href="#transactions" class="nav-link">Transactions</a>
                     <a href="#consensus" class="nav-link">Consensus</a>
                 </div>
@@ -482,7 +482,7 @@
                 <div class="nav-section">
                     <div class="nav-title">Wallet & Usage</div>
                     <a href="#wallet-setup" class="nav-link">Wallet Setup</a>
-                    <a href="#buying-time" class="nav-link">Buying TIME</a>
+                    <a href="#buying-time" class="nav-link">Token Distribution</a>
                     <a href="#sending" class="nav-link">Sending TIME</a>
                 </div>
 
@@ -510,13 +510,12 @@
                 <strong>What you can do now:</strong> Review documentation, join community channels, and follow development progress on GitHub.
             </div>
 
-            <p>Welcome to the TIME Coin documentation. TIME is a revolutionary cryptocurrency featuring 24-hour blocks, instant transaction finality, and a purchase-based minting model with no pre-mine.</p>
+            <p>Welcome to the TIME Coin documentation. TIME is a revolutionary cryptocurrency featuring 10-minute checkpoint blocks, instant transaction finality, and a block reward emission model with no pre-mine.</p>
 
             <div class="info-box">
                 <strong>🚀 Current Status:</strong> Development Phase<br>
                 <strong>📅 Expected Testnet Launch:</strong> Q2 2025<br>
                 <strong>🔧 Built With:</strong> Rust for performance and security<br>
-                <strong>⚠️ Purchase System:</strong> Not yet available - Coming with testnet launch<br>
                 <strong>📍 View Progress:</strong> <a href="roadmap.html" style="color: #667eea;">Development Roadmap</a>
             </div>
 
@@ -600,26 +599,26 @@ cargo install --path .</code></pre>
 
             <h3>Key Components</h3>
             <ul>
-                <li><strong>24-Hour Blocks:</strong> Periodic immutable checkpoints, not transaction gatekeepers</li>
+                <li><strong>10-Minute Blocks:</strong> Periodic immutable checkpoints, not transaction gatekeepers</li>
                 <li><strong>Masternode Network:</strong> Byzantine Fault Tolerant consensus for instant validation</li>
-                <li><strong>Purchase System:</strong> Crypto-to-TIME conversion with no pre-mine</li>
+                <li><strong>Block Rewards:</strong> 100 TIME per block distributed to masternodes and block producers</li>
                 <li><strong>State Management:</strong> Real-time UTXO tracking for instant finality</li>
             </ul>
 
             <div class="info-box">
-                <strong>Design Philosophy:</strong> Blocks serve as archival snapshots rather than validation bottlenecks. Transactions achieve finality through masternode consensus in under 5 seconds, while 24-hour blocks provide periodic immutable records.
+                <strong>Design Philosophy:</strong> Blocks serve as archival snapshots rather than validation bottlenecks. Transactions achieve finality through masternode consensus in under 1 second, while 10-minute blocks provide periodic immutable records.
             </div>
 
-            <h2 id="blocks">24-Hour Block System</h2>
+            <h2 id="blocks">10-Minute Block System</h2>
 
             <h3>How It Works</h3>
             <p>Unlike traditional blockchains where blocks dictate transaction finality, TIME separates these concerns:</p>
 
             <ol>
                 <li><strong>Transaction Submission:</strong> User broadcasts transaction to network</li>
-                <li><strong>Instant Validation:</strong> Masternodes validate via BFT consensus (&lt;5 seconds)</li>
+                <li><strong>Instant Validation:</strong> Masternodes validate via BFT consensus (Sub-Second)</li>
                 <li><strong>Immediate Finality:</strong> Transaction is spendable immediately after consensus</li>
-                <li><strong>24-Hour Checkpoint:</strong> All transactions bundled into daily immutable block</li>
+                <li><strong>10-Minute Checkpoint:</strong> All transactions bundled into immutable block every 10 minutes</li>
             </ol>
 
             <h3>Block Structure</h3>
@@ -634,7 +633,7 @@ cargo install --path .</code></pre>
 }</code></pre>
 
             <h3>Block Schedule</h3>
-            <p>Blocks are produced at 00:00:00 UTC daily. The window for block production is 5 minutes, allowing for network synchronization.</p>
+            <p>Blocks are produced every 10 minutes. The window for block production is 30 seconds, allowing for network synchronization.</p>
 
             <h2 id="transactions">Transactions</h2>
 
@@ -649,11 +648,6 @@ cargo install --path .</code></pre>
                     <td>Transfer</td>
                     <td>Send TIME between addresses</td>
                     <td>0.01 TIME</td>
-                </tr>
-                <tr>
-                    <td>Purchase</td>
-                    <td>Mint TIME via crypto payment</td>
-                    <td>Included in purchase</td>
                 </tr>
                 <tr>
                     <td>Masternode</td>
@@ -681,7 +675,7 @@ time-wallet send \
 
             <h3>Transaction Finality</h3>
             <div class="success-box">
-                <strong>Instant Finality:</strong> TIME transactions are final once 2/3 of active masternodes reach consensus. This typically takes 3-5 seconds and cannot be reversed.
+                <strong>Instant Finality:</strong> TIME transactions are final once 2/3 of active masternodes reach consensus. This typically takes under 1 second and cannot be reversed.
             </div>
 
             <h2 id="consensus">Consensus Mechanism</h2>
@@ -744,10 +738,8 @@ time-wallet send \
             </ul>
 
             <h3>Rewards Distribution</h3>
-            <pre><code>Daily Rewards Pool:
-├─ 40% from purchase fees
-├─ 40% from transaction fees  
-└─ 20% from block rewards
+            <pre><code>Block Rewards:
+└─ 100 TIME per block (distributed each block)
 
 Distribution:
 ├─ 50% to Tier 3 nodes
@@ -919,60 +911,16 @@ brew install timecoin/tap/time-wallet
 # Set new password
 # Wallet restored!</code></pre>
 
-            <h2 id="buying-time">Buying TIME</h2>
+            <h2 id="buying-time">Token Distribution</h2>
 
-            <div class="warning-box">
-                <strong>⚠️ Feature Not Yet Available</strong><br>
-                The TIME coin purchase system is currently under development and will be available with the testnet launch in Q2 2025. This section describes how the system will work when it becomes available.
+            <p>TIME is distributed exclusively through block rewards — 100 TIME per block, distributed to masternodes and block producers. There is no token purchase mechanism.</p>
+
+            <div class="info-box">
+                <strong>Block Reward Emission:</strong><br>
+                • 100 TIME minted per block<br>
+                • Distributed to masternodes proportional to tier and uptime<br>
+                • Fixed emission, no halving, no pre-mine
             </div>
-
-            <h3>Planned Supported Cryptocurrencies</h3>
-            <p>When launched, TIME will be purchasable with:</p>
-            <ul>
-                <li>Bitcoin (BTC)</li>
-                <li>Ethereum (ETH)</li>
-                <li>USDC (ERC-20 or native)</li>
-                <li>USDT (ERC-20 or TRC-20)</li>
-            </ul>
-
-            <h3>How It Will Work (Coming Soon)</h3>
-            <pre><code># 1. Initiate purchase
-time-wallet purchase init \
-  --amount 1000 \
-  --crypto USDC
-
-# Output:
-# Purchase ID: PUR_abc123
-# Send exactly: 5000.00 USDC
-# To address: 0x1234...abcd
-# Expires in: 30 minutes
-
-# 2. Send crypto to provided address
-# (Use your existing BTC/ETH/USDC wallet)
-
-# 3. Check status
-time-wallet purchase status --id PUR_abc123
-
-# 4. Receive TIME (3-15 minutes)
-# Your wallet will automatically credit</code></pre>
-
-            <h3>Planned Distribution Breakdown</h3>
-            <pre><code>For every 1000 TIME purchased ($5,000 at $5/TIME):
-
-User Receives:    900 TIME (90%)
-Masternode Pool:   80 TIME (8%)
-Development:       20 TIME (2%)
-──────────────────────────────
-Total Minted:   1,000 TIME</code></pre>
-
-            <h3>Price Discovery</h3>
-            <p>TIME price is determined by:</p>
-            <ul>
-                <li>Oracle aggregation from 5+ sources</li>
-                <li>Weighted average of last 100 purchases</li>
-                <li>Updated every 5 minutes</li>
-                <li>2% slippage protection</li>
-            </ul>
 
             <h2 id="sending">Sending TIME</h2>
 
@@ -987,7 +935,7 @@ Total Minted:   1,000 TIME</code></pre>
   --amount 100 \
   --fee auto
 
-# Transaction confirmed in ~3-5 seconds</code></pre>
+# Transaction confirmed in ~under 1 second</code></pre>
 
             <h3>Advanced Options</h3>
             <pre><code># Send with custom fee
