@@ -57,6 +57,16 @@ Most cryptocurrencies remain under the control of their creators:
 
 TIME has none of this. No pre-mine. No VC allocation. No mining. No foundation with special authority.
 
+### The Energy Cost of Proof of Work
+
+Bitcoin's Proof of Work was a genuine breakthrough in 2009 — but it has evolved into something its creator likely never anticipated. What began as individuals mining on home computers has become an industry of sprawling, industrial-scale mining farms consuming electricity at the scale of entire nations. These facilities run around the clock, burning enormous amounts of power to solve computational puzzles whose sole purpose is to produce a number starting with enough zeroes.
+
+That energy expenditure contributes nothing to the Bitcoin network beyond securing the ledger. Transactions aren't faster. Users don't benefit from the computation. The puzzles are deliberately, structurally wasteful — that is the mechanism. The Cambridge Centre for Alternative Finance has estimated Bitcoin's annualized electricity consumption rivals that of many mid-sized countries, for a network that processes fewer transactions per second than a single payment processor from the 1970s.
+
+TIME takes a fundamentally different approach. **Block rewards are earned by those who actively participate in the network.** Masternode operators validate transactions, vote on finality, propagate blocks, and keep the network healthy and connected. Every reward paid out compensates real, useful work — not the burning of electricity on an arbitrary mathematical race.
+
+> **The key difference:** Bitcoin miners compete to win. TIME masternode operators cooperate to serve. One model wastes resources to prove effort; the other rewards effort that actually makes the network better.
+
 ---
 
 ## What Makes TIME Different
@@ -100,6 +110,8 @@ No other blockchain has a self-healing mechanism this fast and this automatic. T
 ### No Halving — Stable, Predictable Rewards
 
 Bitcoin's block reward halves every four years, causing periodic upheaval: miners become unprofitable, sell their equipment, and hash rate drops. TIME Coin has **no halving**. The network distributes exactly **100 TIME per block** — every 10 minutes, forever — creating stable, predictable economics for everyone who runs a node.
+
+Where Bitcoin rewards the miner who wins an energy-burning race, TIME rewards every active node that participates honestly in consensus. You don't need a warehouse of specialized hardware. You don't need to out-spend a competitor. You need to run a node, stay online, and do your part — and the network pays you for it.
 
 ---
 
