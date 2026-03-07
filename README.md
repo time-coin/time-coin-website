@@ -73,7 +73,7 @@ time-coin-website/
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/time-coin/time-coin.git
+git clone https://github.com/time-coin/time-wallet.git
 cd time-coin-website
 ```
 
@@ -225,7 +225,7 @@ We welcome contributions to improve the TIME Coin website!
 ## 🔗 Links
 
 - **Website:** [time-coin.io](https://time-coin.io)
-- **Main Repository:** [github.com/time-coin/time-coin](https://github.com/time-coin/time-coin)
+- **Main Repository:** [github.com/time-coin/time-wallet](https://github.com/time-coin/time-wallet)
 - **Documentation:** [time-coin.io/docs.html](https://time-coin.io/docs.html)
 - **Whitepaper:** [time-coin.io/whitepaper.html](https://time-coin.io/whitepaper.html)
 - **Twitter/X:** [@TIMEcoin](https://x.com/TIMEcoin515010)

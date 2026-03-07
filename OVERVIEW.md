@@ -405,4 +405,4 @@ TIME tokens are the fuel of the network, with several distinct and reinforcing u
 
 *For the full cryptographic specification, architecture details, and protocol reference, see the [Technical Whitepaper](technical-whitepaper.html).*
 
-*Website: [time-coin.io](https://time-coin.io) · GitHub: [github.com/time-coin/time-coin](https://github.com/time-coin/time-coin) · Telegram: [t.me/+CaN6EflYM-83OTY0](https://t.me/+CaN6EflYM-83OTY0)*
+*Website: [time-coin.io](https://time-coin.io) · GitHub: [github.com/time-coin/time-wallet](https://github.com/time-coin/time-wallet) · Telegram: [t.me/+CaN6EflYM-83OTY0](https://t.me/+CaN6EflYM-83OTY0)*
