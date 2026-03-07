@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIME Coin - Technical Whitepaper v1.2</title>
+
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/whitepaper-print.css" media="print">
+
+    <!-- marked.js — markdown parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+
+    <!-- highlight.js — code block syntax highlighting -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/github-dark.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11/lib/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11/lib/languages/rust.min.js"></script>
+
+    <!-- Header/Footer Includes -->
+    <script src="js/includes.js" defer></script>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            background-attachment: fixed;
+            color: #ffffff;
+            padding-top: 110px;
+        }
+
+        /* ── Loading / error states ── */
+        .wp-loading, .wp-error {
+            text-align: center;
+            padding: 6rem 2rem;
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+        .wp-error { color: #f87171; }
+
+        /* ── Outer container ── */
+        .whitepaper-wrapper {
+            max-width: 960px;
+            margin: 60px auto 80px;
+            padding: 0 20px;
+        }
+
+        /* ── Top bar: back link + download ── */
+        .wp-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: #a78bfa; }
+
+        .wp-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+        .btn-sm {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.55rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary-sm {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        .btn-primary-sm:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(102,126,234,0.4);
+        }
+        .btn-outline-sm {
+            background: transparent;
+            color: #667eea;
+            border: 1px solid #667eea;
+        }
+        .btn-outline-sm:hover { background: rgba(102,126,234,0.1); }
+
+        /* ── Rendered markdown container ── */
+        #wp-content {
+            background: rgba(255,255,255,0.04);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 48px 52px;
+        }
+
+        @media (max-width: 640px) {
+            #wp-content { padding: 28px 20px; }
+        }
+
+        /* ── Markdown element styles ── */
+        #wp-content h1 {
+            font-size: 2.4rem;
+            background: linear-gradient(135deg, #667eea, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        #wp-content h2 {
+            font-size: 1.85rem;
+            color: #ffffff;
+            margin-top: 3rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(102,126,234,0.35);
+        }
+
+        #wp-content h3 {
+            font-size: 1.4rem;
+            color: #e2e8f0;
+            margin-top: 2.25rem;
+            margin-bottom: 0.9rem;
+        }
+
+        #wp-content h4 {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            margin-top: 1.6rem;
+            margin-bottom: 0.6rem;
+        }
+
+        #wp-content p {
+            line-height: 1.85;
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        /* Version / metadata line under h1 */
+        #wp-content > p:first-of-type {
+            color: #64748b;
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+
+        #wp-content ul,
+        #wp-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.75rem;
+            color: #cbd5e1;
+        }
+
+        #wp-content li {
+            margin-bottom: 0.45rem;
+            line-height: 1.7;
+        }
+
+        /* Tables */
+        #wp-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            overflow: hidden;
+            font-size: 0.93rem;
+        }
+
+        #wp-content th,
+        #wp-content td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        #wp-content th {
+            background: rgba(102,126,234,0.22);
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        #wp-content tr:last-child td { border-bottom: none; }
+        #wp-content tr:hover { background: rgba(255,255,255,0.04); }
+
+        /* Code */
+        #wp-content code {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+            font-size: 0.875em;
+            color: #a78bfa;
+        }
+
+        #wp-content pre {
+            background: #0d1117;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 1.25rem 0;
+            border-left: 3px solid #667eea;
+            padding: 0;
+        }
+
+        #wp-content pre code {
+            background: none;
+            padding: 1.25rem 1.5rem;
+            display: block;
+            color: #e2e8f0;
+            font-size: 0.875rem;
+            line-height: 1.65;
+        }
+
+        /* Horizontal rules */
+        #wp-content hr {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin: 2.5rem 0;
+        }
+
+        /* Blockquotes */
+        #wp-content blockquote {
+            border-left: 4px solid #667eea;
+            margin: 1.5rem 0;
+            padding: 0.75rem 1.5rem;
+            background: rgba(102,126,234,0.08);
+            border-radius: 0 8px 8px 0;
+            color: #94a3b8;
+        }
+
+        /* Links */
+        #wp-content a {
+            color: #667eea;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            transition: color 0.2s;
+        }
+        #wp-content a:hover { color: #a78bfa; }
+
+        /* Table of Contents anchors — make them look less like links */
+        #wp-content .toc a, #wp-content nav a {
+            text-decoration: none;
+        }
+
+        /* Strong / em */
+        #wp-content strong { color: #e2e8f0; }
+        #wp-content em { color: #94a3b8; }
+
+        /* ── Sticky table of contents (sidebar) on wide screens ── */
+        @media (min-width: 1300px) {
+            .whitepaper-wrapper {
+                max-width: 1240px;
+                display: grid;
+                grid-template-columns: 1fr 260px;
+                grid-template-rows: auto 1fr;
+                gap: 0 2.5rem;
+                align-items: start;
+            }
+
+            .wp-topbar { grid-column: 1 / -1; }
+            #wp-content { grid-column: 1; }
+            #wp-toc { grid-column: 2; grid-row: 2; }
+        }
+
+        #wp-toc {
+            display: none;
+        }
+
+        @media (min-width: 1300px) {
+            #wp-toc {
+                display: block;
+                position: sticky;
+                top: 120px;
+                background: rgba(255,255,255,0.04);
+                border: 1px solid rgba(255,255,255,0.09);
+                border-radius: 14px;
+                padding: 1.25rem 1.5rem;
+                font-size: 0.85rem;
+                max-height: calc(100vh - 150px);
+                overflow-y: auto;
+            }
+
+            #wp-toc h4 {
+                color: #a78bfa;
+                margin: 0 0 0.8rem;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+            }
+
+            #wp-toc ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            #wp-toc li { margin-bottom: 0.4rem; }
+            #wp-toc li.toc-h3 { padding-left: 0.9rem; }
+            #wp-toc li.toc-h4 { padding-left: 1.8rem; }
+
+            #wp-toc a {
+                color: #64748b;
+                text-decoration: none;
+                line-height: 1.5;
+                transition: color 0.2s;
+            }
+            #wp-toc a:hover,
+            #wp-toc a.active { color: #a78bfa; }
+        }
+
+        /* ── Print ── */
+        @media print {
+            body { background: white !important; color: black !important; padding-top: 0; }
+            .wp-topbar, nav, footer, #wp-toc { display: none !important; }
+            #wp-content {
+                background: white;
+                border: none;
+                padding: 0;
+                border-radius: 0;
+            }
+            #wp-content * { color: black !important; -webkit-text-fill-color: black !important; }
+            #wp-content pre, #wp-content code { background: #f5f5f5 !important; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header injected by includes.js -->
+
+    <div class="whitepaper-wrapper">
+
+        <!-- Top bar -->
+        <div class="wp-topbar">
+            <a href="whitepaper.html" class="back-link">← Overview Whitepaper</a>
+            <div class="wp-actions">
+                <a href="WHITEPAPER.md" download="TIME-Coin-Technical-Whitepaper-v1.2.md" class="btn-sm btn-outline-sm">
+                    ⬇ Download .md
+                </a>
+                <button onclick="window.print()" class="btn-sm btn-primary-sm">
+                    🖨 Print / Save PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Sticky sidebar TOC (populated by JS on wide screens) -->
+        <aside id="wp-toc">
+            <h4>Contents</h4>
+            <ul id="wp-toc-list"></ul>
+        </aside>
+
+        <!-- Markdown renders here -->
+        <main id="wp-content">
+            <div class="wp-loading">⏳ Loading whitepaper…</div>
+        </main>
+
+    </div>
+
+    <!-- Footer injected by includes.js -->
+
+    <script>
+    (function () {
+        // ── Configure marked ──────────────────────────────────────────────
+        marked.use({
+            renderer: (() => {
+                const renderer = new marked.Renderer();
+
+                // Add IDs to headings for anchor links
+                renderer.heading = function ({ text, depth }) {
+                    const slug = text
+                        .toLowerCase()
+                        .replace(/[^\w\s-]/g, '')
+                        .trim()
+                        .replace(/\s+/g, '-');
+                    return `<h${depth} id="${slug}">${text}</h${depth}>\n`;
+                };
+
+                return renderer;
+            })(),
+            gfm: true,
+            breaks: false,
+        });
+
+        // ── Fetch and render ──────────────────────────────────────────────
+        const content = document.getElementById('wp-content');
+
+        fetch('WHITEPAPER.md')
+            .then(r => {
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                return r.text();
+            })
+            .then(md => {
+                content.innerHTML = marked.parse(md);
+
+                // Syntax-highlight all code blocks
+                content.querySelectorAll('pre code').forEach(block => {
+                    hljs.highlightElement(block);
+                });
+
+                // Build sidebar TOC
+                buildTOC(content);
+
+                // Activate scroll-spy
+                initScrollSpy();
+            })
+            .catch(err => {
+                content.innerHTML = `<div class="wp-error">
+                    ❌ Could not load whitepaper: ${err.message}<br>
+                    <small>Make sure WHITEPAPER.md is in the same directory.</small>
+                </div>`;
+            });
+
+        // ── Sidebar Table of Contents ─────────────────────────────────────
+        function buildTOC(container) {
+            const tocList = document.getElementById('wp-toc-list');
+            if (!tocList) return;
+
+            const headings = container.querySelectorAll('h2, h3');
+            headings.forEach(h => {
+                const li = document.createElement('li');
+                li.className = h.tagName === 'H3' ? 'toc-h3' : '';
+                const a = document.createElement('a');
+                a.href = '#' + h.id;
+                a.textContent = h.textContent;
+                a.addEventListener('click', e => {
+                    e.preventDefault();
+                    h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+                li.appendChild(a);
+                tocList.appendChild(li);
+            });
+        }
+
+        // ── Scroll-spy: highlight active TOC item ─────────────────────────
+        function initScrollSpy() {
+            const tocLinks = document.querySelectorAll('#wp-toc-list a');
+            if (!tocLinks.length) return;
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        tocLinks.forEach(l => l.classList.remove('active'));
+                        const active = document.querySelector(
+                            `#wp-toc-list a[href="#${entry.target.id}"]`
+                        );
+                        if (active) active.classList.add('active');
+                    }
+                });
+            }, { rootMargin: '-10% 0px -80% 0px' });
+
+            document.querySelectorAll('#wp-content h2, #wp-content h3')
+                .forEach(h => observer.observe(h));
+        }
+    })();
+    </script>
+</body>
+</html>

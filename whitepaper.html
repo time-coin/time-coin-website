@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TIME Coin - Overview Whitepaper v3.0</title>
-    
+    <title>TIME Coin - Overview Whitepaper v4.0</title>
+
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
@@ -13,1460 +13,564 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/whitepaper-print.css" media="print">
 
+    <!-- marked.js — markdown parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+
+    <!-- html2pdf.js — on-the-fly PDF generation -->
+    <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+
     <!-- Header/Footer Includes -->
     <script src="js/includes.js" defer></script>
-    
+
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            background-attachment: fixed;
             color: #ffffff;
             padding-top: 110px;
         }
 
-        .whitepaper-container {
-            max-width: 900px;
-            margin: 100px auto 50px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.05);
+        /* ── Loading / error states ── */
+        .wp-loading, .wp-error {
+            text-align: center;
+            padding: 6rem 2rem;
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+        .wp-error { color: #f87171; }
+
+        /* ── Outer wrapper ── */
+        .whitepaper-wrapper {
+            max-width: 960px;
+            margin: 60px auto 80px;
+            padding: 0 20px;
+        }
+
+        /* ── Top bar ── */
+        .wp-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: #a78bfa; }
+
+        .wp-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+        .btn-sm {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.55rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary-sm {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        .btn-primary-sm:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(102,126,234,0.4);
+        }
+        .btn-outline-sm {
+            background: transparent;
+            color: #667eea;
+            border: 1px solid #667eea;
+        }
+        .btn-outline-sm:hover { background: rgba(102,126,234,0.1); }
+
+        /* ── Rendered markdown container ── */
+        #wp-content {
+            background: rgba(255,255,255,0.04);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 52px 56px;
         }
-        
-        .whitepaper-header {
-            text-align: center;
-            margin-bottom: 50px;
-            padding-bottom: 30px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+
+        @media (max-width: 640px) {
+            #wp-content { padding: 28px 20px; }
         }
-        
-        .whitepaper-title {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+
+        /* ── Markdown element styles ── */
+        #wp-content h1 {
+            font-size: 2.6rem;
             background: linear-gradient(135deg, #667eea, #a78bfa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            margin-bottom: 0.25rem;
+            line-height: 1.2;
         }
-        
-        .whitepaper-subtitle {
-            font-size: 1.3rem;
-            color: #94a3b8;
-            margin-bottom: 1rem;
+
+        #wp-content h2 {
+            font-size: 1.9rem;
+            color: #ffffff;
+            margin-top: 3.5rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(102,126,234,0.35);
         }
-        
-        .whitepaper-meta {
+
+        #wp-content h3 {
+            font-size: 1.35rem;
+            color: #e2e8f0;
+            margin-top: 2.25rem;
+            margin-bottom: 0.85rem;
+        }
+
+        #wp-content h4 {
+            font-size: 1.05rem;
+            color: #cbd5e1;
+            margin-top: 1.5rem;
+            margin-bottom: 0.6rem;
+        }
+
+        #wp-content p {
+            line-height: 1.9;
+            margin-bottom: 1.1rem;
+            color: #cbd5e1;
+        }
+
+        /* Sub-title / meta lines right after h1 */
+        #wp-content h1 + p,
+        #wp-content h1 + p + p {
             color: #64748b;
             font-style: italic;
+            font-size: 0.95rem;
+            margin-bottom: 0.4rem;
         }
-        
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #667eea;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .back-link:hover {
-            color: #a78bfa;
-        }
-        
-        .executive-summary {
-            background: rgba(102, 126, 234, 0.1);
-            padding: 2rem;
-            border-radius: 12px;
-            border-left: 4px solid #667eea;
-            margin: 2rem 0;
-        }
-        
-        .key-innovations {
-            display: grid;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        
-        .innovation-item {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 1rem;
-            border-radius: 8px;
-            border-left: 3px solid #667eea;
-        }
-        
-        .innovation-item strong {
-            color: #a78bfa;
-        }
-        
-        h2 {
-            font-size: 2rem;
-            margin-top: 3rem;
-            margin-bottom: 1.5rem;
-            color: #ffffff;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid rgba(102, 126, 234, 0.3);
-        }
-        
-        h3 {
-            font-size: 1.5rem;
-            margin-top: 2rem;
+
+        #wp-content ul,
+        #wp-content ol {
             margin-bottom: 1rem;
-            color: #e2e8f0;
-        }
-        
-        h4 {
-            font-size: 1.2rem;
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
+            padding-left: 1.75rem;
             color: #cbd5e1;
         }
-        
-        p {
-            line-height: 1.8;
-            margin-bottom: 1rem;
-            color: #cbd5e1;
-        }
-        
-        ul, ol {
-            margin-bottom: 1rem;
-            padding-left: 2rem;
-            color: #cbd5e1;
-        }
-        
-        li {
+
+        #wp-content li {
             margin-bottom: 0.5rem;
-            line-height: 1.6;
+            line-height: 1.75;
         }
-        
-        table {
+
+        /* Tables */
+        #wp-content table {
             width: 100%;
             border-collapse: collapse;
             margin: 1.5rem 0;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
             overflow: hidden;
+            font-size: 0.93rem;
         }
-        
-        th, td {
-            padding: 12px;
+
+        #wp-content th,
+        #wp-content td {
+            padding: 11px 15px;
             text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
         }
-        
-        th {
-            background: rgba(102, 126, 234, 0.2);
+
+        #wp-content th {
+            background: rgba(102,126,234,0.22);
             font-weight: 600;
             color: #ffffff;
         }
-        
-        tr:hover {
-            background: rgba(255, 255, 255, 0.05);
+
+        #wp-content tr:last-child td { border-bottom: none; }
+        #wp-content tr:hover { background: rgba(255,255,255,0.04); }
+
+        /* Inline code */
+        #wp-content code {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+            font-size: 0.875em;
+            color: #a78bfa;
         }
-        
-        .info-box {
-            background: rgba(59, 130, 246, 0.1);
-            border-left: 4px solid #3b82f6;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 12px;
+
+        /* Code blocks */
+        #wp-content pre {
+            background: #0d1117;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 1.25rem 0;
+            border-left: 3px solid #667eea;
+            padding: 0;
         }
-        
-        .info-box h4 {
-            margin-top: 0;
+
+        #wp-content pre code {
+            background: none;
+            padding: 1.25rem 1.5rem;
+            display: block;
+            color: #e2e8f0;
+            font-size: 0.875rem;
+            line-height: 1.65;
+        }
+
+        /* Blockquotes — used for callouts / info boxes */
+        #wp-content blockquote {
+            border-left: 4px solid #667eea;
+            margin: 1.75rem 0;
+            padding: 1rem 1.5rem;
+            background: rgba(102,126,234,0.1);
+            border-radius: 0 10px 10px 0;
+            color: #94a3b8;
+        }
+
+        #wp-content blockquote p {
+            margin: 0;
+            color: #94a3b8;
+        }
+
+        #wp-content blockquote strong {
             color: #60a5fa;
         }
-        
-        .security-box {
-            background: rgba(16, 185, 129, 0.1);
-            border-left: 4px solid #10b981;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 12px;
-        }
-        
-        .security-box h4 {
-            margin-top: 0;
-            color: #34d399;
-        }
-        
-        .warning-box {
-            background: rgba(251, 146, 60, 0.1);
-            border-left: 4px solid #fb923c;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 12px;
-        }
-        
-        .warning-box h4 {
-            margin-top: 0;
-            color: #fb923c;
-        }
-        
-        .highlight-box {
-            background: rgba(167, 139, 250, 0.1);
-            border: 2px solid rgba(167, 139, 250, 0.3);
-            padding: 2rem;
-            border-radius: 12px;
-            margin: 2rem 0;
-            text-align: center;
-        }
-        
-        .highlight-box h3 {
-            color: #a78bfa;
-            margin-top: 0;
-        }
-        
-        .toc {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 2rem;
-            border-radius: 12px;
-            margin: 2rem 0;
-        }
-        
-        .toc-list {
-            list-style: none;
-            padding-left: 0;
-        }
-        
-        .toc-list li {
-            margin-bottom: 0.75rem;
-        }
-        
-        .toc-list a {
-            color: #667eea;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .toc-list a:hover {
-            color: #a78bfa;
-        }
-        
-        .download-section {
-            text-align: center;
-            padding: 3rem 2rem;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 16px;
-            margin: 3rem 0;
-            border: 2px solid rgba(102, 126, 234, 0.2);
-        }
-        
-        .download-section h2 {
-            margin-top: 0;
+
+        /* Horizontal rules */
+        #wp-content hr {
             border: none;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin: 3rem 0;
         }
-        
-        .btn {
-            display: inline-flex;
+
+        /* Links */
+        #wp-content a {
+            color: #667eea;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            transition: color 0.2s;
+        }
+        #wp-content a:hover { color: #a78bfa; }
+
+        /* Strong / em */
+        #wp-content strong { color: #e2e8f0; }
+        #wp-content em { color: #a78bfa; font-style: normal; }
+
+        /* ── Sidebar TOC on wide screens ── */
+        @media (min-width: 1300px) {
+            .whitepaper-wrapper {
+                max-width: 1240px;
+                display: grid;
+                grid-template-columns: 1fr 260px;
+                grid-template-rows: auto 1fr;
+                gap: 0 2.5rem;
+                align-items: start;
+            }
+            .wp-topbar { grid-column: 1 / -1; }
+            #wp-content { grid-column: 1; }
+            #wp-toc { grid-column: 2; grid-row: 2; display: block; }
+        }
+
+        #wp-toc {
+            display: none;
+            position: sticky;
+            top: 120px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.09);
+            border-radius: 14px;
+            padding: 1.25rem 1.5rem;
+            font-size: 0.82rem;
+            max-height: calc(100vh - 150px);
+            overflow-y: auto;
+        }
+
+        #wp-toc h4 {
+            color: #a78bfa;
+            margin: 0 0 0.8rem;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        #wp-toc ul { list-style: none; padding: 0; margin: 0; }
+        #wp-toc li { margin-bottom: 0.38rem; }
+        #wp-toc li.toc-h3 { padding-left: 0.9rem; }
+        #wp-toc a { color: #64748b; text-decoration: none; line-height: 1.5; transition: color 0.2s; }
+        #wp-toc a:hover, #wp-toc a.active { color: #a78bfa; }
+
+        /* ── Generating indicator ── */
+        #pdf-generating {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15,12,41,0.85);
+            z-index: 9999;
             align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: all 0.3s;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1rem;
+            color: #e2e8f0;
             font-size: 1.1rem;
         }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        #pdf-generating.visible { display: flex; }
+        .pdf-spinner {
+            width: 44px; height: 44px;
+            border: 4px solid rgba(102,126,234,0.3);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
-        
-        code {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-            color: #a78bfa;
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── PDF export — light mode applied during html2pdf capture ── */
+        body.pdf-export { background: #ffffff !important; }
+
+        body.pdf-export #wp-content {
+            background: #ffffff !important;
+            border: none !important;
+            border-radius: 0 !important;
+            backdrop-filter: none !important;
+            padding: 0 !important;
+            color: #111 !important;
         }
-        
-        pre {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 1.5rem;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 1rem 0;
-            border-left: 3px solid #667eea;
+
+        body.pdf-export #wp-content h1 {
+            background: none !important;
+            -webkit-text-fill-color: #111 !important;
+            color: #111 !important;
+            font-size: 2rem !important;
         }
-        
-        pre code {
-            background: none;
-            padding: 0;
-            color: #cbd5e1;
+
+        body.pdf-export #wp-content h2 {
+            color: #111 !important;
+            border-bottom-color: #333 !important;
         }
-        
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
+
+        body.pdf-export #wp-content h3,
+        body.pdf-export #wp-content h4 { color: #222 !important; }
+
+        body.pdf-export #wp-content p,
+        body.pdf-export #wp-content li,
+        body.pdf-export #wp-content td,
+        body.pdf-export #wp-content th { color: #222 !important; }
+
+        body.pdf-export #wp-content strong { color: #111 !important; }
+        body.pdf-export #wp-content em { color: #333 !important; }
+
+        body.pdf-export #wp-content table {
+            background: #f8f8f8 !important;
         }
-        
-        .comparison-card {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+
+        body.pdf-export #wp-content th {
+            background: #e5e7eb !important;
+            color: #111 !important;
         }
-        
-        .comparison-card h4 {
-            color: #a78bfa;
-            margin-top: 0;
+
+        body.pdf-export #wp-content tr:hover { background: transparent !important; }
+
+        body.pdf-export #wp-content blockquote {
+            background: #f0f4ff !important;
+            border-left-color: #667eea !important;
         }
-        
-        .feature-list {
-            list-style: none;
-            padding-left: 0;
+
+        body.pdf-export #wp-content blockquote p,
+        body.pdf-export #wp-content blockquote strong { color: #334 !important; }
+
+        body.pdf-export #wp-content code {
+            background: #f5f5f5 !important;
+            color: #6730ec !important;
         }
-        
-        .feature-list li {
-            padding-left: 1.5rem;
-            position: relative;
+
+        body.pdf-export #wp-content pre {
+            background: #f5f5f5 !important;
+            border-left-color: #667eea !important;
         }
-        
-        .feature-list li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #10b981;
-            font-weight: bold;
-        }
-        
-        .auth-flow {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 1.5rem 0;
-            font-family: 'Courier New', monospace;
-            border-left: 3px solid #10b981;
-        }
-        
-        .security-layer {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 1rem;
-            margin: 0.5rem 0;
-            border-radius: 8px;
-            border-left: 3px solid #3b82f6;
+
+        body.pdf-export #wp-content pre code { color: #222 !important; }
+
+        body.pdf-export #wp-content a { color: #4f46e5 !important; }
+
+        body.pdf-export #wp-content hr { border-top-color: #ccc !important; }
+
+        /* ── Print media ── */
+        @media print {
+            body { background: white !important; color: black !important; padding-top: 0; }
+            .wp-topbar, nav, footer, #wp-toc, #pdf-generating { display: none !important; }
+            #wp-content {
+                background: white !important;
+                border: none !important;
+                padding: 0 !important;
+                border-radius: 0 !important;
+            }
+            #wp-content h1 {
+                background: none !important;
+                -webkit-text-fill-color: black !important;
+                color: black !important;
+            }
+            #wp-content * { color: black !important; -webkit-text-fill-color: black !important; }
+            #wp-content pre, #wp-content code { background: #f5f5f5 !important; }
         }
     </style>
 </head>
 <body>
-    <!-- Header will be injected here by includes.js -->
+    <!-- Header injected by includes.js -->
 
-    <div class="whitepaper-container">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        
-        <div class="whitepaper-header">
-            <h1 class="whitepaper-title">TIME Coin</h1>
-            <p class="whitepaper-subtitle">Universal Payment Network</p>
-            <p class="whitepaper-subtitle">Overview Whitepaper</p>
-            <p class="whitepaper-meta">Version 3.0 • October 2025</p>
-        </div>
-        
-        <!-- Download Section at Top -->
-        <div class="download-section">
-            <h2>📄 Download Complete Whitepaper</h2>
-            <p style="color: #94a3b8; margin-bottom: 2rem;">
-                Get the complete TIME Coin Overview Whitepaper as a PDF
-            </p>
-            
-            <a href="downloads/TIME-Coin-Overview-Whitepaper-v3.0.pdf" 
-               class="btn"
-               download="TIME-Coin-Overview-Whitepaper-v3.0.pdf">
-                <span style="font-size: 1.5rem;">📥</span>
-                Download PDF (v3.0)
-            </a>
-            
-            <p style="color: #64748b; font-size: 0.9rem; margin-top: 1.5rem;">
-                Last updated: October 2025 • 30+ pages • ~2 MB
-            </p>
-        </div>
-
-        <!-- Executive Summary -->
-        <section class="executive-summary">
-            <h2>Executive Summary</h2>
-            <p>
-                TIME Coin is building the world's most accessible cryptocurrency payment network. With instant transactions, 
-                multi-channel access (SMS, email, web, mobile), and a community-governed infrastructure, TIME makes digital 
-                payments available to anyone, anywhere.
-            </p>
-            
-            <div class="key-innovations">
-                <div class="innovation-item">
-                    <strong>⚡ Instant Finality:</strong> Transactions confirmed in under 3 seconds
-                </div>
-                <div class="innovation-item">
-                    <strong>📱 Universal Access:</strong> Send crypto via SMS or email - no smartphone required
-                </div>
-                <div class="innovation-item">
-                    <strong>🛡️ Community Governed:</strong> Democratic decision-making through masternode voting
-                </div>
-                <div class="innovation-item">
-                    <strong>🌍 Global Reach:</strong> Designed for billions, not just tech-savvy users
-                </div>
-                <div class="innovation-item">
-                    <strong>♻️ Sustainable:</strong> No mining, efficient 24-hour settlement blocks
-                </div>
-                <div class="innovation-item">
-                    <strong>🔒 Secure:</strong> Byzantine Fault Tolerant consensus with economic security
-                </div>
-            </div>
-        </section>
-        
-        <!-- Table of Contents -->
-        <div class="toc">
-            <h2>Table of Contents</h2>
-            <ol class="toc-list">
-                <li><a href="#problem">The Problem We're Solving</a></li>
-                <li><a href="#solution">The TIME Solution</a></li>
-                <li><a href="#security-auth">SMS/Email Security & Authentication</a></li>
-                <li><a href="#technical">Technical Highlights</a></li>
-                <li><a href="#use-cases">Use Cases</a></li>
-                <li><a href="#participation">Network Participation</a></li>
-                <li><a href="#roadmap">Roadmap</a></li>
-                <li><a href="#competitive">Competitive Advantages</a></li>
-                <li><a href="#token-utility">Token Utility</a></li>
-                <li><a href="#why-succeed">Why TIME Will Succeed</a></li>
-                <li><a href="#get-involved">Get Involved</a></li>
-            </ol>
-        </div>
-        
-        <!-- The Problem -->
-        <section id="problem">
-            <h2>The Problem We're Solving</h2>
-            
-            <h3>Financial Exclusion</h3>
-            <p>
-                <strong>2.5 billion people lack access to traditional banking</strong>, yet most own basic mobile phones. 
-                Current cryptocurrency solutions require:
-            </p>
-            <ul>
-                <li>Smartphones with internet access</li>
-                <li>Technical knowledge of wallets and keys</li>
-                <li>Understanding of complex blockchain concepts</li>
-                <li>Reliable power and connectivity</li>
-            </ul>
-            <p>This excludes billions from participating in the digital economy.</p>
-            
-            <h3>Slow Transaction Speeds</h3>
-            <p>Traditional cryptocurrencies suffer from:</p>
-            <ul>
-                <li>Bitcoin: 10+ minutes for basic confirmation</li>
-                <li>Ethereum: 15+ minutes for finality</li>
-                <li>High fees during network congestion</li>
-                <li>Poor user experience for payments</li>
-            </ul>
-            
-            <h3>Centralized Control</h3>
-            <p>Most cryptocurrencies are controlled by:</p>
-            <ul>
-                <li>Founding teams with massive pre-mines</li>
-                <li>Venture capital firms with allocation advantages</li>
-                <li>Mining pools with geographic concentration</li>
-                <li>Foundations making unilateral decisions</li>
-            </ul>
-        </section>
-        
-        <!-- The Solution -->
-        <section id="solution">
-            <h2>The TIME Solution</h2>
-            
-            <h3>Instant Transaction Finality</h3>
-            <h4>Byzantine Fault Tolerant Consensus</h4>
-            <p>TIME uses modified BFT consensus where masternode operators validate transactions in real-time:</p>
-            <pre><code>User sends transaction → Broadcast to network → Validators confirm → 
-Confirmed in &lt;3 seconds → Irreversible finality</code></pre>
-            <p>
-                <strong>No waiting for block confirmations.</strong> No probabilistic finality. When you see the 
-                confirmation, it's permanent.
-            </p>
-            <p>
-                <strong>Dynamic Quorum Selection:</strong> As the network scales to 100,000+ masternodes, intelligent 
-                quorum selection maintains sub-3-second finality.
-            </p>
-            
-            <h3>Universal Accessibility</h3>
-            
-            <h4>SMS Payments</h4>
-            <pre><code>Text: "SEND 10 TIME to @alice PIN:1234"
-Receive: "Sent! Balance: 40 TIME"</code></pre>
-            <p>Works on any phone, even basic feature phones. No internet required.</p>
-            
-            <h4>Email Payments</h4>
-            <pre><code>To: payments@time.network
-Subject: SEND
-Body: 25 TIME to @alice
-PIN: 1234</code></pre>
-            <p>Familiar interface, works on any device.</p>
-            
-            <h4>Web & Mobile</h4>
-            <ul>
-                <li>Progressive web app (no download required)</li>
-                <li>Native iOS and Android apps</li>
-                <li>Hardware wallet support</li>
-                <li>Biometric authentication</li>
-            </ul>
-            
-            <h3>Efficient Architecture</h3>
-            <h4>24-Hour Settlement Blocks</h4>
-            <p>Unlike traditional blockchains that create millions of blocks per year:</p>
-            <pre><code>TIME: 365 blocks/year (one per day)
-Bitcoin: 52,560 blocks/year
-Ethereum: 2,628,000 blocks/year
-
-Result: 99.99% less blockchain bloat</code></pre>
-            
-            <p><strong>Benefits:</strong></p>
-            <ul>
-                <li>Manageable blockchain size (GB instead of TB)</li>
-                <li>Easy for new nodes to sync</li>
-                <li>Efficient long-term storage</li>
-                <li>Instant transactions PLUS daily settlement</li>
-            </ul>
-            
-            <p><strong>How it works:</strong></p>
-            <ol>
-                <li>Transactions validated instantly by BFT consensus</li>
-                <li>Users see confirmation in &lt;3 seconds</li>
-                <li>Every 24 hours, validated transactions aggregate into a block</li>
-                <li>Permanent settlement and historical record</li>
-            </ol>
-            
-            <h3>Fair Launch Model</h3>
-            <div class="highlight-box">
-                <h3>No Pre-Mine. No VCs. No Insider Allocation.</h3>
-            </div>
-            
-            <p>TIME tokens are created through <strong>purchase-based minting</strong>:</p>
-            <pre><code>User purchases TIME with fiat/crypto
-        ↓
-Payment verified by network
-        ↓
-New tokens minted
-        ↓
-Distribution:
-  - 90% to purchaser
-  - 8% to network operators (service fees)
-  - 2% to development treasury</code></pre>
-            <p>
-                <strong>Everyone starts equal.</strong> No founders with billions of tokens. No early investors 
-                dumping on retail.
-            </p>
-            
-            <h3>Community Governance</h3>
-            <h4>Three-Tier Masternode System</h4>
-            <p>Network operators provide infrastructure and earn service fees:</p>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>Tier</th>
-                        <th>Collateral</th>
-                        <th>Services</th>
-                        <th>Voting Power</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Bronze</td>
-                        <td>1,000 TIME</td>
-                        <td>Basic validation, routing</td>
-                        <td>1×</td>
-                    </tr>
-                    <tr>
-                        <td>Silver</td>
-                        <td>10,000 TIME</td>
-                        <td>Full validation, governance</td>
-                        <td>10×</td>
-                    </tr>
-                    <tr>
-                        <td>Gold</td>
-                        <td>100,000 TIME</td>
-                        <td>Full consensus, proposals</td>
-                        <td>100×</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <p>
-                <strong>Longevity Rewards:</strong> Operators who run nodes long-term earn up to 3× multiplier on 
-                rewards (vests over 4 years).
-            </p>
-            <p>
-                <strong>Democratic Voting:</strong> All network parameters, protocol upgrades, and treasury spending 
-                require masternode approval (60% threshold).
-            </p>
-            
-            <h4>Proposal System:</h4>
-            <ol>
-                <li>Gold tier operator creates proposal</li>
-                <li>14-day discussion period</li>
-                <li>7-day voting period</li>
-                <li>Community approves or rejects</li>
-                <li>Implemented if passed</li>
-            </ol>
-            
-            <h3>Self-Funding Treasury</h3>
-            <p>The network funds its own development through:</p>
-            <p><strong>Dynamic Block Rewards:</strong> 5-25 TIME/day to treasury (scales with network size, capped at 10,000+ nodes)</p>
-            <p><strong>Transaction Fees:</strong> 5% of all transaction fees</p>
-            
-            <p><strong>Projected Growth:</strong></p>
-            <pre><code>Year 1: ~4,000 TIME/year
-Year 5: ~190,000 TIME/year  
-Year 10: ~510,000+ TIME/year</code></pre>
-            
-            <p>
-                <strong>Transparent Spending:</strong> All treasury expenditures require governance approval and are 
-                publicly auditable.
-            </p>
-        </section>
-        
-        <!-- NEW SECTION: SMS/Email Security -->
-        <section id="security-auth">
-            <h2>SMS/Email Security & Authentication</h2>
-            
-            <div class="security-box">
-                <h4>🔐 Multi-Layer Authentication</h4>
-                <p>
-                    TIME Coin's SMS and email payment channels implement robust security measures to prevent spoofing, 
-                    unauthorized access, and fraud while maintaining ease of use.
-                </p>
-            </div>
-            
-            <h3>1. Registration & Linking (One-Time Setup)</h3>
-            <p>
-                Before using SMS or email payments, users must register their contact methods through the secure 
-                web or mobile application:
-            </p>
-            
-            <div class="auth-flow">
-<strong>Registration Flow:</strong>
-1. User initiates registration in web/mobile app
-2. User enters phone number or email address
-3. Gateway sends verification code to contact method
-4. User confirms ownership by entering code
-5. User sets unique PIN (6-8 digits) for that contact
-6. System cryptographically links contact → wallet address
-7. Device/carrier metadata recorded for validation
-8. Registration complete - contact method activated
-            </div>
-            
-            <p><strong>Security Features:</strong></p>
-            <ul>
-                <li><strong>Ownership Verification:</strong> Must prove control of phone/email</li>
-                <li><strong>Unique PIN:</strong> Separate from wallet password, specific to contact method</li>
-                <li><strong>Cryptographic Binding:</strong> Contact address hashed and signed with wallet key</li>
-                <li><strong>One Contact Per Wallet:</strong> Each phone/email can only link to one wallet</li>
-                <li><strong>Revocation:</strong> Can be unlinked anytime through secure app</li>
-            </ul>
-            
-            <h3>2. Transaction Authentication</h3>
-            <p>Every payment request must include authentication credentials:</p>
-            
-            <h4>SMS Transaction Format</h4>
-            <pre><code>SEND 10 TIME to @alice PIN:1234
-
-Gateway Response:
-"✓ Sent 10 TIME to @alice
-Balance: 40 TIME
-Ref: TX-A9B2C4"</code></pre>
-            
-            <h4>Email Transaction Format</h4>
-            <pre><code>To: payments@time.network
-Subject: SEND
-Body:
-10 TIME to @alice
-PIN: 1234
-
-Gateway Response:
-"✓ Transaction Confirmed
-Sent: 10 TIME to @alice
-Balance: 40 TIME
-Reference: TX-A9B2C4"</code></pre>
-            
-            <h4>Gateway Verification Process</h4>
-            <div class="security-layer">
-                <strong>Step 1:</strong> Verify sender identity
-                <ul style="margin: 0.5rem 0;">
-                    <li>Confirm phone number/email matches registered contact</li>
-                    <li>Validate carrier/provider authentication headers</li>
-                    <li>Check against blacklist and fraud patterns</li>
-                </ul>
-            </div>
-            
-            <div class="security-layer">
-                <strong>Step 2:</strong> Authenticate transaction
-                <ul style="margin: 0.5rem 0;">
-                    <li>Extract and verify PIN from message</li>
-                    <li>Compare against stored hash for that contact</li>
-                    <li>Check rate limits and daily transaction caps</li>
-                </ul>
-            </div>
-            
-            <div class="security-layer">
-                <strong>Step 3:</strong> Validate transaction
-                <ul style="margin: 0.5rem 0;">
-                    <li>Parse transaction details (amount, recipient)</li>
-                    <li>Verify sufficient balance</li>
-                    <li>Check transaction limits for contact method</li>
-                </ul>
-            </div>
-            
-            <div class="security-layer">
-                <strong>Step 4:</strong> Execute or reject
-                <ul style="margin: 0.5rem 0;">
-                    <li>If all checks pass: submit to masternode network</li>
-                    <li>If any check fails: reject and notify user</li>
-                    <li>Log attempt for fraud detection</li>
-                </ul>
-            </div>
-            
-            <h3>3. Two-Way Confirmation (High-Value Transactions)</h3>
-            <p>For transactions above threshold limits, the system requires explicit confirmation:</p>
-            
-            <div class="auth-flow">
-<strong>Confirmation Flow Example:</strong>
-
-User → Gateway:
-"SEND 500 TIME to @alice PIN:1234"
-
-Gateway → User:
-"⚠️  CONFIRM HIGH-VALUE TRANSACTION
-Send: 500 TIME
-To: @alice
-Reply with: YES-1234
-(Expires in 2 minutes)"
-
-User → Gateway:
-"YES-1234"
-
-Gateway → User:
-"✓ Confirmed! Sent 500 TIME to @alice
-Balance: 1,200 TIME"
-            </div>
-            
-            <p><strong>Confirmation Triggers:</strong></p>
-            <ul>
-                <li>Transactions &gt; 100 TIME (adjustable by user)</li>
-                <li>First transaction to a new recipient</li>
-                <li>Transactions that exceed 50% of daily limit</li>
-                <li>Any transaction after multiple failed PIN attempts</li>
-            </ul>
-            
-            <h3>4. Carrier & Provider Verification</h3>
-            
-            <h4>SMS Security</h4>
-            <ul>
-                <li><strong>Carrier Authentication:</strong> Verify message origin through carrier network APIs</li>
-                <li><strong>SIM Registration:</strong> Track SIM card identifier, detect SIM swaps</li>
-                <li><strong>Location Validation:</strong> Flag transactions from unexpected geographic locations</li>
-                <li><strong>No Caller ID Spoofing:</strong> Backend verification, not reliant on displayed number</li>
-                <li><strong>Shortcode Security:</strong> Messages must come through registered carrier channels</li>
-            </ul>
-            
-            <h4>Email Security</h4>
-            <ul>
-                <li><strong>SPF Verification:</strong> Sender Policy Framework validates sending server</li>
-                <li><strong>DKIM Signatures:</strong> DomainKeys Identified Mail cryptographic verification</li>
-                <li><strong>DMARC Enforcement:</strong> Domain-based Message Authentication policy</li>
-                <li><strong>Header Analysis:</strong> Inspect full email headers for tampering</li>
-                <li><strong>TLS Encryption:</strong> Require encrypted transport</li>
-            </ul>
-            
-            <div class="warning-box">
-                <h4>⚠️ Automatic Rejection</h4>
-                <p>Messages are automatically rejected if they:</p>
-                <ul>
-                    <li>Fail carrier/provider authentication</li>
-                    <li>Come from unregistered contact information</li>
-                    <li>Lack required authentication (PIN)</li>
-                    <li>Contain malformed transaction syntax</li>
-                    <li>Originate from blacklisted sources</li>
-                </ul>
-            </div>
-            
-            <h3>5. Transaction Limits & Controls</h3>
-            <p>SMS and email channels have built-in limits to minimize risk:</p>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>Limit Type</th>
-                        <th>Default Value</th>
-                        <th>Adjustable Via App</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Per-Transaction Maximum</td>
-                        <td>100 TIME</td>
-                        <td>Yes (up to 1,000)</td>
-                    </tr>
-                    <tr>
-                        <td>Daily Transaction Limit</td>
-                        <td>500 TIME</td>
-                        <td>Yes (up to 5,000)</td>
-                    </tr>
-                    <tr>
-                        <td>Transactions Per Hour</td>
-                        <td>10 transactions</td>
-                        <td>No (security)</td>
-                    </tr>
-                    <tr>
-                        <td>Failed PIN Attempts</td>
-                        <td>3 attempts</td>
-                        <td>No (security)</td>
-                    </tr>
-                    <tr>
-                        <td>Confirmation Required</td>
-                        <td>&gt; 100 TIME</td>
-                        <td>Yes</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <p><strong>Limit Enforcement:</strong></p>
-            <ul>
-                <li>Tracked per-contact method (SMS and email separate limits)</li>
-                <li>Resets daily at midnight UTC</li>
-                <li>Cannot be disabled, only adjusted within ranges</li>
-                <li>Exceeding limits triggers automatic account freeze</li>
-                <li>Higher limits require app-based verification</li>
-            </ul>
-            
-            <h3>6. Fraud Detection & Prevention</h3>
-            <p>Real-time monitoring and machine learning detect suspicious activity:</p>
-            
-            <h4>Monitored Patterns</h4>
-            <ul>
-                <li><strong>Velocity Checks:</strong> Unusual frequency or volume of transactions</li>
-                <li><strong>Geographic Anomalies:</strong> Transactions from unexpected locations</li>
-                <li><strong>Device Changes:</strong> SIM swaps or email access from new devices</li>
-                <li><strong>Recipient Patterns:</strong> Sending to many new recipients suddenly</li>
-                <li><strong>Failed Authentication:</strong> Multiple wrong PIN attempts</li>
-                <li><strong>Timing Analysis:</strong> Transactions at unusual times</li>
-            </ul>
-            
-            <h4>Automated Responses</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Threat Level</th>
-                        <th>Action Taken</th>
-                        <th>User Notification</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Low Risk</td>
-                        <td>Log and monitor</td>
-                        <td>None</td>
-                    </tr>
-                    <tr>
-                        <td>Medium Risk</td>
-                        <td>Require confirmation</td>
-                        <td>SMS/Email alert</td>
-                    </tr>
-                    <tr>
-                        <td>High Risk</td>
-                        <td>Temporary freeze (2 hours)</td>
-                        <td>Immediate alert + app notification</td>
-                    </tr>
-                    <tr>
-                        <td>Critical Risk</td>
-                        <td>Full account freeze</td>
-                        <td>Alert + require app unlock</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <h3>7. Account Recovery & PIN Reset</h3>
-            
-            <h4>PIN Reset Process</h4>
-            <p>Users can reset their SMS/email PIN through the secure app:</p>
-            <ol>
-                <li>Log into web/mobile app with full credentials</li>
-                <li>Navigate to Contact Method settings</li>
-                <li>Request PIN reset for specific contact</li>
-                <li>Verify identity (2FA, biometric, or security questions)</li>
-                <li>Set new PIN</li>
-                <li>Confirmation code sent to contact method</li>
-            </ol>
-            
-            <div class="security-box">
-                <h4>🛡️ Security Lockout</h4>
-                <p>
-                    After 3 failed PIN attempts, the contact method is locked for 24 hours. The user receives 
-                    immediate notification and must unlock via the secure app. This prevents brute-force attacks.
-                </p>
-            </div>
-            
-            <h4>Compromise Response</h4>
-            <p>If a user suspects their SMS/email has been compromised:</p>
-            <ol>
-                <li>Immediately freeze SMS/email payments via app</li>
-                <li>Review recent transaction history</li>
-                <li>Unlink compromised contact method</li>
-                <li>Report to carrier/email provider</li>
-                <li>Register new contact method with new PIN</li>
-            </ol>
-            
-            <h3>8. Advanced Security Features</h3>
-            
-            <h4>Optional Enhancements</h4>
-            <ul>
-                <li><strong>Whitelist Mode:</strong> Only allow transactions to pre-approved recipients</li>
-                <li><strong>Time Windows:</strong> Only allow SMS/email transactions during specific hours</li>
-                <li><strong>Geographic Fencing:</strong> Reject transactions from outside home region</li>
-                <li><strong>Dual Authorization:</strong> Require PIN + secondary code from app</li>
-                <li><strong>Session Tokens:</strong> Time-limited tokens for multiple transactions</li>
-            </ul>
-            
-            <h4>Session Token Example</h4>
-            <pre><code>User → Gateway via App:
-"Generate session token for SMS"
-
-Gateway → User via SMS:
-"Session token: X9K2M5
-Valid for 1 hour, 10 transactions max"
-
-User → Gateway via SMS:
-"SEND 20 TIME to @alice TOKEN:X9K2M5"
-
-(No PIN required during session)</code></pre>
-            
-            <h3>9. Security Best Practices</h3>
-            
-            <div class="info-box">
-                <h4>💡 User Guidelines</h4>
-                <ul>
-                    <li><strong>Keep PIN Secret:</strong> Never share your SMS/email PIN with anyone</li>
-                    <li><strong>Use Strong PIN:</strong> Avoid obvious numbers (1234, birthdate)</li>
-                    <li><strong>Monitor Activity:</strong> Check transaction confirmations immediately</li>
-                    <li><strong>Report Suspicious Activity:</strong> Contact support if anything unusual</li>
-                    <li><strong>Secure Your Devices:</strong> Use device locks on phones</li>
-                    <li><strong>Update Contact Info:</strong> Keep carrier and email provider info current</li>
-                    <li><strong>Use App for Large Amounts:</strong> SMS/email for small, convenient payments only</li>
-                </ul>
-            </div>
-            
-            <h3>10. Comparison: Security Levels</h3>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>Access Method</th>
-                        <th>Security Level</th>
-                        <th>Best For</th>
-                        <th>Transaction Limit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>SMS/Email + PIN</td>
-                        <td>Medium</td>
-                        <td>Daily payments, remittances</td>
-                        <td>100 TIME default</td>
-                    </tr>
-                    <tr>
-                        <td>Web/Mobile App</td>
-                        <td>High</td>
-                        <td>Regular transactions</td>
-                        <td>1,000 TIME default</td>
-                    </tr>
-                    <tr>
-                        <td>Hardware Wallet</td>
-                        <td>Very High</td>
-                        <td>Large amounts, storage</td>
-                        <td>Unlimited</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <div class="security-box">
-                <h4>✓ Security Summary</h4>
-                <p>
-                    TIME Coin's SMS and email channels achieve security through <strong>defense in depth</strong>: 
-                    multi-factor authentication, carrier/provider verification, rate limiting, fraud detection, 
-                    and transaction limits. While convenient, these channels are designed for everyday transactions, 
-                    not large-value transfers. The system makes security invisible to users while maintaining 
-                    robust protection against spoofing, phishing, and unauthorized access.
-                </p>
-            </div>
-        </section>
-        
-        <!-- Technical Highlights -->
-        <section id="technical">
-            <h2>Technical Highlights</h2>
-            
-            <h3>Consensus Mechanism</h3>
-            <h4>Modified Byzantine Fault Tolerant (BFT)</h4>
-            <ul>
-                <li>Tolerates up to 33% malicious nodes</li>
-                <li>Instant and deterministic finality</li>
-                <li>No possibility of chain reorganizations</li>
-                <li>Dynamic quorum selection for scalability</li>
-                <li>Weighted voting by tier and longevity</li>
-            </ul>
-            
-            <h3>Scalability</h3>
-            <ul>
-                <li><strong>Target Capacity:</strong> 5,000+ transactions per second</li>
-                <li><strong>Current Design:</strong> Scales to 100,000+ masternodes</li>
-                <li><strong>Confirmation Time:</strong> &lt;3 seconds (maintained at scale)</li>
-                <li><strong>Annual Blocks:</strong> 365 (vs millions for other chains)</li>
-            </ul>
-            
-            <h3>Security</h3>
-            <h4>Multi-Layer Protection:</h4>
-            <ul>
-                <li>Economic security (collateral requirements)</li>
-                <li>Cryptographic security (Ed25519 signatures)</li>
-                <li>Network security (BFT consensus)</li>
-                <li>Sequential nonce system (prevents double-spending)</li>
-                <li>Global state synchronization (&lt;500ms)</li>
-                <li>SMS/Email gateway authentication (see dedicated section above)</li>
-            </ul>
-            <p>
-                <strong>Attack Cost:</strong> Requires $15M+ and control of 67%+ of network weight - economically irrational.
-            </p>
-            
-            <h3>Token Economics</h3>
-            <h4>Supply Model:</h4>
-            <ul>
-                <li>No fixed maximum supply</li>
-                <li>Organic growth through purchase-minting</li>
-                <li>Masternode collateral reduces circulating supply</li>
-                <li>Dynamic block rewards cap inflation at 182,500 TIME/year</li>
-            </ul>
-            
-            <h4>Fee Distribution:</h4>
-            <ul>
-                <li>95% to masternode operators (proportional to service)</li>
-                <li>5% to network treasury (governance-controlled)</li>
-            </ul>
-        </section>
-        
-        <!-- Use Cases -->
-        <section id="use-cases">
-            <h2>Use Cases</h2>
-            
-            <div class="comparison-grid">
-                <div class="comparison-card">
-                    <h4>Peer-to-Peer Payments</h4>
-                    <p><strong>Send money instantly to anyone, anywhere:</strong></p>
-                    <ul class="feature-list">
-                        <li>Family remittances without Western Union fees</li>
-                        <li>Split bills with friends via SMS</li>
-                        <li>Pay freelancers internationally</li>
-                        <li>Send emergency funds in seconds</li>
-                    </ul>
-                </div>
-                
-                <div class="comparison-card">
-                    <h4>Merchant Payments</h4>
-                    <p><strong>Accept crypto payments with instant confirmation:</strong></p>
-                    <ul class="feature-list">
-                        <li>No chargebacks (irreversible finality)</li>
-                        <li>Lower fees than credit cards (0.1-1% vs 2-3%)</li>
-                        <li>Instant settlement (vs 2-3 day bank transfers)</li>
-                        <li>Global customer base</li>
-                    </ul>
-                </div>
-                
-                <div class="comparison-card">
-                    <h4>Cross-Border Transfers</h4>
-                    <p><strong>Replace expensive wire transfers:</strong></p>
-                    <ul class="feature-list">
-                        <li>Send $10 or $10,000 with same low fee</li>
-                        <li>Arrives in seconds, not days</li>
-                        <li>No intermediary banks</li>
-                        <li>No currency conversion fees</li>
-                    </ul>
-                </div>
-                
-                <div class="comparison-card">
-                    <h4>Microtransactions</h4>
-                    <p><strong>Enable new business models:</strong></p>
-                    <ul class="feature-list">
-                        <li>Pay per article (journalism)</li>
-                        <li>Tip content creators directly</li>
-                        <li>Pay for API calls</li>
-                        <li>Streaming micropayments</li>
-                    </ul>
-                </div>
-                
-                <div class="comparison-card">
-                    <h4>Accessibility Banking</h4>
-                    <p><strong>Bring financial services to the unbanked:</strong></p>
-                    <ul class="feature-list">
-                        <li>SMS-based wallets for feature phones</li>
-                        <li>No minimum balance requirements</li>
-                        <li>No monthly fees</li>
-                        <li>Instant global transfers</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Network Participation -->
-        <section id="participation">
-            <h2>Network Participation</h2>
-            
-            <h3>For Users</h3>
-            <h4>Getting Started is Simple:</h4>
-            <ol>
-                <li>Purchase TIME through verified gateways</li>
-                <li>Receive via SMS, email, or app</li>
-                <li>Start sending payments instantly</li>
-                <li>Access from any device</li>
-            </ol>
-            
-            <h4>Features:</h4>
-            <ul>
-                <li>Human-readable addresses (@alice)</li>
-                <li>Multi-language support (20+ languages)</li>
-                <li>Transaction templates for recurring payments</li>
-                <li>Instant confirmation notifications</li>
-            </ul>
-            
-            <h3>For Merchants</h3>
-            <h4>Accept TIME Payments:</h4>
-            <ul>
-                <li>Point-of-sale integrations</li>
-                <li>E-commerce plugins</li>
-                <li>Invoice systems</li>
-                <li>API for custom implementations</li>
-            </ul>
-            
-            <h4>Benefits:</h4>
-            <ul>
-                <li>Instant settlement (no waiting for confirmations)</li>
-                <li>Lower fees than traditional processors</li>
-                <li>No chargebacks</li>
-                <li>Global customer reach</li>
-            </ul>
-            
-            <h3>For Network Operators</h3>
-            <h4>Become a Masternode Operator:</h4>
-            
-            <p><strong>Requirements:</strong></p>
-            <ul>
-                <li>Technical expertise (Linux server administration)</li>
-                <li>Infrastructure (VPS or dedicated server)</li>
-                <li>Collateral (1,000 - 100,000 TIME)</li>
-                <li>Time commitment (5-40 hours/month)</li>
-            </ul>
-            
-            <p><strong>Services Provided:</strong></p>
-            <ul>
-                <li>Transaction validation</li>
-                <li>Network routing</li>
-                <li>Data availability</li>
-                <li>Governance participation</li>
-            </ul>
-            
-            <p><strong>Compensation:</strong></p>
-            <ul>
-                <li>Service fees from transactions processed</li>
-                <li>Proportional to tier and longevity</li>
-                <li>Additional fees for specialized services (purchase verification)</li>
-            </ul>
-            
-            <div class="info-box">
-                <h4>💡 Important Note</h4>
-                <p>
-                    <strong>This is an active service business</strong>, not passive income. Operators compete on 
-                    reliability, uptime, and service quality.
-                </p>
-            </div>
-        </section>
-        
-        <!-- Roadmap -->
-        <section id="roadmap">
-            <h2>Roadmap</h2>
-            
-            <h3>Q4 2025 - Foundation</h3>
-            <ul>
-                <li>✅ Core protocol design complete</li>
-                <li>✅ Three-tier masternode architecture</li>
-                <li>✅ Dynamic block reward system</li>
-                <li>✅ BFT consensus with dynamic quorum</li>
-                <li>🔄 Alpha testnet launch</li>
-                <li>🔄 Documentation and developer resources</li>
-            </ul>
-            
-            <h3>Q1 2026 - Testnet</h3>
-            <ul>
-                <li>Public testnet with 50+ masternodes</li>
-                <li>SMS/Email gateway testing</li>
-                <li>Security audits (3+ independent firms)</li>
-                <li>Community testing program</li>
-                <li>Bug bounty launch ($50K pool)</li>
-            </ul>
-            
-            <h3>Q2 2026 - Mainnet Launch</h3>
-            <ul>
-                <li>Mainnet genesis with 100+ operators</li>
-                <li>Web and mobile apps</li>
-                <li>Purchase portals activated</li>
-                <li>First governance proposals</li>
-                <li>Exchange discussions</li>
-            </ul>
-            
-            <h3>Q3-Q4 2026 - Growth</h3>
-            <ul>
-                <li>Tier-2 exchange listings (3-5 exchanges)</li>
-                <li>Payment processor partnerships</li>
-                <li>Merchant adoption program</li>
-                <li>International expansion</li>
-                <li>500-1,000 masternodes</li>
-            </ul>
-            
-            <h3>2027+ - Scale</h3>
-            <ul>
-                <li>Tier-1 exchange listings</li>
-                <li>DeFi integrations</li>
-                <li>Cross-chain bridges</li>
-                <li>Banking partnerships</li>
-                <li>10,000+ masternodes</li>
-                <li>Global payment infrastructure</li>
-            </ul>
-        </section>
-        
-        <!-- Competitive Advantages -->
-        <section id="competitive">
-            <h2>Competitive Advantages</h2>
-            
-            <div class="comparison-grid">
-                <div class="comparison-card">
-                    <h4>vs Bitcoin</h4>
-                    <ul class="feature-list">
-                        <li>⚡ 200× faster (3s vs 10min)</li>
-                        <li>📱 SMS/email access (vs technical wallets)</li>
-                        <li>🛡️ Democratic governance (vs contentious forks)</li>
-                        <li>♻️ 99.99% less blockchain bloat</li>
-                    </ul>
-                </div>
-                
-                <div class="comparison-card">
-                    <h4>vs Ethereum</h4>
-                    <ul class="feature-list">
-                        <li>⚡ 300× faster finality (3s vs 15min)</li>
-                        <li>💰 Lower fees (fixed vs gas wars)</li>
-                        <li>📊 Simpler model (payments vs smart contracts)</li>
-                        <li>🗳️ More democratic (no foundation control)</li>
-                    </ul>
-                </div>
-                
-                <div class="comparison-card">
-                    <h4>vs Fast Chains (Solana, Avalanche)</h4>
-                    <ul class="feature-list">
-                        <li>✅ True instant finality (vs probabilistic)</li>
-                        <li>💾 Much smaller blockchain (365 vs millions of blocks)</li>
-                        <li>🌍 More decentralized (100k nodes vs hundreds)</li>
-                        <li>🔒 Proven BFT security (vs experimental)</li>
-                    </ul>
-                </div>
-                
-                <div class="comparison-card">
-                    <h4>vs Other Masternodes (Dash)</h4>
-                    <ul class="feature-list">
-                        <li>⚡ Actually instant (vs 6-block wait)</li>
-                        <li>🌍 Universal access (vs wallet-only)</li>
-                        <li>📱 Modern architecture (vs legacy PoW)</li>
-                        <li>📈 Dynamic rewards (vs fixed, declining APY)</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Token Utility -->
-        <section id="token-utility">
-            <h2>Token Utility</h2>
-            <p>TIME tokens power the network through multiple utilities:</p>
-            
-            <h3>1. Medium of Exchange</h3>
-            <p>Primary use case - sending and receiving payments globally</p>
-            
-            <h3>2. Transaction Fees</h3>
-            <p>Required to process transactions on the network</p>
-            
-            <h3>3. Masternode Collateral</h3>
-            <p>Required deposit to operate network infrastructure (returned upon exit)</p>
-            
-            <h3>4. Governance Rights</h3>
-            <p>Vote on network parameters, upgrades, and treasury spending</p>
-            
-            <h3>5. Gateway Access</h3>
-            <p>Required for SMS/email gateway services</p>
-            
-            <h3>6. Service Payments</h3>
-            <p>Pay for advanced features and priority services</p>
-        </section>
-        
-        <!-- Why TIME Will Succeed -->
-        <section id="why-succeed">
-            <h2>Why TIME Will Succeed</h2>
-            
-            <h3>Real Utility</h3>
-            <ul>
-                <li>Solves actual problems (accessibility, speed, cost)</li>
-                <li>Genuine use cases beyond speculation</li>
-                <li>Growing network effects</li>
-            </ul>
-            
-            <h3>Superior Technology</h3>
-            <ul>
-                <li>Instant finality competitive advantage</li>
-                <li>Scalable to 100,000+ nodes</li>
-                <li>Efficient blockchain design</li>
-                <li>Proven BFT consensus</li>
-            </ul>
-            
-            <h3>Fair Distribution</h3>
-            <ul>
-                <li>No insider dumping</li>
-                <li>Organic growth</li>
-                <li>Community alignment</li>
-                <li>Long-term incentives (longevity multipliers)</li>
-            </ul>
-            
-            <h3>Sustainable Economics</h3>
-            <ul>
-                <li>Self-funding treasury</li>
-                <li>Dynamic rewards maintain operator incentives</li>
-                <li>Fee-based long-term model</li>
-                <li>Capped inflation (182,500 TIME/year max)</li>
-            </ul>
-            
-            <h3>Community Governance</h3>
-            <ul>
-                <li>Democratic decision-making</li>
-                <li>Transparent processes</li>
-                <li>Aligned incentives</li>
-                <li>Active participation rewards</li>
-            </ul>
-            
-            <h3>Market Timing</h3>
-            <ul>
-                <li>Billions still unbanked</li>
-                <li>Crypto adoption growing</li>
-                <li>Payment innovation needed</li>
-                <li>Instant finality rare and valuable</li>
-            </ul>
-        </section>
-        
-        <!-- Get Involved -->
-        <section id="get-involved">
-            <h2>Get Involved</h2>
-            
-            <div class="comparison-grid">
-                <div class="comparison-card">
-                    <h4>Users</h4>
-                    <ul>
-                        <li>Join waitlist for early access</li>
-                        <li>Follow development updates</li>
-                        <li>Participate in testnet</li>
-                        <li>Provide feedback</li>
-                    </ul>
-                </div>
-                
-                <div class="comparison-card">
-                    <h4>Developers</h4>
-                    <ul>
-                        <li>Contribute to open-source code</li>
-                        <li>Build on TIME APIs</li>
-                        <li>Create tools and integrations</li>
-                        <li>Submit improvement proposals</li>
-                    </ul>
-                </div>
-                
-                <div class="comparison-card">
-                    <h4>Network Operators</h4>
-                    <ul>
-                        <li>Review technical requirements</li>
-                        <li>Prepare infrastructure</li>
-                        <li>Join testnet as operator</li>
-                        <li>Earn service fees at launch</li>
-                    </ul>
-                </div>
-                
-                <div class="comparison-card">
-                    <h4>Community</h4>
-                    <ul>
-                        <li>Join Discord/Telegram</li>
-                        <li>Spread awareness</li>
-                        <li>Translate documentation</li>
-                        <li>Help onboard new users</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Learn More -->
-        <section>
-            <h2>Learn More</h2>
-            <p><strong>Website:</strong> <a href="https://time-coin.io" style="color: #667eea;">https://time-coin.io</a><br>
-            <strong>Email:</strong> <a href="mailto:info@time-coin.io" style="color: #667eea;">info@time-coin.io</a><br>
-            <strong>GitHub:</strong> <a href="https://github.com/time-coin/time-coin" style="color: #667eea;">https://github.com/time-coin/time-coin</a><br>
-            <strong>Telegram:</strong> <a href="https://t.me/+CaN6EflYM-83OTY0" style="color: #667eea;">https://t.me/+CaN6EflYM-83OTY0</a><br>
-            <strong>Twitter:</strong> <a href="https://x.com/TIMEcoin515010" style="color: #667eea;">@TIMEcoin515010</a></p>
-            
-            <p style="margin-top: 2rem;">
-                <strong>Technical Details:</strong> See <a href="whitepaper.html" style="color: #667eea;">Technical Specification Whitepaper</a><br>
-                <strong>Security Analysis:</strong> See Security Architecture Whitepaper
-            </p>
-        </section>
-        
-        <!-- Conclusion -->
-        <section>
-            <h2>Conclusion</h2>
-            <p>
-                TIME Coin represents the next evolution in cryptocurrency: a payment network that is 
-                <strong>fast, accessible, fair, and community-governed</strong>.
-            </p>
-            <p>
-                By combining instant BFT finality, universal multi-channel access, and democratic governance, 
-                TIME solves the fundamental challenges preventing cryptocurrency mass adoption.
-            </p>
-            
-            <div class="highlight-box">
-                <h3>No pre-mine. No VCs. No insider advantage.</h3>
-                <p>Join us in building the future of global payments.</p>
-            </div>
-            
-            <p style="text-align: center; font-size: 1.3rem; margin-top: 3rem; color: #a78bfa;">
-                <strong>⏰ TIME is money. Make it accessible.</strong>
-            </p>
-        </section>
-        
-        <!-- Download Section at Bottom -->
-        <div class="download-section" style="margin-top: 4rem;">
-            <h2>📄 Download Whitepaper</h2>
-            <p style="color: #94a3b8; margin-bottom: 2rem;">
-                Save the complete whitepaper for offline reading
-            </p>
-            
-            <a href="downloads/TIME-Coin-Overview-Whitepaper-v3.0.pdf" 
-               class="btn"
-               download="TIME-Coin-Overview-Whitepaper-v3.0.pdf">
-                <span style="font-size: 1.5rem;">📥</span>
-                Download PDF (v3.0)
-            </a>
-            
-            <p style="color: #64748b; font-size: 0.9rem; margin-top: 1.5rem;">
-                Version 3.0 - October 2025<br>
-                For technical specifications, see the <a href="whitepaper.html" style="color: #667eea;">Technical Whitepaper</a>
-            </p>
-        </div>
+    <!-- PDF generating overlay -->
+    <div id="pdf-generating">
+        <div class="pdf-spinner"></div>
+        <span>Generating PDF&hellip;</span>
     </div>
-    
-    <!-- Footer will be injected here by includes.js -->
+
+    <div class="whitepaper-wrapper">
+
+        <!-- Top bar -->
+        <div class="wp-topbar">
+            <a href="index.html" class="back-link">&#8592; Back to Home</a>
+            <div class="wp-actions">
+                <a href="technical-whitepaper.html" class="btn-sm btn-outline-sm">
+                    &#128300; Technical Whitepaper
+                </a>
+                <button onclick="window.print()" class="btn-sm btn-outline-sm">
+                    &#128424; Print
+                </button>
+                <button id="btn-download-pdf" class="btn-sm btn-primary-sm">
+                    &#11015; Download PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Sidebar TOC (wide screens) -->
+        <aside id="wp-toc">
+            <h4>Contents</h4>
+            <ul id="wp-toc-list"></ul>
+        </aside>
+
+        <!-- Markdown renders here -->
+        <main id="wp-content">
+            <div class="wp-loading">&#8987; Loading&hellip;</div>
+        </main>
+
+    </div>
+
+    <!-- Footer injected by includes.js -->
+
+    <script>
+    (function () {
+
+        /* ── Configure marked ── */
+        marked.use({
+            renderer: (() => {
+                const r = new marked.Renderer();
+                r.heading = function ({ text, depth }) {
+                    const slug = text.toLowerCase()
+                        .replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-');
+                    return `<h${depth} id="${slug}">${text}</h${depth}>\n`;
+                };
+                return r;
+            })(),
+            gfm: true,
+            breaks: false,
+        });
+
+        /* ── Load & render markdown ── */
+        const content = document.getElementById('wp-content');
+
+        fetch('OVERVIEW.md')
+            .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+            .then(md => {
+                content.innerHTML = marked.parse(md);
+                buildTOC(content);
+                initScrollSpy();
+            })
+            .catch(err => {
+                content.innerHTML =
+                    '<div class="wp-error">&#10060; Could not load whitepaper: ' + err.message + '</div>';
+            });
+
+        /* ── Sidebar TOC ── */
+        function buildTOC(container) {
+            const list = document.getElementById('wp-toc-list');
+            if (!list) return;
+            container.querySelectorAll('h2, h3').forEach(h => {
+                const li = document.createElement('li');
+                li.className = h.tagName === 'H3' ? 'toc-h3' : '';
+                const a = document.createElement('a');
+                a.href = '#' + h.id;
+                a.textContent = h.textContent;
+                a.addEventListener('click', e => {
+                    e.preventDefault();
+                    h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+                li.appendChild(a);
+                list.appendChild(li);
+            });
+        }
+
+        /* ── Scroll spy ── */
+        function initScrollSpy() {
+            const links = document.querySelectorAll('#wp-toc-list a');
+            if (!links.length) return;
+            const io = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        links.forEach(l => l.classList.remove('active'));
+                        const a = document.querySelector(
+                            '#wp-toc-list a[href="#' + e.target.id + '"]');
+                        if (a) a.classList.add('active');
+                    }
+                });
+            }, { rootMargin: '-10% 0px -80% 0px' });
+            document.querySelectorAll('#wp-content h2, #wp-content h3').forEach(h => io.observe(h));
+        }
+
+        /* ── PDF Download via html2pdf.js ── */
+        document.getElementById('btn-download-pdf').addEventListener('click', function () {
+            const overlay = document.getElementById('pdf-generating');
+            const btn = this;
+            btn.disabled = true;
+            overlay.classList.add('visible');
+
+            // Switch to light mode for capture
+            document.body.classList.add('pdf-export');
+
+            // Small delay so repaint completes before capture
+            setTimeout(function () {
+                html2pdf()
+                    .set({
+                        margin:      [12, 14, 12, 14],
+                        filename:    'TIME-Coin-Overview-Whitepaper-v4.0.pdf',
+                        image:       { type: 'jpeg', quality: 0.97 },
+                        html2canvas: {
+                            scale: 2,
+                            useCORS: true,
+                            backgroundColor: '#ffffff',
+                            logging: false
+                        },
+                        jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                        pagebreak:   { mode: ['avoid-all', 'css', 'legacy'] }
+                    })
+                    .from(content)
+                    .save()
+                    .finally(function () {
+                        document.body.classList.remove('pdf-export');
+                        overlay.classList.remove('visible');
+                        btn.disabled = false;
+                    });
+            }, 100);
+        });
+
+    })();
+    </script>
 </body>
 </html>
