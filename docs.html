@@ -776,6 +776,11 @@ Distribution per block:
 
             <h2 id="masternode-setup">Masternode Setup Guide</h2>
 
+            <div class="warning-box">
+                <strong>⚠️ Install the Wallet First</strong><br>
+                Before setting up a masternode, <a href="#wallet-setup">install the TIME Coin GUI wallet</a> on your local machine and copy your receive address. You will be asked for this address during installation so that block rewards are paid directly to your personal wallet — not stored on the server.
+            </div>
+
             <div class="info-box">
                 <strong>🚀 Automated Installation</strong><br>
                 The <code>install-masternode.sh</code> script handles everything: dependencies, Rust toolchain, building from source, config generation, systemd service setup, and firewall rules. Run it as <code>root</code> on an Ubuntu/Debian server.
@@ -814,8 +819,19 @@ sudo bash scripts/install-masternode.sh testnet</code></pre>
             </ul>
 
             <div class="info-box">
-                <strong>💡 Reward Address</strong><br>
-                During installation the script will prompt you to enter a TIME address to receive block rewards. Press Enter to use the node's own wallet address (created automatically on first start).
+                <strong>💡 Reward Address — Use Your Wallet, Not the Node</strong><br>
+                During installation the script will prompt: <em>"Reward address (or Enter for default):"</em><br><br>
+                <strong>Paste your wallet's receive address here.</strong> You copied this from the <strong>Receive</strong> tab in the GUI wallet during wallet setup.<br><br>
+                If you press Enter, rewards go to the masternode's own on-chain address. <strong>This is not recommended</strong> — see the security note below.
+            </div>
+
+            <div class="warning-box">
+                <strong>🔒 Why You Should Not Use the Masternode Address for Rewards</strong><br><br>
+                Your masternode's address is registered publicly on the network. Everyone can see it, including how much TIME has accumulated. Using it as your reward address creates real risks:<br><br>
+                • <strong>High-value target:</strong> A known address with a growing balance attracts attackers who may target the server specifically to trigger a slashing event or steal funds.<br>
+                • <strong>Server compromise = funds lost:</strong> If your VPS is ever breached, the attacker has direct access to the wallet that holds all accumulated rewards.<br>
+                • <strong>Privacy:</strong> Anyone watching the chain can track exactly how much your node earns in real time.<br><br>
+                Sending rewards to your <strong>personal GUI wallet on a separate machine</strong> keeps your earnings airgapped from the server entirely. Even if the server is compromised, your TIME is safe.
             </div>
 
             <h3>After Installation</h3>
@@ -909,43 +925,59 @@ nano /root/.timecoin/masternode.conf</code></pre>
 
             <h2 id="wallet-setup">Wallet Setup</h2>
 
-            <div class="warning-box">
-                <strong>⚠️ Development Phase</strong><br>
-                Production wallets are not yet available. The wallet software is currently in development and will be released with the testnet launch in Q2 2025. The instructions below show how the wallet will work when released.
+            <div class="info-box">
+                <strong>📋 Install the Wallet First</strong><br>
+                Set up the GUI wallet on your <strong>local machine</strong> before installing a masternode. You will need a receive address from your wallet to collect block rewards safely — keeping funds off the server entirely.
             </div>
 
-            <h3>Installation (Coming Soon)</h3>
-            <pre><code># Download for your platform
-# Linux:
-wget https://timecoin.io/downloads/time-wallet-linux
-chmod +x time-wallet-linux
-./time-wallet-linux
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>Rust 1.75+ — install via <a href="https://rustup.rs" target="_blank" rel="noopener">rustup.rs</a></li>
+                <li>Linux only — GUI libraries:
+                    <pre><code>sudo apt-get install libgtk-3-dev libxcb-render0-dev libxcb-shape0-dev \
+  libxcb-xfixes0-dev libxkbcommon-dev libssl-dev</code></pre>
+                </li>
+                <li>Windows and macOS require no extra libraries</li>
+            </ul>
 
-# macOS:
-brew install timecoin/tap/time-wallet
+            <h3>Build &amp; Run</h3>
+            <pre><code>git clone https://github.com/time-coin/time-wallet.git
+cd time-wallet
 
-# Windows:
-# Download .exe from https://timecoin.io/download</code></pre>
+# Build the GUI wallet
+cargo build --release --bin wallet-gui
 
-            <h3>Create New Wallet</h3>
-            <pre><code>time-wallet create
+# Launch it
+./target/release/wallet-gui        # Linux / macOS
+.\target\release\wallet-gui.exe    # Windows</code></pre>
 
-# Follow prompts:
-# 1. Set strong password
-# 2. Write down 12-word seed phrase
-# 3. Confirm seed phrase
-# 4. Wallet created!</code></pre>
+            <h3>Create a New Wallet</h3>
+            <ol>
+                <li>On the welcome screen choose <strong>Create New Wallet</strong></li>
+                <li>The wallet generates a BIP39 mnemonic seed phrase (12–24 words)</li>
+                <li>Write the seed phrase down on paper and store it offline — it is the only way to recover your funds</li>
+                <li>Click through to the main screen</li>
+            </ol>
 
             <div class="warning-box">
-                <strong>🔐 Security Critical:</strong> Your seed phrase is the ONLY way to recover your wallet. Write it down and store it safely offline. Never share it with anyone.
+                <strong>🔐 Seed Phrase is Everything:</strong> Anyone with your seed phrase can steal your funds. Write it on paper — never photograph it, store it in a cloud service, or share it with anyone.
             </div>
 
-            <h3>Import Existing Wallet</h3>
-            <pre><code>time-wallet restore
+            <h3>Find Your Receive Address</h3>
+            <p>Open the <strong>Receive</strong> tab. Your TIME address starts with <code>TIME1</code> (mainnet) or <code>TIME0</code> (testnet). Copy it — you will paste it into the masternode installer as your reward payout address.</p>
 
-# Enter your 12-word seed phrase
-# Set new password
-# Wallet restored!</code></pre>
+            <h3>Backup Your Wallet</h3>
+            <pre><code># Linux / macOS — copy wallet.dat to a safe location
+cp ~/.local/share/time-coin/mainnet/wallet.dat ~/backup/wallet.dat
+
+# Windows
+copy %APPDATA%\time-coin\mainnet\wallet.dat C:\backup\wallet.dat</code></pre>
+
+            <h3>Import an Existing Wallet</h3>
+            <ol>
+                <li>On the welcome screen choose <strong>Import Existing Key</strong></li>
+                <li>Paste your private key (hex format) and click <strong>Import Key</strong></li>
+            </ol>
 
             <h2 id="buying-time">Token Distribution</h2>
 
