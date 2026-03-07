@@ -519,52 +519,36 @@
         <main class="content">
             <h1 id="introduction">TIME Coin Documentation</h1>
             
-            <div class="warning-box" style="background: rgba(234, 179, 8, 0.15); border-left-color: #eab308;">
-                <strong>🚧 IMPORTANT: Development Phase Notice</strong><br><br>
-                TIME Coin is currently in active development. The following features are <strong>NOT YET AVAILABLE</strong>:<br>
-                • Purchasing TIME with cryptocurrency<br>
-                • Production wallet downloads<br>
-                • Live masternode operations<br>
-                • Live transaction processing<br><br>
-                <strong>Expected Testnet Launch:</strong> Q2 2025<br>
-                <strong>What you can do now:</strong> Review documentation, join community channels, and follow development progress on GitHub.
+            <div class="success-box">
+                <strong>✅ Testnet Active — v1.2.0 Production Release</strong><br><br>
+                The TIME Coin testnet is live. Masternodes are running, block rewards are being distributed, and the GUI wallet is available to install today.<br><br>
+                <strong>Current Phase (Q1 2026):</strong> TLS transport encryption &amp; network stability hardening<br>
+                <strong>Next:</strong> Feature enhancements Q2 2026 → Scalability Q3 2026 → Mainnet Q4 2026
             </div>
 
-            <p>Welcome to the TIME Coin documentation. TIME is a revolutionary cryptocurrency featuring 10-minute checkpoint blocks, instant transaction finality, and a block reward emission model with no pre-mine.</p>
+            <p>Welcome to the TIME Coin documentation. TIME is a cryptocurrency featuring 10-minute checkpoint blocks, sub-second transaction finality, and a fixed 100 TIME/block emission model with no pre-mine and no halving.</p>
 
             <div class="info-box">
-                <strong>🚀 Current Status:</strong> Development Phase<br>
-                <strong>📅 Expected Testnet Launch:</strong> Q2 2025<br>
+                <strong>🚀 Current Status:</strong> Testnet Active · v1.2.0<br>
                 <strong>🔧 Built With:</strong> Rust for performance and security<br>
                 <strong>📍 View Progress:</strong> <a href="roadmap.html" style="color: #667eea;">Development Roadmap</a>
             </div>
 
             <h2 id="quick-start">Quick Start</h2>
-            <p>TIME Coin is currently in active development. Here's what you can do now and what's coming soon:</p>
+            <p>The testnet is live. The fastest way to get started is to install the GUI wallet on your local machine, then optionally set up a masternode on a Linux server.</p>
 
-            <h3>Available Now</h3>
-            <p>Download and test the wallet in development mode:</p>
-            <pre><code># Clone the repository
-git clone https://github.com/time-coin/time-masternode.git
-cd time-coin
+            <h3>1. Install the Wallet (Local Machine)</h3>
+            <pre><code>git clone https://github.com/time-coin/time-wallet.git
+cd time-wallet
+cargo build --release --bin wallet-gui
+./target/release/wallet-gui</code></pre>
 
-# Build from source
-cargo build --release
+            <h3>2. Run a Masternode (Linux Server)</h3>
+            <pre><code>git clone https://github.com/time-coin/time-masternode.git
+cd time-masternode
+sudo bash scripts/install-masternode.sh testnet</code></pre>
 
-# Run tests
-cargo test</code></pre>
-
-            <h3>Coming Soon (Testnet Launch)</h3>
-            <div class="warning-box">
-                <strong>🚧 Not Yet Available:</strong><br>
-                The following features will be available when testnet launches in Q2 2025:<br>
-                • Purchasing TIME with crypto (BTC, ETH, USDC, USDT)<br>
-                • Creating production wallets<br>
-                • Sending TIME transactions<br>
-                • Running masternodes for rewards
-            </div>
-
-            <p>Want to stay updated? Join our community channels to be notified when testnet launches!</p>
+            <p>See the <a href="#wallet-setup">Wallet Setup</a> and <a href="#masternode-setup">Masternode Setup</a> sections for full step-by-step guides.</p>
 
             <h2 id="installation">Installation</h2>
 
@@ -992,12 +976,12 @@ copy %APPDATA%\time-coin\mainnet\wallet.dat C:\backup\wallet.dat</code></pre>
 
             <h2 id="sending">Sending TIME</h2>
 
-            <div class="warning-box">
-                <strong>⚠️ Feature Not Yet Available</strong><br>
-                Transaction functionality will be available when the testnet launches in Q2 2025. This section describes how transactions will work.
+            <div class="info-box">
+                <strong>✅ Available on Testnet</strong><br>
+                Transactions are live on testnet. Use the GUI wallet to send and receive TIME. Mainnet launches Q4 2026.
             </div>
 
-            <h3>Basic Transfer (Coming Soon)</h3>
+            <h3>Basic Transfer</h3>
             <pre><code>time-wallet send \
   --to TIME1recipient_address \
   --amount 100 \
@@ -1092,11 +1076,11 @@ ws.onmessage = (event) => {
             <h2 id="sdk">SDK</h2>
 
             <div class="info-box">
-                <strong>🛠️ SDK Development</strong><br>
-                Official SDKs for JavaScript, Python, and Rust are currently in development and will be released alongside the testnet launch in Q2 2025.
+                <strong>🛠️ SDK Roadmap</strong><br>
+                Official SDKs for JavaScript, Python, and Rust are planned for Q2–Q3 2026 alongside feature enhancements and scalability work. The JSON-RPC API is available today on testnet.
             </div>
 
-            <h3>JavaScript/TypeScript (Coming Soon)</h3>
+            <h3>JavaScript/TypeScript (Planned Q2 2026)</h3>
             <pre><code>npm install @timecoin/sdk
 
 import { TimeClient, Wallet } from '@timecoin/sdk';
