@@ -267,7 +267,27 @@
             margin: 20px 0;
             border: 1px solid rgba(102, 126, 234, 0.2);
             -webkit-overflow-scrolling: touch;
+            position: relative;
         }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #94a3b8;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+            user-select: none;
+            line-height: 1.4;
+        }
+        .copy-btn:hover { background: rgba(102,126,234,0.25); color: #e2e8f0; border-color: #667eea; }
+        .copy-btn.copied { color: #34d399; border-color: #34d399; background: rgba(52,211,153,0.1); }
 
         @media (max-width: 768px) {
             .content pre {
@@ -425,17 +445,17 @@
             </div>
 
             <div class="nav-section">
-                <div class="nav-title">Masternodes</div>
-                <a href="#masternode-overview" class="nav-link" onclick="toggleMobileMenu()">Overview</a>
-                <a href="#masternode-setup" class="nav-link" onclick="toggleMobileMenu()">Setup (Testnet Q2)</a>
-                <a href="#masternode-rewards" class="nav-link" onclick="toggleMobileMenu()">Rewards</a>
+                <div class="nav-title">Wallet & Usage</div>
+                <a href="#wallet-setup" class="nav-link" onclick="toggleMobileMenu()">Wallet Setup</a>
+                <a href="#buying-time" class="nav-link" onclick="toggleMobileMenu()">Token Distribution</a>
+                <a href="#sending" class="nav-link" onclick="toggleMobileMenu()">Sending TIME</a>
             </div>
 
             <div class="nav-section">
-                <div class="nav-title">Wallet & Usage</div>
-                <a href="#wallet-setup" class="nav-link" onclick="toggleMobileMenu()">Wallet Setup</a>
-                <a href="#buying-time" class="nav-link" onclick="toggleMobileMenu()">Buying TIME (Soon)</a>
-                <a href="#sending" class="nav-link" onclick="toggleMobileMenu()">Sending TIME (Soon)</a>
+                <div class="nav-title">Masternodes</div>
+                <a href="#masternode-overview" class="nav-link" onclick="toggleMobileMenu()">Overview</a>
+                <a href="#masternode-setup" class="nav-link" onclick="toggleMobileMenu()">Setup Guide</a>
+                <a href="#masternode-rewards" class="nav-link" onclick="toggleMobileMenu()">Rewards</a>
             </div>
 
             <div class="nav-section">
@@ -473,17 +493,17 @@
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-title">Masternodes</div>
-                    <a href="#masternode-overview" class="nav-link">Overview</a>
-                    <a href="#masternode-setup" class="nav-link">Setup Guide</a>
-                    <a href="#masternode-rewards" class="nav-link">Rewards</a>
-                </div>
-
-                <div class="nav-section">
                     <div class="nav-title">Wallet & Usage</div>
                     <a href="#wallet-setup" class="nav-link">Wallet Setup</a>
                     <a href="#buying-time" class="nav-link">Token Distribution</a>
                     <a href="#sending" class="nav-link">Sending TIME</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Masternodes</div>
+                    <a href="#masternode-overview" class="nav-link">Overview</a>
+                    <a href="#masternode-setup" class="nav-link">Setup Guide</a>
+                    <a href="#masternode-rewards" class="nav-link">Rewards</a>
                 </div>
 
                 <div class="nav-section">
@@ -756,126 +776,136 @@ Distribution per block:
 
             <h2 id="masternode-setup">Masternode Setup Guide</h2>
 
-            <div class="warning-box">
-                <strong>⚠️ Testnet Coming Q2 2025</strong><br>
-                Masternodes cannot be run yet. The masternode network will launch with the testnet in Q2 2025. This guide shows how to set up a masternode when the network goes live.
+            <div class="info-box">
+                <strong>🚀 Automated Installation</strong><br>
+                The <code>install-masternode.sh</code> script handles everything: dependencies, Rust toolchain, building from source, config generation, systemd service setup, and firewall rules. Run it as <code>root</code> on an Ubuntu/Debian server.
             </div>
 
             <h3>Prerequisites</h3>
             <ul>
-                <li>1,000+ TIME tokens (locked)</li>
-                <li>Linux server with public IP</li>
-                <li>4GB RAM, 2 vCPU, 50GB storage</li>
-                <li>Port 17575 open (default)</li>
+                <li>Ubuntu 20.04+ or Debian 11+ server with a public IP</li>
+                <li>4 GB RAM, 2 vCPU, 50 GB storage (minimum)</li>
+                <li>Port 24000 open for P2P (mainnet) or 24100 (testnet)</li>
+                <li>Collateral: 1,000 TIME (Bronze), 10,000 TIME (Silver), or 100,000 TIME (Gold) — or 0 for Free tier</li>
             </ul>
 
-            <h3>Step-by-Step Setup</h3>
+            <h3>Quick Install</h3>
 
-            <h4>1. Prepare Server</h4>
-            <pre><code># Update system
-sudo apt update && sudo apt upgrade -y
+            <h4>1. Clone the Repository</h4>
+            <pre><code>git clone https://github.com/time-coin/time-masternode.git
+cd time-masternode</code></pre>
 
-# Install dependencies
-sudo apt install -y build-essential git curl
+            <h4>2. Run the Install Script</h4>
+            <pre><code># Mainnet
+sudo bash scripts/install-masternode.sh mainnet
 
-# Create user
-sudo useradd -m -s /bin/bash timecoin
-sudo su - timecoin</code></pre>
+# Testnet
+sudo bash scripts/install-masternode.sh testnet</code></pre>
 
-            <h4>2. Install TIME Node</h4>
-            <pre><code># Download binary
-wget https://github.com/time-coin/time-masternode/releases/latest/time-node
+            <p>The script will:</p>
+            <ul>
+                <li>Install all system dependencies (<code>build-essential</code>, <code>cmake</code>, <code>clang</code>, <code>libssl-dev</code>, etc.)</li>
+                <li>Install Rust 1.75+ if not present</li>
+                <li>Build <code>timed</code> and <code>time-cli</code> from source in release mode</li>
+                <li>Create <code>/root/.timecoin/time.conf</code> with auto-generated RPC credentials</li>
+                <li>Create <code>/root/.timecoin/masternode.conf</code></li>
+                <li>Install and enable the <code>timed.service</code> systemd unit</li>
+                <li>Open the P2P port in UFW (if installed)</li>
+            </ul>
 
-# Make executable
-chmod +x time-node
-
-# Move to bin
-sudo mv time-node /usr/local/bin/</code></pre>
-
-            <h4>3. Configure Masternode</h4>
-            <pre><code># Generate masternode key
-time-node masternode genkey
-
-# Output: 5JX7YourMasternodeKey...
-
-# Create config file
-cat > ~/.timecoin/time.conf << EOF
-rpcuser=timerpc
-rpcpassword=YOUR_SECURE_PASSWORD
-rpcport=17576
-port=17575
-masternode=1
-masternodekey=5JX7YourMasternodeKey...
-externalip=YOUR_SERVER_IP
-EOF</code></pre>
-
-            <h4>4. Lock Collateral</h4>
-            <pre><code># In your wallet (local computer):
-time-wallet masternode lock \
-  --tier 1 \
-  --address TIME1your_address...
-
-# This locks 1,000 TIME and generates proof</code></pre>
-
-            <h4>5. Start Masternode</h4>
-            <pre><code># On server:
-time-node --daemon
-
-# Check status:
-time-node masternode status
-
-# Expected output:
-# Status: Enabled
-# Tier: 1
-# Uptime: 99.8%
-# Next Payment: ~2.3 hours</code></pre>
-
-            <div class="success-box">
-                <strong>✅ Masternode Active!</strong> Your node will start earning rewards after 24 hours of uptime.
+            <div class="info-box">
+                <strong>💡 Reward Address</strong><br>
+                During installation the script will prompt you to enter a TIME address to receive block rewards. Press Enter to use the node's own wallet address (created automatically on first start).
             </div>
 
-            <h3>Monitoring</h3>
-            <pre><code># Check earnings
-time-node masternode earnings
+            <h3>After Installation</h3>
 
-# View logs
-tail -f ~/.timecoin/debug.log
+            <h4>3. (Staked Tiers) Send Collateral</h4>
+            <p>Free-tier nodes need no collateral. For a staked tier, send the required amount to yourself and record the TXID:</p>
+            <pre><code># Bronze – 1,000 TIME
+time-cli sendtoaddress TIME1your_address 1000
 
-# Test connectivity
-time-node masternode ping</code></pre>
+# Silver – 10,000 TIME
+time-cli sendtoaddress TIME1your_address 10000
+
+# Gold – 100,000 TIME
+time-cli sendtoaddress TIME1your_address 100000
+
+# Find the collateral transaction
+time-cli listtransactions</code></pre>
+
+            <h4>4. Generate a Masternode Key</h4>
+            <pre><code>time-cli masternode genkey</code></pre>
+            <p>Add the output to <code>/root/.timecoin/time.conf</code>:</p>
+            <pre><code>masternodeprivkey=&lt;key from genkey&gt;</code></pre>
+
+            <h4>5. Update masternode.conf</h4>
+            <pre><code>nano /root/.timecoin/masternode.conf</code></pre>
+            <p>Add one line per masternode (alias, IP:port, collateral TXID, output index):</p>
+            <pre><code># Format: alias  IP:port  collateral_txid  collateral_vout
+mn1 203.0.113.10:24000 abc123...def456 0</code></pre>
+
+            <h4>6. Restart and Verify</h4>
+            <pre><code># Restart the service
+systemctl restart timed
+
+# Check it is running
+systemctl status timed
+
+# View live logs
+journalctl -u timed -f
+
+# Verify masternode status
+time-cli masternode status
+
+# Check peer connections
+time-cli getpeerinfo</code></pre>
+
+            <div class="success-box">
+                <strong>✅ Masternode Active!</strong> Your node will begin earning block rewards once it is recognized by the network. Free-tier nodes are eligible after a 72-block maturity period (~12 hours).
+            </div>
+
+            <h3>Useful Commands</h3>
+            <pre><code># Service management
+systemctl status timed
+systemctl restart timed
+systemctl stop timed
+systemctl start timed
+
+# Node information
+time-cli getblockchaininfo
+time-cli getbalance
+time-cli getpeerinfo
+
+# Masternode
+time-cli masternode status
+time-cli masternode list
+time-cli masternode genkey
+
+# Configuration files
+nano /root/.timecoin/time.conf
+nano /root/.timecoin/masternode.conf</code></pre>
 
             <h2 id="masternode-rewards">Masternode Rewards</h2>
 
-            <h3>Reward Calculation</h3>
-            <p>Your daily reward depends on:</p>
-            <ul>
-                <li><strong>Tier:</strong> Higher tiers earn more</li>
-                <li><strong>Uptime:</strong> Minimum 95% for full rewards</li>
-                <li><strong>Network Activity:</strong> More transactions = higher pool</li>
-                <li><strong>Total Masternodes:</strong> Rewards split among active nodes</li>
-            </ul>
-
-            <h3>Example Calculations</h3>
+            <h3>Block Reward Distribution</h3>
+            <p>Each block produces 100 TIME, distributed as follows:</p>
             <div class="info-box">
-                <strong>Tier 1 Example (1,000 TIME @ 18% APY):</strong><br>
-                Annual Reward: 180 TIME<br>
-                Daily Reward: ~0.49 TIME<br>
-                Monthly Income: ~15 TIME<br><br>
-
-                <strong>Tier 3 Example (100,000 TIME @ 30% APY):</strong><br>
-                Annual Reward: 30,000 TIME<br>
-                Daily Reward: ~82 TIME<br>
-                Monthly Income: ~2,500 TIME
+                <strong>Per-Block Reward Split (100 TIME total):</strong><br>
+                • Block Producer: 35 TIME<br>
+                • Gold tier pool: 25 TIME (split among all active Gold nodes)<br>
+                • Silver tier pool: 18 TIME (split among all active Silver nodes)<br>
+                • Bronze tier pool: 14 TIME (split among all active Bronze nodes)<br>
+                • Free tier pool: 8 TIME (split among all active Free nodes)
             </div>
 
-            <h3>Slashing Conditions</h3>
-            <div class="warning-box">
-                <strong>⚠️ Penalties:</strong> Masternodes are slashed for:<br>
-                • Downtime > 5% in 24 hours: -1% stake<br>
-                • Double-signing: -10% stake<br>
-                • Invalid validation: -5% stake<br>
-                • Extended offline (>7 days): Full stake loss
-            </div>
+            <h3>Reward Factors</h3>
+            <ul>
+                <li><strong>Tier:</strong> Higher tiers earn a larger share of the per-block pool</li>
+                <li><strong>Active nodes:</strong> Your share scales with the number of nodes in your tier</li>
+                <li><strong>Block time:</strong> 10 minutes — 144 blocks per day, 52,560 per year</li>
+                <li><strong>No halving:</strong> 100 TIME per block forever; no emission cuts</li>
+            </ul>
 
             <h2 id="wallet-setup">Wallet Setup</h2>
 
@@ -1166,6 +1196,26 @@ cargo fmt</code></pre>
                 document.body.style.overflow = '';
             }
         }
+
+        // Copy buttons for all code blocks
+        function addCopyButtons(scope) {
+            (scope || document).querySelectorAll('pre').forEach(pre => {
+                if (pre.querySelector('.copy-btn')) return;
+                const btn = document.createElement('button');
+                btn.className = 'copy-btn';
+                btn.textContent = 'Copy';
+                btn.addEventListener('click', () => {
+                    const code = pre.querySelector('code');
+                    navigator.clipboard.writeText(code ? code.innerText : pre.innerText).then(() => {
+                        btn.textContent = 'Copied!';
+                        btn.classList.add('copied');
+                        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+                    });
+                });
+                pre.appendChild(btn);
+            });
+        }
+        addCopyButtons();
 
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
