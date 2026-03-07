@@ -379,13 +379,13 @@
                 const renderer = new marked.Renderer();
 
                 // Add IDs to headings for anchor links
-                renderer.heading = function ({ text, depth }) {
-                    const slug = text
-                        .toLowerCase()
-                        .replace(/[^\w\s-]/g, '')
-                        .trim()
-                        .replace(/\s+/g, '-');
-                    return `<h${depth} id="${slug}">${text}</h${depth}>\n`;
+                renderer.heading = function ({ text, depth, raw }) {
+                    const plain = typeof text === 'string'
+                        ? text.replace(/<[^>]*>/g, '')
+                        : (raw || '').replace(/^#+\s+/, '').trimEnd();
+                    const slug = plain.toLowerCase()
+                        .replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-');
+                    return `<h${depth} id="${slug}">${text ?? plain}</h${depth}>\n`;
                 };
 
                 return renderer;

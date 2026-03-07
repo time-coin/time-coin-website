@@ -472,10 +472,13 @@
         marked.use({
             renderer: (() => {
                 const r = new marked.Renderer();
-                r.heading = function ({ text, depth }) {
-                    const slug = text.toLowerCase()
+                r.heading = function ({ text, depth, raw }) {
+                    const plain = typeof text === 'string'
+                        ? text.replace(/<[^>]*>/g, '')
+                        : (raw || '').replace(/^#+\s+/, '').trimEnd();
+                    const slug = plain.toLowerCase()
                         .replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-');
-                    return `<h${depth} id="${slug}">${text}</h${depth}>\n`;
+                    return `<h${depth} id="${slug}">${text ?? plain}</h${depth}>\n`;
                 };
                 return r;
             })(),
