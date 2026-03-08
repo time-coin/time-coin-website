@@ -688,13 +688,12 @@
                 </div>
                 <div class="faq-answer">
                     <div class="faq-answer-content">
-                        <p>Downtime affects your rewards and can result in penalties:</p>
+                        <p>Downtime affects your rewards but does <strong>not</strong> result in a stake penalty on its own:</p>
                         <ul>
-                            <li><strong>Short downtime (&lt;1 hour):</strong> Missed rewards during downtime</li>
-                            <li><strong>Extended downtime (&gt;5% in 24 hours):</strong> 1% stake penalty</li>
-                            <li><strong>Prolonged offline (&gt;7 days):</strong> Full stake loss</li>
+                            <li><strong>Any downtime:</strong> Your node is absent from the <code>consensus_participants_bitmap</code> for that block, making you ineligible for that block's tier reward. The reward simply goes to the next eligible node — no coins are deducted.</li>
+                            <li><strong>Reward violations:</strong> Attempting to claim a reward you did not earn (e.g. double-signing/equivocation) counts as a violation. After 3 violations your collateral is slashed.</li>
                         </ul>
-                        <p>Monitor your masternode with the built-in status tools and set up alerts to maintain uptime.</p>
+                        <p>In short: go offline and you miss rewards; act maliciously and you lose collateral. Monitor your masternode with the built-in status tools and set up alerts to maintain uptime.</p>
                     </div>
                 </div>
             </div>
@@ -713,10 +712,11 @@
                     <div class="faq-answer-content">
                         <p>TIME development follows this timeline:</p>
                         <ul>
-                            <li><strong>Now:</strong> Active development, code on GitHub</li>
-                            <li><strong>Q2 2025:</strong> Testnet launch (purchasing available)</li>
-                            <li><strong>Q3 2025:</strong> Security audits and testing</li>
-                            <li><strong>Q4 2025:</strong> Mainnet launch</li>
+                            <li><strong>Now (v1.2.0):</strong> Testnet active — run a node today</li>
+                            <li><strong>Q2 2026 (v1.3.0):</strong> Mandatory TLS, partition detection, protocol stub completion</li>
+                            <li><strong>Q3 2026 (v1.4.0):</strong> Block explorer, governance proposals, treasury activation</li>
+                            <li><strong>Q4 2026 (v1.5.0):</strong> Light clients (SPV), state compression, DHT peer discovery</li>
+                            <li><strong>2027 (v2.0.0):</strong> Smart contracts, production mainnet launch</li>
                         </ul>
                         <p>View the complete <a href="roadmap.html">development roadmap</a> for detailed milestones and progress tracking. Join our community to stay updated on progress!</p>
                     </div>

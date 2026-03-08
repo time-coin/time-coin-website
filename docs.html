@@ -752,11 +752,12 @@ time-wallet send \
 └─ 100 TIME per block + transaction fees
 
 Distribution per block:
-├─ 35 TIME to block producer (VRF-selected)
-├─ 25 TIME to Gold tier pool
-├─ 18 TIME to Silver tier pool
-├─ 14 TIME to Bronze tier pool
-└─ 8 TIME shared among Free tier nodes</code></pre>
+├─  30 TIME to block producer (VRF-selected)
+├─   5 TIME to on-chain treasury (governance-controlled)
+├─  25 TIME to Gold tier pool   (single winner per block)
+├─  18 TIME to Silver tier pool (single winner per block)
+├─  14 TIME to Bronze tier pool (single winner per block)
+└─   8 TIME shared among Free tier nodes (up to 25 recipients)</code></pre>
 
             <h2 id="masternode-setup">Masternode Setup Guide</h2>
 
@@ -892,19 +893,27 @@ nano /root/.timecoin/masternode.conf</code></pre>
             <p>Each block produces 100 TIME, distributed as follows:</p>
             <div class="info-box">
                 <strong>Per-Block Reward Split (100 TIME total):</strong><br>
-                • Block Producer: 35 TIME<br>
-                • Gold tier pool: 25 TIME (split among all active Gold nodes)<br>
-                • Silver tier pool: 18 TIME (split among all active Silver nodes)<br>
-                • Bronze tier pool: 14 TIME (split among all active Bronze nodes)<br>
-                • Free tier pool: 8 TIME (split among all active Free nodes)
+                • Block Producer: 30 TIME (VRF-selected leader)<br>
+                • Treasury: 5 TIME (on-chain, governance-controlled)<br>
+                • Gold tier: 25 TIME → <strong>single winner</strong> selected by fairness rotation<br>
+                • Silver tier: 18 TIME → <strong>single winner</strong> selected by fairness rotation<br>
+                • Bronze tier: 14 TIME → <strong>single winner</strong> selected by fairness rotation<br>
+                • Free tier: 8 TIME → shared among up to 25 active Free nodes
+            </div>
+
+            <h3>How Rewards Work</h3>
+            <p>For Bronze, Silver, and Gold tiers, the full tier pool goes to <strong>one node per block</strong>, chosen by a fairness-weighted rotation that gives preference to nodes that have waited longest since their last win. Over time, every active node in a tier receives approximately equal rewards.</p>
+            <div class="info-box">
+                <strong>Reward eligibility:</strong> Your node must appear in the <code>consensus_participants_bitmap</code> of the previous block — meaning it actively participated in gossip or TimeVote during that block period. Downtime means missed rounds; missed rounds mean no eligibility for that block's reward.
             </div>
 
             <h3>Reward Factors</h3>
             <ul>
-                <li><strong>Tier:</strong> Higher tiers earn a larger share of the per-block pool</li>
-                <li><strong>Active nodes:</strong> Your share scales with the number of nodes in your tier</li>
+                <li><strong>Tier:</strong> Higher tiers win a larger single-block payout (14 / 18 / 25 TIME)</li>
+                <li><strong>Active nodes in your tier:</strong> More competing nodes means fewer wins per node, but the same long-run expected average</li>
+                <li><strong>Uptime:</strong> Missed blocks = missed reward eligibility — no stake is penalised for downtime</li>
                 <li><strong>Block time:</strong> 10 minutes — 144 blocks per day, 52,560 per year</li>
-                <li><strong>No halving:</strong> 100 TIME per block forever; no emission cuts</li>
+                <li><strong>No halving:</strong> 100 TIME per block with no emission cuts, ever</li>
             </ul>
 
             <h2 id="wallet-setup">Wallet Setup</h2>
