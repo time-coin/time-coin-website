@@ -404,13 +404,13 @@
         <div class="progress-section">
             <div class="progress-header">
                 <div class="progress-title">Overall Development Progress</div>
-                <div class="progress-percentage">45%</div>
+                <div class="progress-percentage">52%</div>
             </div>
             <div class="progress-bar-container">
-                <div class="progress-bar" style="width: 45%"></div>
+                <div class="progress-bar" style="width: 52%"></div>
             </div>
             <div class="progress-info">
-                v1.2.0 Production Release • Security Audit Passed • Testnet Active • Phase 1 (Network Hardening) In Progress • Mainnet v2.0.0 target 2027
+                Node v1.2.3 • Wallet v0.4.0 • Security Audit Passed • Testnet Active • Phase 1 (Network Hardening) In Progress • Mainnet v2.0.0 target April 1, 2026
             </div>
         </div>
     </section>
@@ -500,6 +500,27 @@
                 </div>
             </div>
 
+            <!-- GUI Wallet -->
+            <div class="timeline-item">
+                <div class="timeline-dot">✓</div>
+                <div class="timeline-content">
+                    <div class="timeline-phase">GUI Wallet</div>
+                    <h3 class="timeline-title">Cross-Platform Desktop Wallet</h3>
+                    <div class="timeline-date">March 2026 • v0.4.0</div>
+                    <p class="timeline-description">Full-featured desktop wallet with HD key derivation, native masternode management, real-time finality notifications, and encrypted memo support.</p>
+                    <ul class="timeline-tasks">
+                        <li class="completed">BIP39/BIP44 HD wallet (Ed25519)</li>
+                        <li class="completed">QR code send &amp; receive with webcam scanner</li>
+                        <li class="completed">Encrypted transaction memos (ECDH + AES-256-GCM)</li>
+                        <li class="completed">Masternode registration, tier badges &amp; collateral tracking</li>
+                        <li class="completed">Real-time WebSocket finality notifications</li>
+                        <li class="completed">PDF mnemonic backup with QR code</li>
+                        <li class="completed">Cross-platform: Windows, macOS, Linux (egui/eframe)</li>
+                    </ul>
+                    <span class="status-badge status-completed">✓ v0.4.0 Released</span>
+                </div>
+            </div>
+
             <!-- Phase 5 -->
             <div class="timeline-item">
                 <div class="timeline-dot">⏰</div>
@@ -509,10 +530,13 @@
                     <div class="timeline-date">Q1–Q2 2026 • In Progress</div>
                     <p class="timeline-description">Securing all network connections with mandatory TLS, completing API stubs, and building the infrastructure needed for a healthy public testnet.</p>
                     <ul class="timeline-tasks">
-                        <li>Mandatory TLS for all P2P masternode connections</li>
+                        <li class="completed">TLS for P2P masternode connections (optional via tls=0)</li>
+                        <li class="completed">Dual mainnet + testnet daemon support</li>
+                        <li class="completed">Encrypted transaction memos (ECDH + AES-256-GCM)</li>
+                        <li class="completed">Payment request URI relay (timecoin: scheme)</li>
                         <li>TLS for RPC server (configurable via time.conf)</li>
                         <li>Network partition detection &amp; automatic recovery</li>
-                        <li>Complete 6 blockchain API stubs (pending txs, UTXO state hash, confirmations…)</li>
+                        <li>Complete blockchain API stubs (pending txs, UTXO state hash, confirmations…)</li>
                         <li>Replace placeholder checkpoints with real testnet block hashes</li>
                         <li>Block explorer — browse blocks, transactions &amp; masternode status</li>
                         <li>IPv6 support</li>
@@ -568,7 +592,7 @@
                 <div class="timeline-content">
                     <div class="timeline-phase">Phase 4 - Advanced Features &amp; Mainnet</div>
                     <h3 class="timeline-title">Smart Contracts, Privacy &amp; Production Mainnet Launch</h3>
-                    <div class="timeline-date">2027</div>
+                    <div class="timeline-date">April 1, 2026</div>
                     <p class="timeline-description">Full smart contract support, optional privacy features, cross-chain infrastructure, and the official v2.0.0 mainnet launch.</p>
                     <ul class="timeline-tasks">
                         <li>Sandboxed smart contract VM (TIME-native scripting)</li>
@@ -580,7 +604,7 @@
                         <li>Atomic swaps &amp; cross-chain bridge research</li>
                         <li>v2.0.0 mainnet genesis &amp; launch</li>
                     </ul>
-                    <span class="status-badge status-upcoming">2027</span>
+                    <span class="status-badge status-upcoming">April 1, 2026</span>
                 </div>
             </div>
 
@@ -601,9 +625,14 @@
                 </thead>
                 <tbody>
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.07);">
-                        <td style="padding: 10px 16px;"><strong>1.2.x</strong></td>
-                        <td style="padding: 10px 16px;">Bug fixes, testnet stability</td>
-                        <td style="padding: 10px 16px;"><span class="status-badge status-current" style="font-size:0.75rem;">Ongoing</span></td>
+                        <td style="padding: 10px 16px;"><strong>1.2.3</strong></td>
+                        <td style="padding: 10px 16px;">TLS P2P, encrypted memos, payment requests, network stability</td>
+                        <td style="padding: 10px 16px;"><span class="status-badge status-completed" style="font-size:0.75rem;">Released</span></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.07);">
+                        <td style="padding: 10px 16px;"><strong>Wallet 0.4.0</strong></td>
+                        <td style="padding: 10px 16px;">GUI wallet — HD keys, masternode UI, encrypted memos, QR codes</td>
+                        <td style="padding: 10px 16px;"><span class="status-badge status-completed" style="font-size:0.75rem;">Released</span></td>
                     </tr>
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.07);">
                         <td style="padding: 10px 16px;"><strong>1.3.0</strong></td>
@@ -623,7 +652,7 @@
                     <tr>
                         <td style="padding: 10px 16px;"><strong style="color: #667eea;">2.0.0</strong></td>
                         <td style="padding: 10px 16px;">Smart contracts, production mainnet launch</td>
-                        <td style="padding: 10px 16px;"><strong>2027</strong></td>
+                        <td style="padding: 10px 16px;"><strong>April 1, 2026</strong></td>
                     </tr>
                 </tbody>
             </table>
@@ -648,7 +677,7 @@
         window.addEventListener('load', () => {
             const progressBar = document.querySelector('.progress-bar');
             setTimeout(() => {
-                progressBar.style.width = '45%';
+                progressBar.style.width = '52%';
             }, 300);
         });
 

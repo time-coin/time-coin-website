@@ -97,7 +97,11 @@ a:hover {
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5), 0 0 0 1px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
 }
 
 .btn-secondary {
@@ -118,12 +122,30 @@ a:hover {
     border-radius: 15px;
     padding: 30px;
     transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 15px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
 }
 
 .card:hover {
     transform: translateY(-5px);
     border-color: rgba(102, 126, 234, 0.5);
     background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(102, 126, 234, 0.2);
+}
+
+.card:hover::before {
+    opacity: 1;
 }
 
 /* Info Boxes */
@@ -249,8 +271,22 @@ tr:hover {
     }
 }
 
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4); }
+    50%       { box-shadow: 0 0 0 8px rgba(102, 126, 234, 0); }
+}
+
+@keyframes status-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.5; }
+}
+
 .fade-in {
     animation: fadeIn 0.6s ease;
+}
+
+.pulse {
+    animation: status-pulse 2s ease-in-out infinite;
 }
 
 /* Mobile Responsive */

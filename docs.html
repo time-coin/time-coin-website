@@ -508,7 +508,9 @@
 
                 <div class="nav-section">
                     <div class="nav-title">Development</div>
+                    <a href="#governance" class="nav-link">Governance</a>
                     <a href="#api" class="nav-link">API Reference</a>
+                    <a href="#config" class="nav-link">Configuration</a>
                     <a href="#sdk" class="nav-link">SDK</a>
                     <a href="#contributing" class="nav-link">Contributing</a>
                 </div>
@@ -520,16 +522,16 @@
             <h1 id="introduction">TIME Coin Documentation</h1>
             
             <div class="success-box">
-                <strong>✅ Testnet Active — v1.2.0 Production Release</strong><br><br>
+                <strong>✅ Testnet Active — v1.2.3 Production Release</strong><br><br>
                 The TIME Coin testnet is live. Masternodes are running, block rewards are being distributed, and the GUI wallet is available to install today.<br><br>
                 <strong>Current Phase (Q1 2026):</strong> TLS transport encryption &amp; network stability hardening<br>
-                <strong>Next:</strong> Feature enhancements Q2 2026 → Scalability Q3 2026 → Mainnet Q4 2026
+                <strong>Next:</strong> Governance &amp; Ecosystem Q2 2026 → Scalability Q3 2026 → Mainnet April 1, 2026
             </div>
 
             <p>Welcome to the TIME Coin documentation. TIME is a cryptocurrency featuring 10-minute checkpoint blocks, sub-second transaction finality, and a fixed 100 TIME/block emission model with no pre-mine and no halving.</p>
 
             <div class="info-box">
-                <strong>🚀 Current Status:</strong> Testnet Active · v1.2.0<br>
+                <strong>🚀 Current Status:</strong> Testnet Active · v1.2.3<br>
                 <strong>🔧 Built With:</strong> Rust for performance and security<br>
                 <strong>📍 View Progress:</strong> <a href="roadmap.html" style="color: #667eea;">Development Roadmap</a>
             </div>
@@ -641,41 +643,51 @@ cargo install --path .</code></pre>
 
             <h2 id="transactions">Transactions</h2>
 
-            <h3>Transaction Types</h3>
+            <h3>Transaction Fees</h3>
+            <p>Fees are tiered by amount with a flat minimum floor of 0.01 TIME:</p>
             <table>
                 <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                    <th>Min Fee</th>
+                    <th>Amount</th>
+                    <th>Fee Rate</th>
+                    <th>Example</th>
                 </tr>
                 <tr>
-                    <td>Transfer</td>
-                    <td>Send TIME between addresses</td>
-                    <td>0.01 TIME</td>
+                    <td>&lt; 100 TIME</td>
+                    <td>1%</td>
+                    <td>50 TIME → 0.50 TIME fee</td>
                 </tr>
                 <tr>
-                    <td>Masternode</td>
-                    <td>Register/update masternode</td>
-                    <td>1 TIME</td>
+                    <td>100 – 999 TIME</td>
+                    <td>0.5%</td>
+                    <td>500 TIME → 2.50 TIME fee</td>
                 </tr>
                 <tr>
-                    <td>Governance</td>
-                    <td>Vote on proposals</td>
-                    <td>0.1 TIME</td>
+                    <td>1,000 – 9,999 TIME</td>
+                    <td>0.25%</td>
+                    <td>5,000 TIME → 12.50 TIME fee</td>
+                </tr>
+                <tr>
+                    <td>≥ 10,000 TIME</td>
+                    <td>0.1%</td>
+                    <td>50,000 TIME → 50 TIME fee</td>
                 </tr>
             </table>
+            <div class="warning-box">
+                <strong>Minimum send amount: 1 TIME.</strong> Sends below 1 TIME are rejected at the protocol level (the 0.01 TIME flat minimum fee would exceed 1% of the amount). Self-sends for UTXO consolidation are exempt.
+            </div>
 
             <h3>Creating a Transaction</h3>
-            <pre><code>// Send TIME to another address
-time-wallet send \
-  --to TIME1recipient... \
-  --amount 100 \
-  --fee 0.01
+            <pre><code># Send 100 TIME (fee added on top)
+time-cli sendtoaddress TIME1recipient... 100
 
-// Output:
-// Transaction ID: 0xabc123...
-// Status: Confirmed (2.3 seconds)
-// Fee: 0.01 TIME</code></pre>
+# Deduct the fee from the sent amount instead
+time-cli sendtoaddress TIME1recipient... 100 --subtract-fee
+
+# Attach an encrypted memo (visible only to sender + recipient)
+time-cli sendtoaddress TIME1recipient... 100 --memo "Invoice #42"
+
+# Return TXID immediately without waiting for finality confirmation
+time-cli sendtoaddress TIME1recipient... 100 --nowait</code></pre>
 
             <h3>Transaction Finality</h3>
             <div class="success-box">
@@ -822,7 +834,7 @@ sudo bash scripts/install-masternode.sh testnet</code></pre>
             <h3>After Installation</h3>
 
             <h4>3. (Staked Tiers) Send Collateral</h4>
-            <p>Free-tier nodes need no collateral. For a staked tier, send the required amount to yourself and record the TXID:</p>
+            <p>Free-tier nodes need no collateral. For a staked tier, send the <strong>exact</strong> collateral amount to yourself, then wait for 3 block confirmations (~30 minutes) before proceeding:</p>
             <pre><code># Bronze – 1,000 TIME
 time-cli sendtoaddress TIME1your_address 1000
 
@@ -832,8 +844,8 @@ time-cli sendtoaddress TIME1your_address 10000
 # Gold – 100,000 TIME
 time-cli sendtoaddress TIME1your_address 100000
 
-# Find the collateral transaction
-time-cli listtransactions</code></pre>
+# Wait for 3 confirmations (~30 min), then find the TXID and vout
+time-cli listunspent</code></pre>
 
             <h4>4. Generate a Masternode Key</h4>
             <pre><code>time-cli masternode genkey</code></pre>
@@ -968,8 +980,9 @@ copy %APPDATA%\time-coin\mainnet\wallet.dat C:\backup\wallet.dat</code></pre>
 
             <h3>Import an Existing Wallet</h3>
             <ol>
-                <li>On the welcome screen choose <strong>Import Existing Key</strong></li>
-                <li>Paste your private key (hex format) and click <strong>Import Key</strong></li>
+                <li>On the welcome screen choose <strong>Import Existing Wallet</strong></li>
+                <li>Enter your 12 or 24 word BIP39 seed phrase</li>
+                <li>Set an encryption password and click <strong>Import</strong></li>
             </ol>
 
             <h2 id="buying-time">Token Distribution</h2>
@@ -987,100 +1000,145 @@ copy %APPDATA%\time-coin\mainnet\wallet.dat C:\backup\wallet.dat</code></pre>
 
             <div class="info-box">
                 <strong>✅ Available on Testnet</strong><br>
-                Transactions are live on testnet. Use the GUI wallet to send and receive TIME. Mainnet launches Q4 2026.
+                Transactions are live on testnet. Use the GUI wallet or <code>time-cli</code> to send and receive TIME. Mainnet launches April 1, 2026.
             </div>
 
-            <h3>Basic Transfer</h3>
-            <pre><code>time-wallet send \
-  --to TIME1recipient_address \
-  --amount 100 \
-  --fee auto
+            <h3>Via GUI Wallet</h3>
+            <p>Open the <strong>Send</strong> tab, enter the recipient address and amount, optionally add an encrypted memo, and click Send. The wallet shows finality confirmation in under 1 second.</p>
 
-# Transaction confirmed in ~under 1 second</code></pre>
+            <h3>Via CLI</h3>
+            <pre><code># Basic send (fee added on top)
+time-cli sendtoaddress TIME1recipient... 100
 
-            <h3>Advanced Options</h3>
-            <pre><code># Send with custom fee
-time-wallet send \
-  --to TIME1recipient... \
-  --amount 100 \
-  --fee 0.05
+# Deduct fee from amount (recipient receives less)
+time-cli sendtoaddress TIME1recipient... 100 --subtract-fee
 
-# Send with memo
-time-wallet send \
-  --to TIME1recipient... \
-  --amount 100 \
-  --memo "Payment for services"
+# Attach an encrypted memo
+time-cli sendtoaddress TIME1recipient... 100 --memo "Payment for invoice #42"
 
-# Send to multiple recipients
-time-wallet send-many \
-  --recipients recipients.json</code></pre>
+# Check recent transactions (memos shown if decryptable)
+time-cli listtransactions 20</code></pre>
+
+            <h3>Payment Requests</h3>
+            <p>Generate a <code>timecoin:</code> URI to share with payers via email, QR code, or message:</p>
+            <pre><code># Generate a payment request URI
+time-cli request-payment 50.0 --memo "Invoice #42" --label "Alice's Shop"
+# Output: timecoin:TIME0AsqaMhk...?amount=50&pubkey=a1b2c3...&memo=Invoice%20%2342
+
+# Pay a payment request URI
+time-cli pay-request "timecoin:TIME0AsqaMhk...?amount=50&pubkey=a1b2c3..."</code></pre>
+            <p>The GUI wallet's <strong>Receive</strong> tab has a built-in <strong>Payment Request</strong> button that generates and displays the QR code.</p>
+
+            <h3>Encrypted Memos</h3>
+            <p>Memos are end-to-end encrypted using ECDH (X25519) + AES-256-GCM. Only the sender and recipient can decrypt them — all other nodes see only ciphertext on-chain. The recipient must have at least one prior on-chain transaction so their public key is discoverable. Maximum memo length: 256 characters.</p>
+
+            <h2 id="governance">Governance</h2>
+
+            <p>Bronze, Silver, and Gold masternodes can submit and vote on on-chain proposals. Free-tier nodes have no governance rights.</p>
+
+            <h3>Governance Weights</h3>
+            <table>
+                <tr>
+                    <th>Tier</th>
+                    <th>Governance Votes</th>
+                </tr>
+                <tr><td>Free</td><td>None</td></tr>
+                <tr><td>Bronze</td><td>1</td></tr>
+                <tr><td>Silver</td><td>10</td></tr>
+                <tr><td>Gold</td><td>100</td></tr>
+            </table>
+
+            <p>A proposal passes when YES votes reach <strong>67% of total active governance weight</strong> by the end of the 1,008-block voting window (~1 week). The treasury accumulates 5 TIME per block and is released only via a passed treasury proposal.</p>
+
+            <h3>Proposal Types</h3>
+            <pre><code># Treasury disbursement
+time-cli submitproposal treasury TIME1recipient... 500.0 "Community event sponsorship"
+
+# Fee schedule change
+time-cli submitproposal feeschedule 0.005 '[{"upper":100,"rate_bps":100},{"upper":1000,"rate_bps":50}]'</code></pre>
+
+            <h3>Voting and Monitoring</h3>
+            <pre><code># Vote on a proposal
+time-cli voteproposal &lt;proposal_id&gt; yes
+time-cli voteproposal &lt;proposal_id&gt; no
+
+# List active proposals
+time-cli listproposals active
+
+# All proposals (active / passed / failed / executed)
+time-cli listproposals
+
+# Full detail including current vote tally
+time-cli getproposal &lt;proposal_id&gt;</code></pre>
 
             <h2 id="api">API Reference</h2>
 
             <div class="info-box">
-                <strong>📘 API Documentation</strong><br>
-                The TIME Coin API is currently under development. Full API documentation will be available with the testnet launch. The examples below show the planned API structure.
+                <strong>📘 JSON-RPC API — Available on Testnet Today</strong><br>
+                The TIME Coin daemon exposes a Bitcoin-compatible JSON-RPC 2.0 interface on <code>127.0.0.1:24001</code> (mainnet) and <code>127.0.0.1:24101</code> (testnet). Use <code>time-cli</code> as the client, or call the RPC port directly with any HTTP client.
             </div>
 
-            <h3>REST API Endpoints (Planned)</h3>
+            <h3>Blockchain</h3>
+            <pre><code>time-cli getblockchaininfo     # chain, height, consensus info
+time-cli getblockcount         # current block height
+time-cli getblock &lt;height&gt;    # block details by height
+time-cli getconsensusinfo      # TimeVote status, masternode count, quorum</code></pre>
 
-            <h4>Get Account Balance</h4>
-            <pre><code>GET /api/v1/account/{address}/balance
+            <h3>Network</h3>
+            <pre><code>time-cli getnetworkinfo        # version, protocol, connection count
+time-cli getpeerinfo           # connected peers with ping, height, consensus status
+time-cli uptime                # daemon uptime in seconds</code></pre>
 
-Response:
-{
-  "address": "TIME1abc...",
-  "balance": "1234.567890",
-  "locked": "1000.000000",
-  "available": "234.567890"
-}</code></pre>
+            <h3>Wallet &amp; Transactions</h3>
+            <pre><code>time-cli getbalance            # available / locked / total
+time-cli listunspent           # UTXOs (add min/max confirmations)
+time-cli listtransactions 20   # last N transactions (includes decrypted memos)
+time-cli gettransaction &lt;txid&gt;
+time-cli sendtoaddress &lt;addr&gt; &lt;amount&gt; [--subtract-fee] [--memo "text"] [--nowait]
+time-cli validateaddress &lt;addr&gt;
+time-cli mergeutxos            # consolidate small UTXOs</code></pre>
 
-            <h4>Submit Transaction</h4>
-            <pre><code>POST /api/v1/transaction/submit
+            <h3>Masternodes</h3>
+            <pre><code>time-cli masternode genkey     # generate a masternode private key
+time-cli masternode list       # all masternodes with tier, status, uptime
+time-cli masternode status     # this node's masternode status
+time-cli listlockedcollaterals # locked collateral UTXOs</code></pre>
 
-Body:
-{
-  "from": "TIME1abc...",
-  "to": "TIME1xyz...",
-  "amount": "100.00",
-  "fee": "0.01",
-  "signature": "0x..."
-}
+            <h3>Mempool</h3>
+            <pre><code>time-cli getmempoolinfo
+time-cli getrawmempool [--verbose]</code></pre>
 
-Response:
-{
-  "tx_id": "0xabc123...",
-  "status": "confirmed",
-  "finality_time": 3.2
-}</code></pre>
+            <h3>Output Formats</h3>
+            <pre><code># Default: pretty JSON
+time-cli getblockchaininfo
 
-            <h4>Get Block Info</h4>
-            <pre><code>GET /api/v1/block/{height}
+# Single-line JSON (for scripts / piping to jq)
+time-cli --compact getblockchaininfo
 
-Response:
-{
-  "height": 1234,
-  "hash": "0xabc...",
-  "timestamp": 1704153600,
-  "tx_count": 5420,
-  "total_fees": "54.20"
-}</code></pre>
+# Human-readable text
+time-cli --human getbalance
 
-            <h3>WebSocket API</h3>
-            <pre><code>// Connect to WebSocket
-const ws = new WebSocket('wss://api.timecoin.io/ws');
+# Target testnet
+time-cli --testnet getblockcount
 
-// Subscribe to new transactions
-ws.send(JSON.stringify({
-  action: 'subscribe',
-  channel: 'transactions'
-}));
+# Target a remote node
+time-cli --rpc-url http://192.168.1.10:24001 getblockcount</code></pre>
 
-// Receive real-time updates
-ws.onmessage = (event) => {
-  const tx = JSON.parse(event.data);
-  console.log('New transaction:', tx);
-};</code></pre>
+            <h3>Scripting Example</h3>
+            <pre><code>#!/bin/bash
+# Simple monitoring script
+while true; do
+    clear
+    echo "=== TIME Coin Node ==="
+    echo "Blocks:      $(time-cli getblockcount)"
+    echo "Peers:       $(time-cli getpeerinfo | jq 'length')"
+    echo "Masternodes: $(time-cli masternode list | jq 'length')"
+    echo "Balance:     $(time-cli --human getbalance)"
+    sleep 10
+done</code></pre>
+
+            <h3>WebSocket Notifications</h3>
+            <p>The daemon also exposes a WebSocket server on port <code>24002</code> (mainnet) / <code>24102</code> (testnet) for real-time transaction finality events. The GUI wallet uses this to show instant confirmation. Extended subscription API coming in Phase 2.</p>
 
             <h2 id="sdk">SDK</h2>
 
@@ -1148,6 +1206,71 @@ async fn main() {
     
     println!("Transaction: {}", tx.id);
 }</code></pre>
+
+            <h2 id="config">Configuration Reference</h2>
+
+            <h3>Network Ports</h3>
+            <table>
+                <tr>
+                    <th>Network</th>
+                    <th>P2P Port</th>
+                    <th>RPC Port</th>
+                    <th>WebSocket Port</th>
+                </tr>
+                <tr><td>Mainnet</td><td>24000</td><td>24001</td><td>24002</td></tr>
+                <tr><td>Testnet</td><td>24100</td><td>24101</td><td>24102</td></tr>
+            </table>
+            <p>Only the P2P port needs to be open to the internet. RPC is bound to <code>127.0.0.1</code> by default — never expose it publicly.</p>
+
+            <h3>Directory Layout</h3>
+            <pre><code>~/.timecoin/          ← mainnet
+├── time.conf         ← daemon configuration
+├── masternode.conf   ← collateral entries (alias txid vout)
+├── time-wallet.dat   ← wallet (BACK THIS UP)
+├── blockchain/       ← chain database
+├── peers/            ← peer cache
+└── registry/         ← masternode registry
+
+~/.timecoin/testnet/  ← testnet (same structure)</code></pre>
+
+            <h3>Key time.conf Options</h3>
+            <pre><code>masternode=1                    # enable masternode mode
+reward_address=TIME1abc...      # where block rewards are sent
+masternodeprivkey=&lt;key&gt;        # masternode signing key (from genkey)
+
+# Network
+port=24000                      # P2P port (default by network)
+rpcport=24001                   # RPC port
+tls=1                           # enable TLS for P2P (0 to disable)
+rpctls=1                        # enable TLS for RPC
+
+# RPC auth (auto-generated on first run)
+rpcuser=timecoinrpc
+rpcpassword=&lt;auto-generated&gt;</code></pre>
+
+            <h3>masternode.conf Format</h3>
+            <pre><code># alias  IP:port  collateral_txid  collateral_vout
+mn1 203.0.113.10:24000 abc123...def456 0
+mn2 203.0.113.11:24000 def456...abc789 1</code></pre>
+
+            <h3>Upgrading</h3>
+            <pre><code>cd time-masternode
+git pull origin main
+sudo ./scripts/install-masternode.sh mainnet   # detects existing install</code></pre>
+
+            <h3>Deregistering a Masternode</h3>
+            <p>Set <code>masternode=0</code> in <code>time.conf</code> and restart. The collateral UTXO is automatically unlocked and becomes spendable.</p>
+            <pre><code>sudo systemctl restart timed
+time-cli listunspent   # collateral now shows as spendable</code></pre>
+
+            <h3>Changing Tiers</h3>
+            <ol>
+                <li>Set <code>masternode=0</code> in <code>time.conf</code> and restart to deregister</li>
+                <li>Send the exact new-tier collateral amount to yourself</li>
+                <li>Wait for 3 confirmations (~30 min), then run <code>time-cli listunspent</code></li>
+                <li>Update <code>masternode.conf</code> with the new txid/vout</li>
+                <li>Set <code>masternode=1</code> and restart</li>
+            </ol>
 
             <h2 id="contributing">Contributing</h2>
 
