@@ -223,4 +223,4 @@ Thank you for helping keep TIME Coin and our community safe!
 
 ---
 
-Last Updated: October 2025
+Last Updated: March 2026

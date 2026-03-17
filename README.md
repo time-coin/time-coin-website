@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![Testnet](https://img.shields.io/badge/testnet-Q2%202025-blue.svg)]()
+[![Testnet](https://img.shields.io/badge/testnet-Active-brightgreen.svg)]()
 
 ## 🌐 Live Website
 
@@ -29,10 +29,12 @@ This repository contains the complete TIME Coin marketing and documentation webs
 ### Pages
 - **🏠 Home** (`index.html`) - Main marketing page with features and CTAs
 - **📚 Documentation** (`docs.html`) - Comprehensive technical documentation
-- **❓ FAQ** (`faq.html`) - 27 frequently asked questions across 5 categories
-- **🗺️ Roadmap** (`roadmap.html`) - 12-phase development timeline
+- **❓ FAQ** (`faq.html`) - Frequently asked questions across multiple categories
+- **🗺️ Roadmap** (`roadmap.html`) - Development timeline
 - **👥 Community** (`community.html`) - Community hub with social links
 - **📰 Press Kit** (`press.html`) - Media resources and brand assets
+- **💱 Exchange** (`exchange.html`) - Exchange listings and trading info
+- **🔍 Explorer** (`explorer.html`) - Testnet block explorer
 
 ### Key Features
 - ✅ Responsive design (mobile, tablet, desktop)
@@ -209,15 +211,12 @@ We welcome contributions to improve the TIME Coin website!
 
 ## 📋 Project Status
 
-**Current Phase:** Phase 3 - Masternode Network (35% complete)
+**Current Phase:** Testnet Active — Mainnet Pending
 
-- ✅ Phase 1: Core blockchain (Complete)
-- ✅ Phase 2: State management (Complete)
-- ⏰ Phase 3: Masternode network (In Progress)
-- 📅 Phase 5: Wallet development (Q1 2025)
-- 📅 Phase 6: Security audits (Q2 2025)
-- 🚀 Phase 7: Public testnet (Q2 2025)
-- 🎉 Phase 9: Mainnet launch (Q3-Q4 2025)
+- ✅ Phase 1: Core protocol (Complete)
+- 🔄 Phase 2: Testnet hardening (In Progress — Q1/Q2 2026)
+- ⏳ Phase 3: Mainnet launch (Target Q3/Q4 2026)
+- 🚀 Phase 4: Accessibility & growth (2027+)
 
 [View Full Roadmap](roadmap.html)
 
@@ -259,7 +258,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ## 📊 Website Stats
 
-- **Pages:** 6
+- **Pages:** 8+
 - **Lines of Code:** ~8,000
 - **Load Time:** <2 seconds
 - **Mobile Score:** 95+
@@ -308,4 +307,4 @@ Planned improvements for the website:
 
 Made with ⏰ by the TIME Coin community
 
-Last Updated: October 2025
+Last Updated: March 2026
