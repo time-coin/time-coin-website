@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Explorer - TIME Coin</title>
+    <meta name="description" content="Explore the TIME Coin blockchain. Search transactions, blocks, and addresses.">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/includes.js" defer></script>
+    <style>
+        .explorer-section {
+            min-height: calc(100vh - 70px);
+            padding: 48px 0 80px;
+        }
+
+        .explorer-hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .explorer-hero h1 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        /* Search */
+        .search-wrap {
+            max-width: 680px;
+            margin: 0 auto 48px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 20px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: monospace;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.25);
+            font-family: inherit;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            padding: 14px 24px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover { opacity: 0.9; }
+
+        /* Chain stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Panels */
+        .explorer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        .panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .panel-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .panel-link {
+            font-size: 0.85rem;
+            color: var(--primary-purple);
+            text-decoration: none;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .data-table th {
+            padding: 12px 24px;
+            text-align: left;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 14px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            vertical-align: middle;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .hash-link {
+            font-family: monospace;
+            color: var(--primary-purple);
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+
+        .hash-link:hover { text-decoration: underline; }
+
+        .tx-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(102, 126, 234, 0.15);
+            color: var(--primary-purple);
+            border-radius: 20px;
+            padding: 2px 10px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        /* Detail view */
+        .detail-view {
+            display: none;
+        }
+
+        .detail-view.visible {
+            display: block;
+        }
+
+        .list-view {
+            display: block;
+        }
+
+        .list-view.hidden {
+            display: none;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-bottom: 24px;
+            background: none;
+            border: none;
+            font-family: inherit;
+            padding: 0;
+            transition: color 0.2s;
+        }
+
+        .back-btn:hover { color: var(--primary-purple); }
+
+        .detail-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 16px;
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            align-items: start;
+        }
+
+        .detail-row:last-child { border-bottom: none; }
+
+        .detail-key {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding-top: 2px;
+        }
+
+        .detail-val {
+            font-size: 0.875rem;
+            word-break: break-all;
+        }
+
+        .mono { font-family: monospace; }
+
+        /* Mempool badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-green {
+            background: rgba(74, 222, 128, 0.15);
+            color: var(--success-green);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .badge-yellow {
+            background: rgba(251, 191, 36, 0.15);
+            color: var(--warning-yellow);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .loading-row td {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 40px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-top-color: var(--primary-purple);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-msg {
+            color: var(--danger-red);
+            text-align: center;
+            padding: 40px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 640px) {
+            .detail-row { grid-template-columns: 1fr; gap: 4px; }
+            .data-table th:nth-child(n+4),
+            .data-table td:nth-child(n+4) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="explorer-section">
+        <div class="container">
+
+            <!-- Hero + Search -->
+            <div class="explorer-hero">
+                <h1><span class="gradient-text">TIME</span> Block Explorer</h1>
+                <p style="color:var(--text-secondary)">Search by block height, transaction ID, or TIME address</p>
+            </div>
+
+            <div class="search-wrap">
+                <input type="text" class="search-input" id="searchInput"
+                       placeholder="Block height, TX ID, or TIME address…"
+                       onkeydown="if(event.key==='Enter') doSearch()">
+                <button class="search-btn" onclick="doSearch()">Search</button>
+            </div>
+
+            <!-- Chain Stats -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card"><div class="stat-value" id="statHeight">—</div><div class="stat-label">Block Height</div></div>
+                <div class="stat-card"><div class="stat-value" id="statTxs">—</div><div class="stat-label">Mempool TXs</div></div>
+                <div class="stat-card"><div class="stat-value" id="statPeers">—</div><div class="stat-label">Peers</div></div>
+                <div class="stat-card"><div class="stat-value" id="statDiff">—</div><div class="stat-label">Difficulty</div></div>
+                <div class="stat-card"><div class="stat-value" id="statNetwork">—</div><div class="stat-label">Network</div></div>
+            </div>
+
+            <!-- List view -->
+            <div class="list-view" id="listView">
+                <div class="panel">
+                    <div class="panel-header">
+                        <span class="panel-title">Latest Blocks</span>
+                        <span style="color:var(--text-secondary);font-size:0.8rem" id="blockCount"></span>
+                    </div>
+                    <div id="blocksTableWrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Height</th>
+                                    <th>Hash</th>
+                                    <th>Transactions</th>
+                                    <th>Time</th>
+                                    <th>Size</th>
+                                </tr>
+                            </thead>
+                            <tbody id="blocksBody">
+                                <tr class="loading-row"><td colspan="5"><span class="spinner"></span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detail view -->
+            <div class="detail-view" id="detailView">
+                <button class="back-btn" onclick="showList()">← Back to Explorer</button>
+                <div class="detail-panel" id="detailContent"></div>
+            </div>
+
+        </div>
+    </section>
+
+<script>
+const API = '/api/explorer';
+
+// ── Chain Stats ──────────────────────────────────────────────────────────────
+async function loadChainStats() {
+    try {
+        const res = await fetch(`${API}/chain`);
+        const data = await res.json();
+
+        document.getElementById('statHeight').textContent =
+            (data.blockCount ?? data.chainInfo?.blocks ?? '—').toLocaleString();
+        document.getElementById('statTxs').textContent =
+            (data.mempoolInfo?.size ?? '—').toLocaleString();
+        document.getElementById('statPeers').textContent = '—'; // needs network endpoint
+        document.getElementById('statDiff').textContent =
+            data.chainInfo?.difficulty ? Number(data.chainInfo.difficulty).toExponential(2) : '—';
+        document.getElementById('statNetwork').textContent =
+            data.chainInfo?.chain ?? '—';
+
+        // Fetch peers separately
+        fetch(`${API}/chain/network`).then(r => r.json()).then(n => {
+            document.getElementById('statPeers').textContent = n.connections ?? '—';
+        }).catch(() => {});
+
+    } catch (e) {
+        console.error('Chain stats failed:', e);
+    }
+}
+
+// ── Blocks ───────────────────────────────────────────────────────────────────
+async function loadBlocks() {
+    try {
+        const res = await fetch(`${API}/blocks?limit=20`);
+        if (!res.ok) throw new Error('Failed to load blocks');
+        const data = await res.json();
+
+        document.getElementById('blockCount').textContent =
+            `${(data.total ?? 0).toLocaleString()} total blocks`;
+
+        const tbody = document.getElementById('blocksBody');
+        if (!data.blocks || data.blocks.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-secondary);padding:40px">No blocks found</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = data.blocks.map(b => `
+            <tr style="cursor:pointer" onclick="showBlock(${b.height})">
+                <td><strong>#${b.height.toLocaleString()}</strong></td>
+                <td><span class="hash-link">${truncateHash(b.hash ?? b.block_hash ?? '')}</span></td>
+                <td><span class="tx-count">${(b.transactions?.length ?? b.tx_count ?? 0)} txs</span></td>
+                <td style="color:var(--text-secondary)">${formatTime(b.timestamp ?? b.time)}</td>
+                <td style="color:var(--text-secondary)">${formatBytes(b.size)}</td>
+            </tr>`).join('');
+
+    } catch (e) {
+        document.getElementById('blocksBody').innerHTML =
+            `<tr><td colspan="5" class="error-msg">${e.message}</td></tr>`;
+    }
+}
+
+// ── Block Detail ─────────────────────────────────────────────────────────────
+async function showBlock(height) {
+    showDetail('<div style="padding:40px;text-align:center"><span class="spinner"></span></div>');
+
+    try {
+        const res = await fetch(`${API}/blocks/${height}`);
+        if (!res.ok) throw new Error('Block not found');
+        const b = await res.json();
+
+        const txList = (b.transactions || []).slice(0, 20).map(tx =>
+            typeof tx === 'string'
+                ? `<a class="hash-link" onclick="showTx('${tx}');return false" href="#">${truncateHash(tx)}</a>`
+                : `<a class="hash-link" onclick="showTx('${tx.txid ?? tx.id}');return false" href="#">${truncateHash(tx.txid ?? tx.id ?? '')}</a>`
+        ).join('<br>');
+
+        const html = `
+            <div class="panel-header">
+                <span class="panel-title">Block #${height.toLocaleString()}</span>
+                <span class="badge badge-green">Confirmed</span>
+            </div>
+            ${row('Hash', `<span class="mono">${b.hash ?? b.block_hash ?? '—'}</span>`)}
+            ${row('Height', height.toLocaleString())}
+            ${row('Time', formatFull(b.timestamp ?? b.time))}
+            ${row('Transactions', `${(b.transactions?.length ?? b.tx_count ?? 0)} transactions`)}
+            ${row('Size', formatBytes(b.size))}
+            ${b.previous_hash || b.previousblockhash ? row('Prev Block', `<a class="hash-link" onclick="showBlock(${height-1});return false" href="#">${truncateHash(b.previous_hash ?? b.previousblockhash)}</a>`) : ''}
+            ${b.merkle_root || b.merkleroot ? row('Merkle Root', `<span class="mono">${truncateHash(b.merkle_root ?? b.merkleroot)}</span>`) : ''}
+            ${(b.transactions?.length ?? 0) > 0 ? row('Transactions', txList) : ''}
+        `;
+        showDetail(html);
+
+    } catch (e) {
+        showDetail(`<div class="error-msg">${e.message}</div>`);
+    }
+}
+
+// ── TX Detail ────────────────────────────────────────────────────────────────
+async function showTx(txid) {
+    showDetail('<div style="padding:40px;text-align:center"><span class="spinner"></span></div>');
+
+    try {
+        const res = await fetch(`${API}/tx/${txid}`);
+        if (!res.ok) throw new Error('Transaction not found');
+        const tx = await res.json();
+
+        const inputs = (tx.inputs ?? tx.vin ?? []).map(i =>
+            `<div style="margin-bottom:4px;font-family:monospace;font-size:0.8rem">
+                ${i.txid ? `<a class="hash-link" onclick="showTx('${i.txid}');return false" href="#">${truncateHash(i.txid)}</a> [${i.vout ?? 0}]` : 'Coinbase'}
+             </div>`
+        ).join('') || '<span style="color:var(--text-secondary)">—</span>';
+
+        const outputs = (tx.outputs ?? tx.vout ?? []).map(o =>
+            `<div style="margin-bottom:4px;font-size:0.85rem">
+                <strong>${(o.value ?? 0).toLocaleString()} TIME</strong>
+                ${o.address || o.scriptpubkey_address ? `→ <span class="mono" style="font-size:0.78rem">${o.address ?? o.scriptpubkey_address}</span>` : ''}
+             </div>`
+        ).join('') || '<span style="color:var(--text-secondary)">—</span>';
+
+        const html = `
+            <div class="panel-header">
+                <span class="panel-title">Transaction</span>
+                <span class="badge badge-green">Confirmed</span>
+            </div>
+            ${row('TXID', `<span class="mono">${tx.txid ?? tx.id ?? txid}</span>`)}
+            ${tx.block_height !== undefined ? row('Block', `<a class="hash-link" onclick="showBlock(${tx.block_height});return false" href="#">#${tx.block_height.toLocaleString()}</a>`) : ''}
+            ${tx.timestamp || tx.time ? row('Time', formatFull(tx.timestamp ?? tx.time)) : ''}
+            ${row('Inputs', inputs)}
+            ${row('Outputs', outputs)}
+            ${tx.fee !== undefined ? row('Fee', `${tx.fee} TIME`) : ''}
+        `;
+        showDetail(html);
+
+    } catch (e) {
+        showDetail(`<div class="error-msg">${e.message}</div>`);
+    }
+}
+
+// ── Address Detail ───────────────────────────────────────────────────────────
+async function showAddress(address) {
+    showDetail('<div style="padding:40px;text-align:center"><span class="spinner"></span></div>');
+
+    try {
+        const res = await fetch(`${API}/address/${address}`);
+        if (!res.ok) throw new Error('Address not found');
+        const data = await res.json();
+
+        const txRows = (data.transactions ?? []).slice(0, 20).map(tx =>
+            `<a class="hash-link" onclick="showTx('${tx.txid ?? tx.id}');return false" href="#">${truncateHash(tx.txid ?? tx.id ?? '')}</a>`
+        ).join('<br>');
+
+        const html = `
+            <div class="panel-header">
+                <span class="panel-title">Address</span>
+            </div>
+            ${row('Address', `<span class="mono">${address}</span>`)}
+            ${data.balance !== undefined ? row('Balance', `<strong>${Number(data.balance).toLocaleString()} TIME</strong>`) : ''}
+            ${data.received !== undefined ? row('Total Received', `${Number(data.received).toLocaleString()} TIME`) : ''}
+            ${data.sent !== undefined ? row('Total Sent', `${Number(data.sent).toLocaleString()} TIME`) : ''}
+            ${data.tx_count !== undefined ? row('Transactions', data.tx_count.toLocaleString()) : ''}
+            ${txRows ? row('Recent TXs', txRows) : ''}
+        `;
+        showDetail(html);
+
+    } catch (e) {
+        showDetail(`<div class="error-msg">${e.message}</div>`);
+    }
+}
+
+// ── Search ───────────────────────────────────────────────────────────────────
+async function doSearch() {
+    const q = document.getElementById('searchInput').value.trim();
+    if (!q) return;
+
+    try {
+        const res = await fetch(`${API}/search?q=${encodeURIComponent(q)}`);
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.error || 'Not found');
+            return;
+        }
+
+        if (data.type === 'block') showBlock(parseInt(data.value));
+        else if (data.type === 'transaction') showTx(data.value);
+        else if (data.type === 'address') showAddress(data.value);
+
+    } catch (e) {
+        alert('Search failed: ' + e.message);
+    }
+}
+
+// ── UI helpers ───────────────────────────────────────────────────────────────
+function row(key, val) {
+    return `<div class="detail-row"><div class="detail-key">${key}</div><div class="detail-val">${val}</div></div>`;
+}
+
+function showDetail(html) {
+    document.getElementById('detailContent').innerHTML = html;
+    document.getElementById('detailView').classList.add('visible');
+    document.getElementById('listView').classList.add('hidden');
+}
+
+function showList() {
+    document.getElementById('detailView').classList.remove('visible');
+    document.getElementById('listView').classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function truncateHash(h) {
+    if (!h) return '—';
+    return h.length > 16 ? h.substring(0, 8) + '…' + h.substring(h.length - 8) : h;
+}
+
+function formatTime(ts) {
+    if (!ts) return '—';
+    const d = new Date(typeof ts === 'number' && ts < 1e10 ? ts * 1000 : ts);
+    const diff = Math.floor((Date.now() - d) / 1000);
+    if (diff < 60) return `${diff}s ago`;
+    if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+    return `${Math.floor(diff/86400)}d ago`;
+}
+
+function formatFull(ts) {
+    if (!ts) return '—';
+    const d = new Date(typeof ts === 'number' && ts < 1e10 ? ts * 1000 : ts);
+    return d.toUTCString();
+}
+
+function formatBytes(b) {
+    if (!b) return '—';
+    if (b < 1024) return `${b} B`;
+    return `${(b/1024).toFixed(1)} KB`;
+}
+
+// ── Handle URL params for deep linking ───────────────────────────────────────
+function handleUrlParams() {
+    const p = new URLSearchParams(window.location.search);
+    if (p.has('block')) showBlock(parseInt(p.get('block')));
+    else if (p.has('tx')) showTx(p.get('tx'));
+    else if (p.has('address')) showAddress(p.get('address'));
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    loadChainStats();
+    loadBlocks();
+    handleUrlParams();
+
+    // Auto-refresh stats every 30s
+    setInterval(loadChainStats, 30000);
+    // Auto-refresh blocks every 60s
+    setInterval(loadBlocks, 60000);
+});
+</script>
+
+</body>
+</html>
