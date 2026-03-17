@@ -350,11 +350,10 @@
                                     <th>Hash</th>
                                     <th>Transactions</th>
                                     <th>Time</th>
-                                    <th>Size</th>
                                 </tr>
                             </thead>
                             <tbody id="blocksBody">
-                                <tr class="loading-row"><td colspan="5"><span class="spinner"></span></td></tr>
+                                <tr class="loading-row"><td colspan="4"><span class="spinner"></span></td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -419,9 +418,8 @@ async function loadBlocks() {
             <tr style="cursor:pointer" onclick="showBlock(${b.height})">
                 <td><strong>#${b.height.toLocaleString()}</strong></td>
                 <td><span class="hash-link">${truncateHash(b.hash ?? b.block_hash ?? '')}</span></td>
-                <td><span class="tx-count">${(b.transactions?.length ?? b.tx_count ?? 0)} txs</span></td>
+                <td><span class="tx-count">${(b.tx?.length ?? b.nTx ?? 0)} txs</span></td>
                 <td style="color:var(--text-secondary)">${formatTime(b.timestamp ?? b.time)}</td>
-                <td style="color:var(--text-secondary)">${formatBytes(b.size)}</td>
             </tr>`).join('');
 
     } catch (e) {
@@ -439,7 +437,7 @@ async function showBlock(height) {
         if (!res.ok) throw new Error('Block not found');
         const b = await res.json();
 
-        const txList = (b.transactions || []).slice(0, 20).map(tx =>
+        const txList = (b.tx || []).slice(0, 20).map(tx =>
             typeof tx === 'string'
                 ? `<a class="hash-link" onclick="showTx('${tx}');return false" href="#">${truncateHash(tx)}</a>`
                 : `<a class="hash-link" onclick="showTx('${tx.txid ?? tx.id}');return false" href="#">${truncateHash(tx.txid ?? tx.id ?? '')}</a>`
@@ -453,11 +451,10 @@ async function showBlock(height) {
             ${row('Hash', `<span class="mono">${b.hash ?? b.block_hash ?? '—'}</span>`)}
             ${row('Height', height.toLocaleString())}
             ${row('Time', formatFull(b.timestamp ?? b.time))}
-            ${row('Transactions', `${(b.transactions?.length ?? b.tx_count ?? 0)} transactions`)}
-            ${row('Size', formatBytes(b.size))}
+            ${row('Transactions', `${(b.tx?.length ?? b.nTx ?? 0)} transactions`)}
             ${b.previous_hash || b.previousblockhash ? row('Prev Block', `<a class="hash-link" onclick="showBlock(${height-1});return false" href="#">${truncateHash(b.previous_hash ?? b.previousblockhash)}</a>`) : ''}
             ${b.merkle_root || b.merkleroot ? row('Merkle Root', `<span class="mono">${truncateHash(b.merkle_root ?? b.merkleroot)}</span>`) : ''}
-            ${(b.transactions?.length ?? 0) > 0 ? row('Transactions', txList) : ''}
+            ${(b.tx?.length ?? 0) > 0 ? row('Transaction IDs', txList) : ''}
         `;
         showDetail(html);
 
