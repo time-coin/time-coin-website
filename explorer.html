@@ -466,7 +466,8 @@ async function showBlock(height) {
             ${blockReward ? row('Block Reward', blockReward) : ''}
             ${row('Transactions', `${(b.tx?.length ?? b.nTx ?? 0)} transactions`)}
             ${rewardsList ? row('Reward Distribution', rewardsList) : ''}
-            ${b.previous_hash || b.previousblockhash ? row('Prev Block', `<a class="hash-link" onclick="showBlock(${height-1});return false" href="#">${truncateHash(b.previous_hash ?? b.previousblockhash)}</a>`) : ''}
+            ${height > 0 ? row('Prev Block', `<a class="hash-link" onclick="showBlock(${height-1});return false" href="#">← Block #${(height-1).toLocaleString()}</a>`) : ''}
+            ${b.confirmations > 1 ? row('Next Block', `<a class="hash-link" onclick="showBlock(${height+1});return false" href="#">Block #${(height+1).toLocaleString()} →</a>`) : ''}
             ${b.merkle_root || b.merkleroot ? row('Merkle Root', `<span class="mono">${truncateHash(b.merkle_root ?? b.merkleroot)}</span>`) : ''}
             ${(b.tx?.length ?? 0) > 0 ? row('Transaction IDs', txList) : ''}
         `;
