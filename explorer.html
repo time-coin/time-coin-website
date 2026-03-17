@@ -371,6 +371,7 @@
 
 <script>
 const API = '/api/explorer';
+let tipHeight = Infinity; // updated on each chain stats load
 
 // ── Chain Stats ──────────────────────────────────────────────────────────────
 async function loadChainStats() {
@@ -378,8 +379,9 @@ async function loadChainStats() {
         const res = await fetch(`${API}/chain`);
         const data = await res.json();
 
+        tipHeight = data.blockCount ?? data.chainInfo?.blocks ?? Infinity;
         document.getElementById('statHeight').textContent =
-            (data.blockCount ?? data.chainInfo?.blocks ?? '—').toLocaleString();
+            (tipHeight === Infinity ? '—' : tipHeight).toLocaleString();
         document.getElementById('statTxs').textContent =
             (data.mempoolInfo?.size ?? '—').toLocaleString();
         document.getElementById('statPeers').textContent = '—'; // needs network endpoint
@@ -467,7 +469,7 @@ async function showBlock(height) {
             ${row('Transactions', `${(b.tx?.length ?? b.nTx ?? 0)} transactions`)}
             ${rewardsList ? row('Reward Distribution', rewardsList) : ''}
             ${height > 0 ? row('Prev Block', `<a class="hash-link" onclick="showBlock(${height-1});return false" href="#">← Block #${(height-1).toLocaleString()}</a>`) : ''}
-            ${b.confirmations > 1 ? row('Next Block', `<a class="hash-link" onclick="showBlock(${height+1});return false" href="#">Block #${(height+1).toLocaleString()} →</a>`) : ''}
+            ${height < tipHeight ? row('Next Block', `<a class="hash-link" onclick="showBlock(${height+1});return false" href="#">Block #${(height+1).toLocaleString()} →</a>`) : ''}
             ${b.merkle_root || b.merkleroot ? row('Merkle Root', `<span class="mono">${truncateHash(b.merkle_root ?? b.merkleroot)}</span>`) : ''}
             ${(b.tx?.length ?? 0) > 0 ? row('Transaction IDs', txList) : ''}
         `;
