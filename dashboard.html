@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — TIME Coin Masternode Portal</title>
+    <meta name="robots" content="noindex">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        body { padding-top: 0; }
+
+        /* ---- Top Bar ---- */
+        .dash-header {
+            background: rgba(15, 12, 41, 0.97);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .dash-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .dash-logo img {
+            width: 32px;
+            height: 32px;
+            filter: invert(1);
+        }
+
+        .dash-logo span {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .dash-logo .portal-tag {
+            font-size: 11px;
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            color: var(--primary-purple);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            -webkit-text-fill-color: var(--primary-purple);
+        }
+
+        .dash-header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .user-email {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .btn-signout {
+            padding: 7px 14px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 7px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-signout:hover {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: var(--danger-red);
+        }
+
+        /* ---- Layout ---- */
+        .dash-main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+        }
+
+        .dash-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .dash-subtitle {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 36px;
+        }
+
+        /* ---- Stats ---- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 36px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px 22px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 34px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-value.purple {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-value.green { color: var(--success-green); }
+        .stat-value.yellow { color: var(--warning-yellow); }
+
+        /* ---- Section ---- */
+        .section {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 16px;
+            padding: 26px 28px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* ---- Node list ---- */
+        .node-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .node-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 10px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .node-ip {
+            font-family: 'Courier New', monospace;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .node-meta {
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .node-note {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.35);
+            margin-top: 3px;
+        }
+
+        .node-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        /* ---- Badges ---- */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        .badge-pending  { background: rgba(251,191,36,0.12); color: var(--warning-yellow); border: 1px solid rgba(251,191,36,0.25); }
+        .badge-approved { background: rgba(74,222,128,0.12); color: var(--success-green);  border: 1px solid rgba(74,222,128,0.25); }
+        .badge-rejected { background: rgba(239,68,68,0.12);  color: var(--danger-red);     border: 1px solid rgba(239,68,68,0.25); }
+
+        .tier-pill {
+            display: inline-block;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .tier-free   { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+        .tier-bronze { background: rgba(205,127,50,0.15);  color: #cd7f32; }
+        .tier-silver { background: rgba(192,192,192,0.15); color: #c0c0c0; }
+        .tier-gold   { background: rgba(255,215,0,0.15);   color: #ffd700; }
+
+        .btn-remove {
+            background: none;
+            border: none;
+            color: rgba(239, 68, 68, 0.4);
+            cursor: pointer;
+            font-size: 20px;
+            line-height: 1;
+            padding: 4px 6px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-remove:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-red);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 36px;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon { font-size: 36px; margin-bottom: 10px; }
+
+        /* ---- Submit form ---- */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group.full { grid-column: 1 / -1; }
+
+        .form-group label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 10px 13px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary-purple);
+        }
+
+        .form-group input::placeholder { color: rgba(255,255,255,0.2); }
+        .form-group select option { background: #1a1737; }
+
+        .form-hint {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .form-footer {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn-submit {
+            padding: 11px 26px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .form-msg {
+            font-size: 13px;
+            padding: 9px 13px;
+            border-radius: 7px;
+            display: none;
+        }
+
+        .form-msg.success {
+            display: block;
+            background: rgba(74,222,128,0.1);
+            border: 1px solid rgba(74,222,128,0.25);
+            color: var(--success-green);
+        }
+
+        .form-msg.error {
+            display: block;
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.25);
+            color: var(--danger-red);
+        }
+
+        /* ---- How it works ---- */
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .step-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            padding-top: 4px;
+        }
+
+        /* ---- Loading ---- */
+        #pageLoader {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 768px) {
+            .stats-grid    { grid-template-columns: 1fr 1fr; }
+            .form-grid     { grid-template-columns: 1fr; }
+            .form-group.full { grid-column: 1; }
+            .dash-main     { padding: 24px 16px 60px; }
+            .user-email    { display: none; }
+            .node-card     { flex-wrap: wrap; }
+            .section       { padding: 20px; }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading state shown before auth check completes -->
+    <div id="pageLoader">Verifying session...</div>
+
+    <!-- Dashboard (hidden until auth confirmed) -->
+    <div id="dashWrapper" style="display: none;">
+
+        <header class="dash-header">
+            <a href="index.html" class="dash-logo">
+                <img src="images/logo/time-coin-logo.png" alt="TIME Coin">
+                <span>TIME</span>
+                <span class="portal-tag">PORTAL</span>
+            </a>
+            <div class="dash-header-right">
+                <span class="user-email" id="userEmail"></span>
+                <button class="btn-signout" id="signOutBtn">Sign Out</button>
+            </div>
+        </header>
+
+        <main class="dash-main">
+
+            <h1 class="dash-title">Masternode Dashboard</h1>
+            <p class="dash-subtitle">Submit your node details to apply for peer whitelisting on the TIME Coin network.</p>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Submitted</div>
+                    <div class="stat-value purple" id="statTotal">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Approved</div>
+                    <div class="stat-value green" id="statApproved">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pending</div>
+                    <div class="stat-value yellow" id="statPending">—</div>
+                </div>
+            </div>
+
+            <!-- My Masternodes -->
+            <div class="section">
+                <h2 class="section-title">My Masternodes</h2>
+                <div id="nodeList" class="node-list">
+                    <div class="empty-state">
+                        <div class="empty-icon">⏳</div>
+                        <p>Loading your masternodes...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Form -->
+            <div class="section">
+                <h2 class="section-title">Submit a Masternode</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="nodeIp">IP Address *</label>
+                        <input type="text" id="nodeIp" placeholder="e.g. 203.0.113.42">
+                        <span class="form-hint">Your masternode's public IPv4 address</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="nodePort">Port *</label>
+                        <input type="number" id="nodePort" value="24100" min="1" max="65535">
+                        <span class="form-hint">Testnet: 24100 &nbsp;·&nbsp; Mainnet: 24000</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="nodeTier">Tier *</label>
+                        <select id="nodeTier">
+                            <option value="Free">Free — 0 TIME</option>
+                            <option value="Bronze">Bronze — 1,000 TIME</option>
+                            <option value="Silver">Silver — 10,000 TIME</option>
+                            <option value="Gold">Gold — 100,000 TIME</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="nodeNetwork">Network *</label>
+                        <select id="nodeNetwork">
+                            <option value="testnet">Testnet</option>
+                            <option value="mainnet">Mainnet</option>
+                        </select>
+                    </div>
+                    <div class="form-group full">
+                        <label for="nodeLabel">Label (optional)</label>
+                        <input type="text" id="nodeLabel" placeholder="e.g. My Gold Node #1">
+                        <span class="form-hint">A friendly name for your own reference</span>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <button class="btn-submit" id="submitBtn">Submit for Whitelisting</button>
+                    <div class="form-msg" id="formMsg"></div>
+                </div>
+            </div>
+
+            <!-- How it works -->
+            <div class="section">
+                <h2 class="section-title">How it works</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-num">1</div>
+                        <div class="step-text">Submit your masternode's public IP, port, tier, and network above.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">2</div>
+                        <div class="step-text">The TIME Coin team reviews your submission, typically within 24 hours.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">3</div>
+                        <div class="step-text">Once approved, your IP is added to the peer whitelist. Your node receives priority inbound connections from the network.</div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            getDocs,
+            deleteDoc,
+            doc,
+            query,
+            where,
+            orderBy,
+            serverTimestamp
+        } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+        // ================================================================
+        // FIREBASE CONFIG — must match login.html
+        // ================================================================
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // ================================================================
+        // DISCORD WEBHOOK (optional)
+        // Create a webhook in your Discord server (channel settings →
+        // Integrations → Webhooks) and paste the URL here.
+        // Leave empty ("") to disable notifications.
+        // ================================================================
+        const DISCORD_WEBHOOK_URL = '';
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let nodes = [];
+
+        // ---- Auth guard ----
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = user;
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('pageLoader').style.display = 'none';
+            document.getElementById('dashWrapper').style.display = 'block';
+            await loadNodes();
+        });
+
+        // ---- Sign out ----
+        document.getElementById('signOutBtn').addEventListener('click', async () => {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        });
+
+        // ---- Load nodes from Firestore ----
+        async function loadNodes() {
+            try {
+                const q = query(
+                    collection(db, 'masternode_submissions'),
+                    where('userId', '==', currentUser.uid),
+                    orderBy('submittedAt', 'desc')
+                );
+                const snap = await getDocs(q);
+                nodes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderNodes();
+                updateStats();
+            } catch (err) {
+                console.error(err);
+                document.getElementById('nodeList').innerHTML =
+                    '<p style="color:var(--danger-red);padding:16px">Failed to load masternodes. Please refresh.</p>';
+            }
+        }
+
+        function renderNodes() {
+            const container = document.getElementById('nodeList');
+            if (nodes.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⏰</div>
+                        <p>No masternodes submitted yet.</p>
+                        <p style="font-size:12px;margin-top:4px">Use the form below to submit your first node.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = nodes.map(node => {
+                const statusBadge = {
+                    pending:  '<span class="badge badge-pending">⏳ Pending Review</span>',
+                    approved: '<span class="badge badge-approved">✓ Approved</span>',
+                    rejected: '<span class="badge badge-rejected">✕ Rejected</span>',
+                }[node.status] || '<span class="badge badge-pending">⏳ Pending</span>';
+
+                const tierKey = (node.tier || 'free').toLowerCase();
+                const networkLabel = node.network === 'mainnet' ? 'Mainnet' : 'Testnet';
+                const date = node.submittedAt?.toDate
+                    ? node.submittedAt.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                    : 'Just now';
+
+                const canDelete = node.status === 'pending';
+
+                return `
+                    <div class="node-card">
+                        <div style="flex:1;min-width:0">
+                            <div class="node-ip">${node.ip}:${node.port}</div>
+                            <div class="node-meta">
+                                <span class="tier-pill tier-${tierKey}">${node.tier || 'Free'}</span>
+                                <span>${networkLabel}</span>
+                                ${node.label ? `<span>· ${node.label}</span>` : ''}
+                                <span>· ${date}</span>
+                            </div>
+                            ${node.notes ? `<div class="node-note">Admin note: ${node.notes}</div>` : ''}
+                        </div>
+                        <div class="node-actions">
+                            ${statusBadge}
+                            ${canDelete ? `<button class="btn-remove" data-id="${node.id}" title="Remove submission">×</button>` : ''}
+                        </div>
+                    </div>`;
+            }).join('');
+
+            // Attach delete listeners
+            container.querySelectorAll('.btn-remove').forEach(btn => {
+                btn.addEventListener('click', () => removeNode(btn.dataset.id));
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('statTotal').textContent = nodes.length;
+            document.getElementById('statApproved').textContent = nodes.filter(n => n.status === 'approved').length;
+            document.getElementById('statPending').textContent = nodes.filter(n => n.status === 'pending').length;
+        }
+
+        // ---- Submit node ----
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            const ip      = document.getElementById('nodeIp').value.trim();
+            const port    = parseInt(document.getElementById('nodePort').value, 10);
+            const tier    = document.getElementById('nodeTier').value;
+            const network = document.getElementById('nodeNetwork').value;
+            const label   = document.getElementById('nodeLabel').value.trim();
+
+            // Validate IP
+            const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+            if (!ipRegex.test(ip) || ip.split('.').some(n => parseInt(n, 10) > 255)) {
+                showMsg('error', 'Please enter a valid IPv4 address.');
+                return;
+            }
+            if (!port || port < 1 || port > 65535) {
+                showMsg('error', 'Please enter a valid port number (1–65535).');
+                return;
+            }
+            // Duplicate check
+            if (nodes.find(n => n.ip === ip && n.port === port && n.network === network)) {
+                showMsg('error', 'You have already submitted this IP:port for this network.');
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Submitting...';
+
+            try {
+                await addDoc(collection(db, 'masternode_submissions'), {
+                    userId:     currentUser.uid,
+                    userEmail:  currentUser.email,
+                    ip,
+                    port,
+                    tier,
+                    network,
+                    label,
+                    status:     'pending',
+                    submittedAt: serverTimestamp(),
+                    notes:      '',
+                });
+
+                // Optional Discord notification
+                if (DISCORD_WEBHOOK_URL) {
+                    fetch(DISCORD_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            embeds: [{
+                                title: '🖥️ New Masternode Submission',
+                                color: 0x667eea,
+                                fields: [
+                                    { name: 'IP : Port',  value: `\`${ip}:${port}\``, inline: true },
+                                    { name: 'Tier',       value: tier,                inline: true },
+                                    { name: 'Network',    value: network,             inline: true },
+                                    { name: 'Submitted by', value: currentUser.email, inline: false },
+                                    { name: 'Label',      value: label || '—',        inline: false },
+                                ],
+                                timestamp: new Date().toISOString(),
+                                footer: { text: 'TIME Coin Masternode Portal' },
+                            }]
+                        })
+                    }).catch(() => {});
+                }
+
+                // Reset form fields
+                document.getElementById('nodeIp').value = '';
+                document.getElementById('nodeLabel').value = '';
+
+                showMsg('success', 'Masternode submitted! Your application is under review.');
+                await loadNodes();
+            } catch (err) {
+                console.error(err);
+                showMsg('error', 'Submission failed. Please try again.');
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Submit for Whitelisting';
+        });
+
+        // ---- Remove pending submission ----
+        async function removeNode(nodeId) {
+            if (!confirm('Remove this masternode submission?')) return;
+            try {
+                await deleteDoc(doc(db, 'masternode_submissions', nodeId));
+                await loadNodes();
+            } catch (err) {
+                console.error(err);
+                alert('Failed to remove. Please try again.');
+            }
+        }
+
+        function showMsg(type, text) {
+            const el = document.getElementById('formMsg');
+            el.textContent = text;
+            el.className = `form-msg ${type}`;
+            setTimeout(() => { el.className = 'form-msg'; }, 6000);
+        }
+    </script>
+
+    <!--
+    ================================================================
+    FIRESTORE SECURITY RULES
+    In Firebase Console → Firestore → Rules, paste:
+
+    rules_version = '2';
+    service cloud.firestore {
+      match /databases/{database}/documents {
+        match /masternode_submissions/{docId} {
+          allow read, write: if request.auth != null
+                             && request.auth.uid == resource.data.userId;
+          allow create: if request.auth != null
+                        && request.resource.data.userId == request.auth.uid;
+        }
+      }
+    }
+    ================================================================
+    -->
+</body>
+</html>
