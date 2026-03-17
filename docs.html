@@ -540,6 +540,9 @@
             <p>The testnet is live. The fastest way to get started is to install the GUI wallet on your local machine, then optionally set up a masternode on a Linux server.</p>
 
             <h3>1. Install the Wallet (Local Machine)</h3>
+            <p><strong>Windows:</strong> Download and run the installer — no Rust or build tools required.</p>
+            <p><a href="https://github.com/time-coin/time-wallet/releases/latest" target="_blank" rel="noopener" style="color:var(--primary-purple)">⬇ Download TIMECoinWallet-Setup.exe</a></p>
+            <p style="margin-top:8px"><strong>Linux / macOS:</strong> Build from source:</p>
             <pre><code>git clone https://github.com/time-coin/time-wallet.git
 cd time-wallet
 cargo build --release --bin wallet-gui
@@ -582,6 +585,27 @@ sudo bash scripts/install-masternode.sh testnet</code></pre>
                     <td>10 Mbps+</td>
                 </tr>
             </table>
+
+            <h3>Windows — Installer (Recommended)</h3>
+            <p>The easiest way to get started on Windows. No Rust, no compiler, no command line needed.</p>
+            <ol>
+                <li>Go to the <a href="https://github.com/time-coin/time-wallet/releases/latest" target="_blank" rel="noopener">latest release page</a> and download <strong>TIMECoinWallet-Setup-x.x.x.exe</strong>.</li>
+                <li>Run the installer. If Windows Defender SmartScreen appears, click <strong>More info → Run anyway</strong> (the app is unsigned during testnet).</li>
+                <li>Follow the setup wizard — choose an install directory and click <strong>Install</strong>.</li>
+                <li>Launch <strong>TIME Coin Wallet</strong> from the Start Menu or Desktop shortcut.</li>
+                <li>On first launch, choose <strong>Create New Wallet</strong> and write down your 12-word seed phrase. Store it somewhere safe — it cannot be recovered if lost.</li>
+            </ol>
+            <div class="info-box" style="margin-top:16px">
+                <strong>Testnet mode:</strong> The wallet connects to the testnet automatically. Testnet addresses begin with <code>TIME0</code>. Mainnet addresses will begin with <code>TIME1</code> after mainnet launch.
+            </div>
+
+            <h3>Windows — ZIP (Portable)</h3>
+            <p>No installation required — run directly from any folder.</p>
+            <ol>
+                <li>Download <strong>time-wallet-windows-x86_64.zip</strong> from the <a href="https://github.com/time-coin/time-wallet/releases/latest" target="_blank" rel="noopener">latest release</a>.</li>
+                <li>Extract the ZIP to a folder of your choice.</li>
+                <li>Double-click <strong>wallet-gui.exe</strong> to launch.</li>
+            </ol>
 
             <h3>Install from Source</h3>
             <pre><code># Clone repository
