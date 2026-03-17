@@ -17,7 +17,6 @@ async function loadHeader() {
         headerContainer.innerHTML = html;
         document.body.insertBefore(headerContainer, document.body.firstChild);
         
-        console.log('✅ Header loaded successfully');
     } catch (error) {
         console.error('Error loading header:', error);
     }
@@ -37,7 +36,6 @@ async function loadFooter() {
         footerContainer.innerHTML = html;
         document.body.appendChild(footerContainer);
         
-        console.log('✅ Footer loaded successfully');
     } catch (error) {
         console.error('Error loading footer:', error);
     }
@@ -68,9 +66,10 @@ function highlightCurrentPage() {
 
 // Smooth scroll for anchor links
 document.addEventListener('click', function(e) {
-    if (e.target.tagName === 'A' && e.target.getAttribute('href').startsWith('#')) {
+    const href = e.target.tagName === 'A' && e.target.getAttribute('href');
+    if (href && href.startsWith('#')) {
         e.preventDefault();
-        const targetId = e.target.getAttribute('href').substring(1);
+        const targetId = href.substring(1);
         const targetElement = document.getElementById(targetId);
         
         if (targetElement) {
