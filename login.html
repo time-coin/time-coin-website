@@ -398,20 +398,20 @@
         });
 
         // Google Sign In (both buttons)
-        async function handleGoogle() {
+        async function handleGoogle(errorId) {
+            clearErrors();
             try {
                 await signInWithPopup(auth, googleProvider);
                 window.location.href = 'dashboard.html';
             } catch (err) {
                 if (err.code !== 'auth/popup-closed-by-user') {
-                    showError('signin-error', 'Google sign-in failed. Please try again.');
-                    document.getElementById('signin-error').classList.add('show');
+                    showError(errorId, 'Google sign-in failed. Please try again.');
                 }
             }
         }
 
-        document.getElementById('google-signin-btn').addEventListener('click', handleGoogle);
-        document.getElementById('google-register-btn').addEventListener('click', handleGoogle);
+        document.getElementById('google-signin-btn').addEventListener('click', () => handleGoogle('signin-error'));
+        document.getElementById('google-register-btn').addEventListener('click', () => handleGoogle('register-error'));
 
         // Enter key support
         document.addEventListener('keydown', (e) => {
