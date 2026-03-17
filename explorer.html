@@ -443,6 +443,18 @@ async function showBlock(height) {
                 : `<a class="hash-link" onclick="showTx('${tx.txid ?? tx.id}');return false" href="#">${truncateHash(tx.txid ?? tx.id ?? '')}</a>`
         ).join('<br>');
 
+        const rewardsList = (b.masternode_rewards || [])
+            .filter(r => r.amount > 0)
+            .map(r => {
+                const time = (r.amount / 1e8).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 8 });
+                return `<div style="margin-bottom:4px;font-size:0.85rem">
+                    <strong>${time} TIME</strong>
+                    <span style="color:var(--text-secondary);font-family:monospace;font-size:0.78rem"> → ${r.address}</span>
+                </div>`;
+            }).join('');
+
+        const blockReward = b.block_reward ? `${(b.block_reward / 1e8).toLocaleString()} TIME` : null;
+
         const html = `
             <div class="panel-header">
                 <span class="panel-title">Block #${height.toLocaleString()}</span>
@@ -451,7 +463,9 @@ async function showBlock(height) {
             ${row('Hash', `<span class="mono">${b.hash ?? b.block_hash ?? '—'}</span>`)}
             ${row('Height', height.toLocaleString())}
             ${row('Time', formatFull(b.timestamp ?? b.time))}
+            ${blockReward ? row('Block Reward', blockReward) : ''}
             ${row('Transactions', `${(b.tx?.length ?? b.nTx ?? 0)} transactions`)}
+            ${rewardsList ? row('Reward Distribution', rewardsList) : ''}
             ${b.previous_hash || b.previousblockhash ? row('Prev Block', `<a class="hash-link" onclick="showBlock(${height-1});return false" href="#">${truncateHash(b.previous_hash ?? b.previousblockhash)}</a>`) : ''}
             ${b.merkle_root || b.merkleroot ? row('Merkle Root', `<span class="mono">${truncateHash(b.merkle_root ?? b.merkleroot)}</span>`) : ''}
             ${(b.tx?.length ?? 0) > 0 ? row('Transaction IDs', txList) : ''}
@@ -472,30 +486,62 @@ async function showTx(txid) {
         if (!res.ok) throw new Error('Transaction not found');
         const tx = await res.json();
 
-        const inputs = (tx.inputs ?? tx.vin ?? []).map(i =>
+        const isCoinbase = tx.vin && tx.vin.length > 0 && !tx.vin[0].txid;
+
+        const inputs = (tx.vin ?? []).map(i =>
             `<div style="margin-bottom:4px;font-family:monospace;font-size:0.8rem">
-                ${i.txid ? `<a class="hash-link" onclick="showTx('${i.txid}');return false" href="#">${truncateHash(i.txid)}</a> [${i.vout ?? 0}]` : 'Coinbase'}
+                ${i.txid ? `<a class="hash-link" onclick="showTx('${i.txid}');return false" href="#">${truncateHash(i.txid)}</a> [${i.vout ?? 0}]` : '<span style="color:var(--text-secondary)">Coinbase</span>'}
              </div>`
         ).join('') || '<span style="color:var(--text-secondary)">—</span>';
 
-        const outputs = (tx.outputs ?? tx.vout ?? []).map(o =>
-            `<div style="margin-bottom:4px;font-size:0.85rem">
-                <strong>${(o.value ?? 0).toLocaleString()} TIME</strong>
-                ${o.address || o.scriptpubkey_address ? `→ <span class="mono" style="font-size:0.78rem">${o.address ?? o.scriptpubkey_address}</span>` : ''}
-             </div>`
-        ).join('') || '<span style="color:var(--text-secondary)">—</span>';
+        const tierColors = { gold: '#f59e0b', silver: '#94a3b8', bronze: '#b45309', free: '#6b7280', block_producer: '#667eea' };
+        const tierLabels = { gold: 'Gold', silver: 'Silver', bronze: 'Bronze', free: 'Free', block_producer: 'Block Producer' };
 
+        // Build address→tier map from blockRewardInfo if available
+        const rewardMap = {};
+        if (tx.blockRewardInfo?.rewards) {
+            tx.blockRewardInfo.rewards.forEach(r => { rewardMap[r.address] = r.tier; });
+        }
+
+        const outputs = (tx.vout ?? []).map(o => {
+            const addr = o.scriptPubKey?.address;
+            const tier = addr ? rewardMap[addr] : null;
+            const tierBadge = tier
+                ? `<span style="margin-left:6px;padding:1px 7px;border-radius:10px;font-size:0.72rem;font-weight:600;background:${tierColors[tier]}22;color:${tierColors[tier]}">${tierLabels[tier]}</span>`
+                : '';
+            return `<div style="margin-bottom:6px;font-size:0.85rem;display:flex;align-items:center;gap:6px">
+                <strong>${(o.value ?? 0).toLocaleString()} TIME</strong>${tierBadge}
+                ${addr ? `<span class="mono" style="font-size:0.78rem;color:var(--text-secondary)">${addr}</span>` : ''}
+             </div>`;
+        }).join('') || '<span style="color:var(--text-secondary)">—</span>';
+
+        // Block reward summary breakdown
+        let rewardBreakdown = '';
+        if (tx.blockRewardInfo?.rewards) {
+            const totalTIME = (tx.blockRewardInfo.block_reward ?? 0) / 1e8;
+            const rows = tx.blockRewardInfo.rewards.map(r =>
+                `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+                    <span style="color:${tierColors[r.tier] ?? '#fff'};font-weight:600;font-size:0.82rem">${tierLabels[r.tier] ?? r.tier}</span>
+                    <span style="font-size:0.82rem">${r.amount_time.toLocaleString()} TIME</span>
+                </div>`
+            ).join('');
+            rewardBreakdown = row('Block Reward', `<div style="width:100%"><div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:6px">Total: ${totalTIME.toLocaleString()} TIME</div>${rows}</div>`);
+        }
+
+        const height = tx.height ?? tx.block_height;
         const html = `
             <div class="panel-header">
-                <span class="panel-title">Transaction</span>
+                <span class="panel-title">${isCoinbase ? 'Block Reward' : 'Transaction'}</span>
                 <span class="badge badge-green">Confirmed</span>
             </div>
-            ${row('TXID', `<span class="mono">${tx.txid ?? tx.id ?? txid}</span>`)}
-            ${tx.block_height !== undefined ? row('Block', `<a class="hash-link" onclick="showBlock(${tx.block_height});return false" href="#">#${tx.block_height.toLocaleString()}</a>`) : ''}
-            ${tx.timestamp || tx.time ? row('Time', formatFull(tx.timestamp ?? tx.time)) : ''}
+            ${row('TXID', `<span class="mono">${tx.txid ?? txid}</span>`)}
+            ${height != null ? row('Block', `<a class="hash-link" onclick="showBlock(${height});return false" href="#">#${Number(height).toLocaleString()}</a>`) : ''}
+            ${tx.time || tx.blocktime ? row('Time', formatFull(tx.time ?? tx.blocktime)) : ''}
+            ${tx.size != null ? row('Size', formatBytes(tx.size)) : ''}
+            ${rewardBreakdown}
             ${row('Inputs', inputs)}
             ${row('Outputs', outputs)}
-            ${tx.fee !== undefined ? row('Fee', `${tx.fee} TIME`) : ''}
+            ${tx.fee != null && tx.fee !== 0 ? row('Fee', `${tx.fee} TIME`) : ''}
         `;
         showDetail(html);
 
