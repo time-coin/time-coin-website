@@ -406,7 +406,7 @@
                 window.location.href = 'dashboard.html';
             } catch (err) {
                 if (err.code !== 'auth/popup-closed-by-user') {
-                    showError(errorId, 'Google sign-in failed. Please try again.');
+                    showError(errorId, `Google sign-in failed: ${err.code || err.message}`);
                 }
             }
         }
