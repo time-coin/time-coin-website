@@ -1,14 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/api/peers",
-      "destination": "/peers.json"
-    },
-    {
-      "source": "/api/testnet/peers",
-      "destination": "/testnet-peers.json"
-    },
-    {
       "source": "/api/v1/:path*",
       "destination": "http://69.167.168.176/api/v1/:path*"
     },

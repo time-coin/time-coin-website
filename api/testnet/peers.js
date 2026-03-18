@@ -1,6 +1,7 @@
 const { initializeApp, getApps, cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
 
+// Seed peers always included regardless of submissions
 const SEED_PEERS = [
   '64.91.241.10',
   '50.28.104.50',
@@ -25,7 +26,7 @@ module.exports = async (req, res) => {
     const snap = await db
       .collection('masternode_submissions')
       .where('status', '==', 'approved')
-      .where('network', '==', 'mainnet')
+      .where('network', '==', 'testnet')
       .get();
 
     const submitted = snap.docs.map((d) => d.data().ip);
@@ -37,6 +38,7 @@ module.exports = async (req, res) => {
     res.json(peers);
   } catch (err) {
     console.error(err);
+    // Fall back to seed peers on error so the endpoint never goes dark
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.json(SEED_PEERS);
