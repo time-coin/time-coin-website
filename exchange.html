@@ -530,17 +530,17 @@
                         <input type="number" class="form-input" id="timeAmount"
                                placeholder="e.g. 1000" min="1" step="any">
                         <div class="tier-btns">
-                            <button class="tier-btn bronze" onclick="setTier(1000, this)">
+                            <button class="tier-btn bronze" onclick="setTier(1003, this)">
                                 <span class="tier-name">Bronze</span>
-                                <span class="tier-amount">1,000 TIME</span>
+                                <span class="tier-amount">1,003 TIME</span>
                             </button>
-                            <button class="tier-btn silver" onclick="setTier(10000, this)">
+                            <button class="tier-btn silver" onclick="setTier(10010, this)">
                                 <span class="tier-name">Silver</span>
-                                <span class="tier-amount">10,000 TIME</span>
+                                <span class="tier-amount">10,010 TIME</span>
                             </button>
-                            <button class="tier-btn gold" onclick="setTier(100000, this)">
+                            <button class="tier-btn gold" onclick="setTier(100100, this)">
                                 <span class="tier-name">Gold</span>
-                                <span class="tier-amount">100,000 TIME</span>
+                                <span class="tier-amount">100,100 TIME</span>
                             </button>
                         </div>
                     </div>
@@ -552,10 +552,14 @@
                             <span class="preview-value highlight" id="previewReceive">—</span>
                         </div>
                         <div class="preview-row">
+                            <span class="preview-label" id="previewFeeLabel">Network Fee</span>
+                            <span class="preview-value" id="previewFee" style="color:var(--text-secondary)">—</span>
+                        </div>
+                        <div class="preview-row">
                             <span class="preview-label">Rate</span>
                             <span class="preview-value" id="previewRate">—</span>
                         </div>
-                        <div class="preview-row">
+                        <div class="preview-row" style="border-top:1px solid rgba(255,255,255,0.07);padding-top:8px;margin-top:4px">
                             <span class="preview-label">You Pay</span>
                             <span class="preview-value" id="previewPay">—</span>
                         </div>
@@ -696,6 +700,21 @@ function setTier(amount, btn) {
     updatePreview();
 }
 
+// Tiered network fee schedule
+function calcFee(amount) {
+    if (amount < 100)   return amount * 0.01;    // 1%
+    if (amount < 1000)  return amount * 0.005;   // 0.5%
+    if (amount < 10000) return amount * 0.0025;  // 0.25%
+    return amount * 0.001;                        // 0.1%
+}
+
+function feeRate(amount) {
+    if (amount < 100)   return '1%';
+    if (amount < 1000)  return '0.5%';
+    if (amount < 10000) return '0.25%';
+    return '0.1%';
+}
+
 // Update preview when inputs change
 function updatePreview() {
     const coin = document.getElementById('coinSelect').value;
@@ -708,9 +727,12 @@ function updatePreview() {
     }
 
     const rate = rates[coin];
+    const networkFee = calcFee(timeAmount);
     const payCost = (timeAmount / parseFloat(rate.time_per_coin)).toFixed(8);
 
     document.getElementById('previewReceive').textContent = `${Number(timeAmount).toLocaleString()} TIME`;
+    document.getElementById('previewFeeLabel').textContent = `Network Fee (${feeRate(timeAmount)})`;
+    document.getElementById('previewFee').textContent = `${networkFee.toLocaleString(undefined, {maximumFractionDigits: 4})} TIME`;
     document.getElementById('previewRate').textContent = `${Number(rate.time_per_coin).toLocaleString()} TIME / ${coin}`;
     document.getElementById('previewPay').textContent = `${payCost} ${coin}`;
     preview.classList.add('visible');
