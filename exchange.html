@@ -738,6 +738,60 @@ function updatePreview() {
     preview.classList.add('visible');
 }
 
+// TIME address validation
+// Format: TIME{0|1}{base58 payload} — total length 35-45 chars
+// Decoded payload must be 24 bytes: 20 bytes data + 4 byte checksum
+const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+
+function base58Decode(str) {
+    const bytes = [0];
+    for (const char of str) {
+        const idx = BASE58_ALPHABET.indexOf(char);
+        if (idx < 0) return null; // invalid character
+        let carry = idx;
+        for (let i = 0; i < bytes.length; i++) {
+            carry += bytes[i] * 58;
+            bytes[i] = carry & 0xff;
+            carry >>= 8;
+        }
+        while (carry > 0) {
+            bytes.push(carry & 0xff);
+            carry >>= 8;
+        }
+    }
+    // Add leading zero bytes for leading '1' characters
+    for (const char of str) {
+        if (char !== '1') break;
+        bytes.push(0);
+    }
+    return new Uint8Array(bytes.reverse());
+}
+
+async function sha256(data) {
+    return new Uint8Array(await crypto.subtle.digest('SHA-256', data));
+}
+
+async function validateTimeAddress(address) {
+    if (address.length < 35 || address.length > 45) return 'Invalid address length.';
+    if (!address.startsWith('TIME')) return 'Address must start with TIME.';
+    const networkDigit = address[4];
+    if (networkDigit !== '0' && networkDigit !== '1') return 'Invalid network digit in address.';
+
+    const encoded = address.slice(5);
+    const decoded = base58Decode(encoded);
+    if (!decoded) return 'Address contains invalid characters.';
+    if (decoded.length !== 24) return 'Invalid address payload length.';
+
+    const payload = decoded.slice(0, 20);
+    const checksum = decoded.slice(20);
+    const hash1 = await sha256(payload);
+    const hash2 = await sha256(hash1);
+    for (let i = 0; i < 4; i++) {
+        if (hash2[i] !== checksum[i]) return 'Invalid address checksum.';
+    }
+    return null; // valid
+}
+
 // Submit order
 async function submitOrder() {
     clearError('error1');
@@ -746,6 +800,8 @@ async function submitOrder() {
     const timeAmount = parseFloat(document.getElementById('timeAmount').value);
 
     if (!timeAddress) return showError('error1', 'Please enter your TIME wallet address.');
+    const addrError = await validateTimeAddress(timeAddress);
+    if (addrError) return showError('error1', addrError);
     if (!paymentCoin) return showError('error1', 'Please select a payment coin.');
     if (!timeAmount || timeAmount <= 0) return showError('error1', 'Please enter how many TIME coins to buy.');
     if (!rates[paymentCoin]) return showError('error1', 'Rate unavailable. Please refresh.');
