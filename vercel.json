@@ -19,7 +19,16 @@
   ],
   "headers": [
     {
-      "source": "/(login|dashboard).html",
+      "source": "/login.html",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://*.googleapis.com https://*.firebaseapp.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com wss://*.firebaseio.com; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline';"
+        }
+      ]
+    },
+    {
+      "source": "/dashboard.html",
       "headers": [
         {
           "key": "Content-Security-Policy",
