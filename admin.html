@@ -384,6 +384,12 @@
         <main class="dash-main">
             <h1 class="dash-title">Masternode Submissions</h1>
             <p class="dash-subtitle">Review and approve or reject masternode applications.</p>
+            <div style="margin-bottom:24px">
+                <button id="syncAllBtn" style="padding:8px 18px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);border-radius:8px;color:#38bdf8;font-size:13px;font-weight:600;cursor:pointer">
+                    Sync All Approved → Peers Table
+                </button>
+                <span id="syncAllMsg" style="font-size:13px;margin-left:12px;color:var(--text-secondary)"></span>
+            </div>
 
             <div class="stats-grid">
                 <div class="stat-card">
@@ -653,6 +659,34 @@
             noteTargetId = null;
             document.getElementById('noteModal').classList.remove('show');
         };
+
+        document.getElementById('syncAllBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('syncAllBtn');
+            const msg = document.getElementById('syncAllMsg');
+            const approved = allSubmissions.filter(s => s.status === 'approved');
+            if (approved.length === 0) { msg.textContent = 'No approved nodes to sync.'; return; }
+
+            btn.disabled = true;
+            msg.textContent = `Syncing ${approved.length} node(s)...`;
+
+            const idToken = await auth.currentUser?.getIdToken();
+            if (!idToken) { msg.textContent = 'Auth error — please refresh.'; btn.disabled = false; return; }
+
+            let ok = 0, fail = 0;
+            await Promise.all(approved.map(async s => {
+                try {
+                    const res = await fetch('/api/v1/nodes/sync', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
+                        body: JSON.stringify({ ip: s.ip, port: s.port, tier: s.tier, network: s.network, firestoreId: s.id }),
+                    });
+                    res.ok ? ok++ : fail++;
+                } catch { fail++; }
+            }));
+
+            msg.textContent = `Done — ${ok} synced${fail ? `, ${fail} failed` : ''}.`;
+            btn.disabled = false;
+        });
 
         window.saveNote = async function() {
             if (!noteTargetId) return;
