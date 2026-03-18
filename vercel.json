@@ -19,6 +19,14 @@
   ],
   "headers": [
     {
+      "source": "/api/peers",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, max-age=0" }]
+    },
+    {
+      "source": "/api/testnet/peers",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, max-age=0" }]
+    },
+    {
       "source": "/login.html",
       "headers": [
         {
