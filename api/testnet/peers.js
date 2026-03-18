@@ -1,7 +1,3 @@
-const { initializeApp, getApps, cert } = require('firebase-admin/app');
-const { getFirestore } = require('firebase-admin/firestore');
-
-// Seed peers always included regardless of submissions
 const SEED_PEERS = [
   '64.91.241.10',
   '50.28.104.50',
@@ -13,16 +9,27 @@ const SEED_PEERS = [
   '64.91.248.55',
 ];
 
-if (!getApps().length) {
-  initializeApp({
-    credential: cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)),
-  });
+function getDb() {
+  const { initializeApp, getApps, cert } = require('firebase-admin/app');
+  const { getFirestore } = require('firebase-admin/firestore');
+
+  if (!getApps().length) {
+    // Firebase private_key contains literal \n — replace so JSON.parse works
+    // whether the env var was stored with real newlines or escaped ones
+    const raw = process.env.FIREBASE_SERVICE_ACCOUNT.replace(/\\n/g, '\n');
+    const serviceAccount = JSON.parse(raw);
+    initializeApp({ credential: cert(serviceAccount) });
+  }
+
+  return getFirestore();
 }
 
-const db = getFirestore();
-
 module.exports = async (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
   try {
+    const db = getDb();
     const snap = await db
       .collection('masternode_submissions')
       .where('status', '==', 'approved')
@@ -32,15 +39,10 @@ module.exports = async (req, res) => {
     const submitted = snap.docs.map((d) => d.data().ip);
     const peers = [...new Set([...SEED_PEERS, ...submitted])];
 
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
     res.json(peers);
   } catch (err) {
-    console.error(err);
-    // Fall back to seed peers on error so the endpoint never goes dark
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    console.error('peers/testnet error:', err);
     res.json(SEED_PEERS);
   }
 };
