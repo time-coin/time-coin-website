@@ -498,9 +498,11 @@
                         <span class="form-hint">Your masternode's public IPv4 address</span>
                     </div>
                     <div class="form-group">
-                        <label for="nodePort">Port *</label>
-                        <input type="number" id="nodePort" value="24100" min="1" max="65535">
-                        <span class="form-hint">Testnet: 24100 &nbsp;·&nbsp; Mainnet: 24000</span>
+                        <label for="nodeNetwork">Network *</label>
+                        <select id="nodeNetwork">
+                            <option value="testnet">Testnet</option>
+                            <option value="mainnet">Mainnet</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="nodeTier">Tier *</label>
@@ -512,11 +514,9 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="nodeNetwork">Network *</label>
-                        <select id="nodeNetwork">
-                            <option value="testnet">Testnet</option>
-                            <option value="mainnet">Mainnet</option>
-                        </select>
+                        <label for="nodePort">Port</label>
+                        <input type="number" id="nodePort" value="24100" min="1" max="65535" readonly style="opacity:0.7;cursor:default">
+                        <span class="form-hint" id="portHint">Auto-set for Testnet — edit to override</span>
                     </div>
                     <div class="form-group full">
                         <label for="nodeLabel">Label (optional)</label>
@@ -695,6 +695,26 @@
             document.getElementById('statApproved').textContent = nodes.filter(n => n.status === 'approved').length;
             document.getElementById('statPending').textContent = nodes.filter(n => n.status === 'pending').length;
         }
+
+        // ---- Auto-fill port from network ----
+        const NETWORK_PORTS = { testnet: 24100, mainnet: 24000 };
+        document.getElementById('nodeNetwork').addEventListener('change', function () {
+            const portInput = document.getElementById('nodePort');
+            const hint = document.getElementById('portHint');
+            const label = this.options[this.selectedIndex].text;
+            portInput.value = NETWORK_PORTS[this.value];
+            portInput.readOnly = true;
+            portInput.style.opacity = '0.7';
+            portInput.style.cursor = 'default';
+            hint.textContent = `Auto-set for ${label} — click to override`;
+        });
+        document.getElementById('nodePort').addEventListener('click', function () {
+            this.readOnly = false;
+            this.style.opacity = '1';
+            this.style.cursor = 'text';
+            document.getElementById('portHint').textContent = 'Editing port manually';
+            this.select();
+        });
 
         // ---- Submit node ----
         document.getElementById('submitBtn').addEventListener('click', async () => {
