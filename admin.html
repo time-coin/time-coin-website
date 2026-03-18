@@ -244,6 +244,36 @@
 
         .btn-note:hover { background: rgba(255,255,255,0.12); color: white; }
 
+        .btn-ping {
+            padding: 5px 12px;
+            border-radius: 6px;
+            background: rgba(56,189,248,0.1);
+            color: #38bdf8;
+            border: 1px solid rgba(56,189,248,0.25);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-ping:hover { background: rgba(56,189,248,0.2); }
+        .btn-ping:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .ping-result {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .ping-ok  { background: rgba(74,222,128,0.1);  color: var(--success-green); }
+        .ping-err { background: rgba(239,68,68,0.1);   color: var(--danger-red); }
+        .ping-chk { background: rgba(56,189,248,0.1);  color: #38bdf8; }
+
         .mono { font-family: monospace; font-size: 0.85em; }
 
         .empty-state {
@@ -395,11 +425,12 @@
                                 <th>Submitted by</th>
                                 <th>Date</th>
                                 <th>Status</th>
+                                <th>Ping</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="submissionsBody">
-                            <tr><td colspan="7" class="empty-state">Loading...</td></tr>
+                            <tr><td colspan="8" class="empty-state">Loading...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -476,7 +507,7 @@
                 renderTable();
             } catch (err) {
                 document.getElementById('submissionsBody').innerHTML =
-                    `<tr><td colspan="7" class="empty-state" style="color:var(--danger-red)">${err.message}</td></tr>`;
+                    `<tr><td colspan="8" class="empty-state" style="color:var(--danger-red)">${err.message}</td></tr>`;
             }
         }
 
@@ -495,7 +526,7 @@
             const tbody = document.getElementById('submissionsBody');
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No submissions found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No submissions found.</td></tr>`;
                 return;
             }
 
@@ -532,10 +563,40 @@
                     <td style="font-size:13px;color:var(--text-secondary)">${s.userEmail || '—'}</td>
                     <td style="font-size:13px;color:var(--text-secondary)">${date}</td>
                     <td>${statusBadge[s.status] || statusBadge.pending}</td>
+                    <td>
+                        <button class="btn-ping" id="ping-btn-${s.id}" onclick="pingNode('${s.id}','${s.ip}',${s.port})">Ping</button>
+                        <span class="ping-result" id="ping-result-${s.id}" style="display:none"></span>
+                    </td>
                     <td>${actions}</td>
                 </tr>`;
             }).join('');
         }
+
+        window.pingNode = async function(id, ip, port) {
+            const btn = document.getElementById(`ping-btn-${id}`);
+            const result = document.getElementById(`ping-result-${id}`);
+            btn.disabled = true;
+            btn.textContent = '...';
+            result.className = 'ping-result ping-chk';
+            result.textContent = 'Checking...';
+            result.style.display = 'inline-flex';
+            try {
+                const res = await fetch(`/api/v1/nodes/ping?ip=${encodeURIComponent(ip)}&port=${encodeURIComponent(port)}`);
+                const data = await res.json();
+                if (data.reachable) {
+                    result.className = 'ping-result ping-ok';
+                    result.textContent = `✓ ${data.latency}ms`;
+                } else {
+                    result.className = 'ping-result ping-err';
+                    result.textContent = `✕ Unreachable`;
+                }
+            } catch {
+                result.className = 'ping-result ping-err';
+                result.textContent = '✕ Error';
+            }
+            btn.disabled = false;
+            btn.textContent = 'Ping';
+        };
 
         window.setFilter = function(filter, btn) {
             currentFilter = filter;
