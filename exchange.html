@@ -156,15 +156,53 @@
             background: #1a1a2e;
         }
 
-        /* Amount row */
-        .amount-row {
-            display: flex;
-            gap: 12px;
+        /* Tier quick-select buttons */
+        .tier-btns {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 10px;
         }
 
-        .amount-row .form-input {
-            flex: 1;
+        .tier-btn {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-family: inherit;
         }
+
+        .tier-btn:hover {
+            border-color: var(--primary-purple);
+            background: rgba(102,126,234,0.08);
+        }
+
+        .tier-btn.selected {
+            border-color: var(--primary-purple);
+            background: rgba(102,126,234,0.12);
+        }
+
+        .tier-btn .tier-name {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .tier-btn .tier-amount {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .tier-btn.bronze .tier-name { color: #cd7f32; }
+        .tier-btn.silver .tier-name { color: #c0c0c0; }
+        .tier-btn.gold   .tier-name { color: #ffd700; }
 
         /* Preview box */
         .preview-box {
@@ -488,27 +526,38 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Amount to Pay</label>
-                        <div class="amount-row">
-                            <input type="number" class="form-input" id="payAmount"
-                                   placeholder="0.00" min="0" step="any">
-                            <span id="coinLabel" style="display:flex;align-items:center;color:var(--text-secondary);font-weight:600;white-space:nowrap">—</span>
+                        <label class="form-label">TIME Coins to Buy</label>
+                        <input type="number" class="form-input" id="timeAmount"
+                               placeholder="e.g. 1000" min="1" step="any">
+                        <div class="tier-btns">
+                            <button class="tier-btn bronze" onclick="setTier(1000, this)">
+                                <span class="tier-name">Bronze</span>
+                                <span class="tier-amount">1,000 TIME</span>
+                            </button>
+                            <button class="tier-btn silver" onclick="setTier(10000, this)">
+                                <span class="tier-name">Silver</span>
+                                <span class="tier-amount">10,000 TIME</span>
+                            </button>
+                            <button class="tier-btn gold" onclick="setTier(100000, this)">
+                                <span class="tier-name">Gold</span>
+                                <span class="tier-amount">100,000 TIME</span>
+                            </button>
                         </div>
                     </div>
 
                     <!-- Preview -->
                     <div class="preview-box" id="preview">
                         <div class="preview-row">
-                            <span class="preview-label">You Pay</span>
-                            <span class="preview-value" id="previewPay">—</span>
+                            <span class="preview-label">You Receive</span>
+                            <span class="preview-value highlight" id="previewReceive">—</span>
                         </div>
                         <div class="preview-row">
                             <span class="preview-label">Rate</span>
                             <span class="preview-value" id="previewRate">—</span>
                         </div>
                         <div class="preview-row">
-                            <span class="preview-label">You Receive</span>
-                            <span class="preview-value highlight" id="previewReceive">—</span>
+                            <span class="preview-label">You Pay</span>
+                            <span class="preview-value" id="previewPay">—</span>
                         </div>
                         <div class="preview-row">
                             <span class="preview-label">Expires in</span>
@@ -639,24 +688,31 @@ async function loadRates() {
     }
 }
 
+// Quick-select tier buttons
+function setTier(amount, btn) {
+    document.getElementById('timeAmount').value = amount;
+    document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    updatePreview();
+}
+
 // Update preview when inputs change
 function updatePreview() {
     const coin = document.getElementById('coinSelect').value;
-    const amount = parseFloat(document.getElementById('payAmount').value);
-    document.getElementById('coinLabel').textContent = coin || '—';
+    const timeAmount = parseFloat(document.getElementById('timeAmount').value);
 
     const preview = document.getElementById('preview');
-    if (!coin || !rates[coin] || isNaN(amount) || amount <= 0) {
+    if (!coin || !rates[coin] || isNaN(timeAmount) || timeAmount <= 0) {
         preview.classList.remove('visible');
         return;
     }
 
     const rate = rates[coin];
-    const timeAmount = (amount * parseFloat(rate.time_per_coin)).toFixed(8);
+    const payCost = (timeAmount / parseFloat(rate.time_per_coin)).toFixed(8);
 
-    document.getElementById('previewPay').textContent = `${amount} ${coin}`;
-    document.getElementById('previewRate').textContent = `${Number(rate.time_per_coin).toLocaleString()} TIME / ${coin}`;
     document.getElementById('previewReceive').textContent = `${Number(timeAmount).toLocaleString()} TIME`;
+    document.getElementById('previewRate').textContent = `${Number(rate.time_per_coin).toLocaleString()} TIME / ${coin}`;
+    document.getElementById('previewPay').textContent = `${payCost} ${coin}`;
     preview.classList.add('visible');
 }
 
@@ -665,11 +721,14 @@ async function submitOrder() {
     clearError('error1');
     const timeAddress = document.getElementById('timeAddress').value.trim();
     const paymentCoin = document.getElementById('coinSelect').value;
-    const payAmount = document.getElementById('payAmount').value.trim();
+    const timeAmount = parseFloat(document.getElementById('timeAmount').value);
 
     if (!timeAddress) return showError('error1', 'Please enter your TIME wallet address.');
     if (!paymentCoin) return showError('error1', 'Please select a payment coin.');
-    if (!payAmount || parseFloat(payAmount) <= 0) return showError('error1', 'Please enter an amount to pay.');
+    if (!timeAmount || timeAmount <= 0) return showError('error1', 'Please enter how many TIME coins to buy.');
+    if (!rates[paymentCoin]) return showError('error1', 'Rate unavailable. Please refresh.');
+
+    const payAmount = (timeAmount / parseFloat(rates[paymentCoin].time_per_coin)).toFixed(8);
 
     const btn = document.getElementById('btnContinue');
     btn.innerHTML = '<span class="spinner"></span>Creating order…';
@@ -814,9 +873,9 @@ function startOver() {
     document.getElementById('step2').classList.remove('visible');
     document.getElementById('preview').classList.remove('visible');
     document.getElementById('timeAddress').value = '';
-    document.getElementById('payAmount').value = '';
+    document.getElementById('timeAmount').value = '';
     document.getElementById('coinSelect').value = '';
-    document.getElementById('coinLabel').textContent = '—';
+    document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('selected'));
     document.getElementById('completedMsg').style.display = 'none';
     clearError('error1');
     clearError('error2');
@@ -855,7 +914,10 @@ function setDot(active) {
 document.addEventListener('DOMContentLoaded', () => {
     loadRates();
     document.getElementById('coinSelect').addEventListener('change', updatePreview);
-    document.getElementById('payAmount').addEventListener('input', updatePreview);
+    document.getElementById('timeAmount').addEventListener('input', () => {
+        document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('selected'));
+        updatePreview();
+    });
 });
 </script>
 
