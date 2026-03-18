@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/api/peers",
-      "destination": "http://69.167.168.176/api/v1/nodes/peers?network=mainnet"
+      "destination": "http://69.167.168.176/api/v1/nodes/peers/mainnet"
     },
     {
       "source": "/api/testnet/peers",
-      "destination": "http://69.167.168.176/api/v1/nodes/peers?network=testnet"
+      "destination": "http://69.167.168.176/api/v1/nodes/peers/testnet"
     },
     {
       "source": "/api/v1/:path*",
