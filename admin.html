@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — TIME Coin Masternode Portal</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        body { padding-top: 0; }
+
+        .dash-header {
+            background: rgba(15, 12, 41, 0.97);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .dash-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .dash-logo img {
+            width: 32px;
+            height: 32px;
+            filter: invert(1);
+        }
+
+        .dash-logo span {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .admin-tag {
+            font-size: 11px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            -webkit-text-fill-color: #ef4444;
+        }
+
+        .dash-header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .user-email { font-size: 14px; color: var(--text-secondary); }
+
+        .btn-signout {
+            padding: 7px 14px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 7px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-signout:hover {
+            background: rgba(239,68,68,0.12);
+            border-color: rgba(239,68,68,0.3);
+            color: var(--danger-red);
+        }
+
+        .dash-main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+        }
+
+        .dash-title { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+        .dash-subtitle { color: var(--text-secondary); font-size: 15px; margin-bottom: 36px; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 18px 20px;
+        }
+
+        .stat-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+        .stat-value { font-size: 30px; font-weight: 700; line-height: 1; }
+        .stat-value.purple { background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .stat-value.yellow { color: var(--warning-yellow); }
+        .stat-value.green  { color: var(--success-green); }
+        .stat-value.red    { color: var(--danger-red); }
+
+        .section {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 16px;
+            padding: 26px 28px;
+            margin-bottom: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .section-title { font-size: 17px; font-weight: 600; }
+
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.05);
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: rgba(102,126,234,0.15);
+            border-color: rgba(102,126,234,0.4);
+            color: #667eea;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 10px 12px;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+
+        td {
+            padding: 12px 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            vertical-align: middle;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        .badge-pending  { background: rgba(251,191,36,0.12); color: var(--warning-yellow); border: 1px solid rgba(251,191,36,0.25); }
+        .badge-approved { background: rgba(74,222,128,0.12);  color: var(--success-green);  border: 1px solid rgba(74,222,128,0.25); }
+        .badge-rejected { background: rgba(239,68,68,0.12);   color: var(--danger-red);     border: 1px solid rgba(239,68,68,0.25); }
+
+        .tier-pill {
+            display: inline-block;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .tier-free   { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+        .tier-bronze { background: rgba(205,127,50,0.15);  color: #cd7f32; }
+        .tier-silver { background: rgba(192,192,192,0.15); color: #c0c0c0; }
+        .tier-gold   { background: rgba(255,215,0,0.15);   color: #ffd700; }
+
+        .action-btns { display: flex; gap: 6px; }
+
+        .btn-approve, .btn-reject, .btn-note {
+            padding: 5px 12px;
+            border-radius: 6px;
+            border: none;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-approve {
+            background: rgba(74,222,128,0.12);
+            color: var(--success-green);
+            border: 1px solid rgba(74,222,128,0.25);
+        }
+
+        .btn-approve:hover { background: rgba(74,222,128,0.25); }
+
+        .btn-reject {
+            background: rgba(239,68,68,0.12);
+            color: var(--danger-red);
+            border: 1px solid rgba(239,68,68,0.25);
+        }
+
+        .btn-reject:hover { background: rgba(239,68,68,0.25); }
+
+        .btn-note {
+            background: rgba(255,255,255,0.06);
+            color: var(--text-secondary);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .btn-note:hover { background: rgba(255,255,255,0.12); color: white; }
+
+        .mono { font-family: monospace; font-size: 0.85em; }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        #pageLoader {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        /* Note modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.show { display: flex; }
+
+        .modal {
+            background: #1a1737;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 28px;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .modal h3 { font-size: 17px; font-weight: 600; margin-bottom: 16px; }
+
+        .modal textarea {
+            width: 100%;
+            padding: 10px 13px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .modal textarea:focus { border-color: var(--primary-purple); }
+
+        .modal-footer { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
+
+        .btn-cancel {
+            padding: 8px 18px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 7px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-save {
+            padding: 8px 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 7px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .dash-main  { padding: 24px 16px 60px; }
+            .user-email { display: none; }
+            th:nth-child(3), td:nth-child(3) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pageLoader">Verifying admin session...</div>
+
+    <div id="dashWrapper" style="display:none">
+
+        <header class="dash-header">
+            <a href="index.html" class="dash-logo">
+                <img src="images/logo/time-coin-logo.png" alt="TIME Coin">
+                <span>TIME</span>
+                <span class="admin-tag">ADMIN</span>
+            </a>
+            <div class="dash-header-right">
+                <span class="user-email" id="userEmail"></span>
+                <button class="btn-signout" id="signOutBtn">Sign Out</button>
+            </div>
+        </header>
+
+        <main class="dash-main">
+            <h1 class="dash-title">Masternode Submissions</h1>
+            <p class="dash-subtitle">Review and approve or reject masternode applications.</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total</div>
+                    <div class="stat-value purple" id="statTotal">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pending</div>
+                    <div class="stat-value yellow" id="statPending">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Approved</div>
+                    <div class="stat-value green" id="statApproved">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Rejected</div>
+                    <div class="stat-value red" id="statRejected">—</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">Submissions</span>
+                    <div class="filter-bar">
+                        <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+                        <button class="filter-btn" onclick="setFilter('pending', this)">Pending</button>
+                        <button class="filter-btn" onclick="setFilter('approved', this)">Approved</button>
+                        <button class="filter-btn" onclick="setFilter('rejected', this)">Rejected</button>
+                    </div>
+                </div>
+
+                <div id="tableWrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>IP : Port</th>
+                                <th>Tier</th>
+                                <th>Network</th>
+                                <th>Submitted by</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="submissionsBody">
+                            <tr><td colspan="7" class="empty-state">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Note Modal -->
+    <div class="modal-overlay" id="noteModal">
+        <div class="modal">
+            <h3>Add Admin Note</h3>
+            <textarea id="noteText" placeholder="Optional note visible to the user..."></textarea>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeNoteModal()">Cancel</button>
+                <button class="btn-save" onclick="saveNote()">Save Note</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+        import {
+            getFirestore,
+            collection,
+            getDocs,
+            updateDoc,
+            doc,
+            orderBy,
+            query
+        } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+        const ADMIN_UID = 'lhS9Q7K2GOZw0NmsKDeDPlSc8mG2';
+
+        const firebaseConfig = {
+            apiKey: "REDACTED",
+            authDomain: "time-coin-c0144.firebaseapp.com",
+            projectId: "time-coin-c0144",
+            storageBucket: "time-coin-c0144.firebasestorage.app",
+            messagingSenderId: "679646525591",
+            appId: "1:679646525591:web:3c4175551b97adf67e11d2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let allSubmissions = [];
+        let currentFilter = 'all';
+        let noteTargetId = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user || user.uid !== ADMIN_UID) {
+                window.location.href = 'login.html';
+                return;
+            }
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('pageLoader').style.display = 'none';
+            document.getElementById('dashWrapper').style.display = 'block';
+            await loadSubmissions();
+        });
+
+        document.getElementById('signOutBtn').addEventListener('click', async () => {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        });
+
+        async function loadSubmissions() {
+            try {
+                const q = query(collection(db, 'masternode_submissions'), orderBy('submittedAt', 'desc'));
+                const snap = await getDocs(q);
+                allSubmissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                updateStats();
+                renderTable();
+            } catch (err) {
+                document.getElementById('submissionsBody').innerHTML =
+                    `<tr><td colspan="7" class="empty-state" style="color:var(--danger-red)">${err.message}</td></tr>`;
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('statTotal').textContent    = allSubmissions.length;
+            document.getElementById('statPending').textContent  = allSubmissions.filter(s => s.status === 'pending').length;
+            document.getElementById('statApproved').textContent = allSubmissions.filter(s => s.status === 'approved').length;
+            document.getElementById('statRejected').textContent = allSubmissions.filter(s => s.status === 'rejected').length;
+        }
+
+        function renderTable() {
+            const filtered = currentFilter === 'all'
+                ? allSubmissions
+                : allSubmissions.filter(s => s.status === currentFilter);
+
+            const tbody = document.getElementById('submissionsBody');
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No submissions found.</td></tr>`;
+                return;
+            }
+
+            const statusBadge = {
+                pending:  '<span class="badge badge-pending">⏳ Pending</span>',
+                approved: '<span class="badge badge-approved">✓ Approved</span>',
+                rejected: '<span class="badge badge-rejected">✕ Rejected</span>',
+            };
+
+            tbody.innerHTML = filtered.map(s => {
+                const tierKey = (s.tier || 'free').toLowerCase();
+                const date = s.submittedAt?.toDate
+                    ? s.submittedAt.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                    : '—';
+
+                const actions = s.status === 'pending'
+                    ? `<div class="action-btns">
+                           <button class="btn-approve" onclick="setStatus('${s.id}', 'approved')">Approve</button>
+                           <button class="btn-reject"  onclick="setStatus('${s.id}', 'rejected')">Reject</button>
+                           <button class="btn-note"    onclick="openNoteModal('${s.id}', \`${(s.notes||'').replace(/`/g,"'")}\`)">Note</button>
+                       </div>`
+                    : `<div class="action-btns">
+                           <button class="btn-note" onclick="openNoteModal('${s.id}', \`${(s.notes||'').replace(/`/g,"'")}\`)">Note</button>
+                           <button class="btn-${s.status === 'approved' ? 'reject' : 'approve'}"
+                               onclick="setStatus('${s.id}', '${s.status === 'approved' ? 'rejected' : 'approved'}')">
+                               ${s.status === 'approved' ? 'Revoke' : 'Approve'}
+                           </button>
+                       </div>`;
+
+                return `<tr>
+                    <td><span class="mono">${s.ip}:${s.port}</span>${s.label ? `<div style="font-size:11px;color:var(--text-secondary);margin-top:2px">${s.label}</div>` : ''}</td>
+                    <td><span class="tier-pill tier-${tierKey}">${s.tier || 'Free'}</span></td>
+                    <td style="color:var(--text-secondary)">${s.network === 'mainnet' ? 'Mainnet' : 'Testnet'}</td>
+                    <td style="font-size:13px;color:var(--text-secondary)">${s.userEmail || '—'}</td>
+                    <td style="font-size:13px;color:var(--text-secondary)">${date}</td>
+                    <td>${statusBadge[s.status] || statusBadge.pending}</td>
+                    <td>${actions}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        window.setFilter = function(filter, btn) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderTable();
+        };
+
+        window.setStatus = async function(id, status) {
+            try {
+                await updateDoc(doc(db, 'masternode_submissions', id), { status });
+                const s = allSubmissions.find(s => s.id === id);
+                if (s) s.status = status;
+                updateStats();
+                renderTable();
+            } catch (err) {
+                alert('Failed to update status: ' + err.message);
+            }
+        };
+
+        window.openNoteModal = function(id, existingNote) {
+            noteTargetId = id;
+            document.getElementById('noteText').value = existingNote || '';
+            document.getElementById('noteModal').classList.add('show');
+        };
+
+        window.closeNoteModal = function() {
+            noteTargetId = null;
+            document.getElementById('noteModal').classList.remove('show');
+        };
+
+        window.saveNote = async function() {
+            if (!noteTargetId) return;
+            const notes = document.getElementById('noteText').value.trim();
+            try {
+                await updateDoc(doc(db, 'masternode_submissions', noteTargetId), { notes });
+                const s = allSubmissions.find(s => s.id === noteTargetId);
+                if (s) s.notes = notes;
+                renderTable();
+                closeNoteModal();
+            } catch (err) {
+                alert('Failed to save note: ' + err.message);
+            }
+        };
+    </script>
+</body>
+</html>
