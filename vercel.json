@@ -10,11 +10,11 @@
     },
     {
       "source": "/api/v1/:path*",
-      "destination": "https://time-coin.io/api/v1/:path*"
+      "destination": "http://69.167.168.176/api/v1/:path*"
     },
     {
       "source": "/api/explorer/:path*",
-      "destination": "https://time-coin.io/api/explorer/:path*"
+      "destination": "http://69.167.168.176/api/explorer/:path*"
     }
   ],
   "headers": [
