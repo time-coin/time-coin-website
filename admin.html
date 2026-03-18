@@ -582,6 +582,13 @@
             result.style.display = 'inline-flex';
             try {
                 const res = await fetch(`/api/v1/nodes/ping?ip=${encodeURIComponent(ip)}&port=${encodeURIComponent(port)}`);
+                if (!res.ok) {
+                    result.className = 'ping-result ping-err';
+                    result.textContent = `✕ API ${res.status}`;
+                    btn.disabled = false;
+                    btn.textContent = 'Ping';
+                    return;
+                }
                 const data = await res.json();
                 if (data.reachable) {
                     result.className = 'ping-result ping-ok';
@@ -589,10 +596,11 @@
                 } else {
                     result.className = 'ping-result ping-err';
                     result.textContent = `✕ Unreachable`;
+                    result.title = data.error || '';
                 }
             } catch {
                 result.className = 'ping-result ping-err';
-                result.textContent = '✕ Error';
+                result.textContent = '✕ Network error';
             }
             btn.disabled = false;
             btn.textContent = 'Ping';
