@@ -776,6 +776,7 @@ async function validateTimeAddress(address) {
     if (!address.startsWith('TIME')) return 'Address must start with TIME.';
     const networkDigit = address[4];
     if (networkDigit !== '0' && networkDigit !== '1') return 'Invalid network digit in address.';
+    if (networkDigit === '0') return 'Testnet addresses are not accepted. Please use a mainnet address (starts with TIME1).';
 
     const encoded = address.slice(5);
     const decoded = base58Decode(encoded);
