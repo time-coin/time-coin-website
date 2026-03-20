@@ -41,10 +41,23 @@ async function loadFooter() {
     }
 }
 
+// Load Chat Widget
+async function loadChat() {
+    try {
+        const response = await fetch('includes/chat.html');
+        if (!response.ok) return;
+        const html = await response.text();
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        document.body.appendChild(div);
+    } catch {}
+}
+
 // Load both header and footer when DOM is ready
 document.addEventListener('DOMContentLoaded', async function() {
     await loadHeader();
     await loadFooter();
+    loadChat();
 
     // Highlight current page in navigation
     highlightCurrentPage();

@@ -1,0 +1,399 @@
+<!-- TIME Coin Support Chat Widget -->
+<div id="timeChatWidget">
+
+    <!-- Toggle Button -->
+    <button class="tc-chat-btn" id="tcChatToggle" aria-label="Open support chat">
+        <svg class="tc-chat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <svg class="tc-close-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    </button>
+
+    <!-- Chat Panel -->
+    <div class="tc-panel" id="tcPanel" aria-hidden="true">
+        <div class="tc-header">
+            <div class="tc-header-info">
+                <div class="tc-avatar">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <div>
+                    <div class="tc-title">TIME Support</div>
+                    <div class="tc-status"><span class="tc-dot"></span>Online</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tc-messages" id="tcMessages">
+            <div class="tc-msg tc-msg--ai">
+                <div class="tc-bubble">Hi! I'm the TIME Coin support assistant. Ask me anything about masternodes, the portal, or getting started.</div>
+            </div>
+        </div>
+
+        <div class="tc-input-area">
+            <input type="text" id="tcInput" class="tc-input" placeholder="Ask a question..." maxlength="500" autocomplete="off">
+            <button id="tcSend" class="tc-send-btn" aria-label="Send">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+#timeChatWidget {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.tc-chat-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
+    transition: transform 0.2s, box-shadow 0.2s;
+    color: white;
+    margin-left: auto;
+}
+
+.tc-chat-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 28px rgba(102, 126, 234, 0.6);
+}
+
+.tc-chat-icon { display: block; }
+.tc-close-icon { display: none; }
+
+.tc-chat-btn.open .tc-chat-icon { display: none; }
+.tc-chat-btn.open .tc-close-icon { display: block; }
+
+.tc-panel {
+    position: absolute;
+    bottom: 68px;
+    right: 0;
+    width: 340px;
+    height: 480px;
+    background: #0f0c29;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.tc-panel.open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: all;
+}
+
+.tc-header {
+    padding: 14px 16px;
+    background: rgba(102, 126, 234, 0.12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+}
+
+.tc-header-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tc-avatar {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+}
+
+.tc-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.tc-status {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 1px;
+}
+
+.tc-dot {
+    width: 6px;
+    height: 6px;
+    background: #4ade80;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.tc-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+.tc-messages::-webkit-scrollbar { width: 4px; }
+.tc-messages::-webkit-scrollbar-track { background: transparent; }
+.tc-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+.tc-msg { display: flex; }
+.tc-msg--user { justify-content: flex-end; }
+.tc-msg--ai { justify-content: flex-start; }
+
+.tc-bubble {
+    max-width: 82%;
+    padding: 9px 13px;
+    border-radius: 14px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+.tc-msg--user .tc-bubble {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+
+.tc-msg--ai .tc-bubble {
+    background: rgba(255, 255, 255, 0.07);
+    color: rgba(255, 255, 255, 0.9);
+    border-bottom-left-radius: 4px;
+    white-space: pre-wrap;
+}
+
+.tc-typing {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    padding: 12px 13px;
+}
+
+.tc-typing span {
+    width: 7px;
+    height: 7px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 50%;
+    animation: tcBounce 1.2s infinite;
+}
+
+.tc-typing span:nth-child(2) { animation-delay: 0.2s; }
+.tc-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes tcBounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-5px); opacity: 1; }
+}
+
+.tc-input-area {
+    padding: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.tc-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    padding: 8px 14px;
+    color: white;
+    font-size: 13.5px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.tc-input:focus {
+    border-color: rgba(102, 126, 234, 0.6);
+}
+
+.tc-input::placeholder {
+    color: rgba(255, 255, 255, 0.25);
+}
+
+.tc-send-btn {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.tc-send-btn:hover { opacity: 0.85; transform: scale(1.05); }
+.tc-send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+@media (max-width: 400px) {
+    .tc-panel { width: calc(100vw - 32px); right: 0; }
+    #timeChatWidget { right: 16px; bottom: 16px; }
+}
+</style>
+
+<script>
+(function() {
+    const toggle = document.getElementById('tcChatToggle');
+    const panel  = document.getElementById('tcPanel');
+    const msgs   = document.getElementById('tcMessages');
+    const input  = document.getElementById('tcInput');
+    const send   = document.getElementById('tcSend');
+
+    let history = [];
+    let busy = false;
+
+    toggle.addEventListener('click', () => {
+        const open = panel.classList.toggle('open');
+        toggle.classList.toggle('open', open);
+        panel.setAttribute('aria-hidden', String(!open));
+        if (open) setTimeout(() => input.focus(), 200);
+    });
+
+    function scrollBottom() {
+        msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function addMsg(role, text) {
+        const div = document.createElement('div');
+        div.className = `tc-msg tc-msg--${role === 'user' ? 'user' : 'ai'}`;
+        const bubble = document.createElement('div');
+        bubble.className = 'tc-bubble';
+        bubble.textContent = text;
+        div.appendChild(bubble);
+        msgs.appendChild(div);
+        scrollBottom();
+        return bubble;
+    }
+
+    function showTyping() {
+        const div = document.createElement('div');
+        div.className = 'tc-msg tc-msg--ai';
+        div.id = 'tcTyping';
+        div.innerHTML = '<div class="tc-bubble tc-typing"><span></span><span></span><span></span></div>';
+        msgs.appendChild(div);
+        scrollBottom();
+    }
+
+    function removeTyping() {
+        const t = document.getElementById('tcTyping');
+        if (t) t.remove();
+    }
+
+    async function sendMessage() {
+        const text = input.value.trim();
+        if (!text || busy) return;
+
+        input.value = '';
+        busy = true;
+        send.disabled = true;
+
+        addMsg('user', text);
+        history.push({ role: 'user', content: text });
+
+        showTyping();
+
+        try {
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ messages: history }),
+            });
+
+            removeTyping();
+
+            if (!res.ok) throw new Error('Request failed');
+
+            const bubble = addMsg('ai', '');
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let fullText = '';
+            let buffer = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop();
+
+                for (const line of lines) {
+                    if (!line.startsWith('data: ')) continue;
+                    const data = line.slice(6);
+                    if (data === '[DONE]') break;
+                    try {
+                        const parsed = JSON.parse(data);
+                        if (parsed.error) {
+                            bubble.textContent = parsed.error;
+                        } else if (parsed.text) {
+                            fullText += parsed.text;
+                            bubble.textContent = fullText;
+                            scrollBottom();
+                        }
+                    } catch {}
+                }
+            }
+
+            if (fullText) history.push({ role: 'assistant', content: fullText });
+
+        } catch (err) {
+            removeTyping();
+            addMsg('ai', 'Sorry, something went wrong. Please try again.');
+        }
+
+        busy = false;
+        send.disabled = false;
+        input.focus();
+    }
+
+    send.addEventListener('click', sendMessage);
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+})();
+</script>
