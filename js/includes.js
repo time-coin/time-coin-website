@@ -45,9 +45,33 @@ async function loadFooter() {
 document.addEventListener('DOMContentLoaded', async function() {
     await loadHeader();
     await loadFooter();
-    
+
     // Highlight current page in navigation
     highlightCurrentPage();
+
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+    const mobileNavClose = document.getElementById('mobileNavClose');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
+
+    function openMobileMenu() {
+        mobileNav.classList.add('active');
+        mobileNavOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileMenu() {
+        mobileNav.classList.remove('active');
+        mobileNavOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openMobileMenu);
+    if (mobileNavClose) mobileNavClose.addEventListener('click', closeMobileMenu);
+    if (mobileNavOverlay) mobileNavOverlay.addEventListener('click', closeMobileMenu);
+    mobileNavLinks.forEach(link => link.addEventListener('click', closeMobileMenu));
 });
 
 // Highlight current page in navigation
