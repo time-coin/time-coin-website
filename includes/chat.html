@@ -195,7 +195,11 @@
     background: rgba(255, 255, 255, 0.07);
     color: rgba(255, 255, 255, 0.9);
     border-bottom-left-radius: 4px;
-    white-space: pre-wrap;
+}
+
+.tc-msg--ai .tc-bubble a {
+    color: #a78bfa;
+    text-decoration: underline;
 }
 
 .tc-typing {
@@ -295,12 +299,25 @@
         msgs.scrollTop = msgs.scrollHeight;
     }
 
+    function mdToHtml(text) {
+        return text
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+            .replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2">$1</a>')
+            .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n/g, '<br>');
+    }
+
     function addMsg(role, text) {
         const div = document.createElement('div');
         div.className = `tc-msg tc-msg--${role === 'user' ? 'user' : 'ai'}`;
         const bubble = document.createElement('div');
         bubble.className = 'tc-bubble';
-        bubble.textContent = text;
+        if (role === 'user') {
+            bubble.textContent = text;
+        } else {
+            bubble.innerHTML = mdToHtml(text);
+        }
         div.appendChild(bubble);
         msgs.appendChild(div);
         scrollBottom();
@@ -369,7 +386,7 @@
                             bubble.textContent = parsed.error;
                         } else if (parsed.text) {
                             fullText += parsed.text;
-                            bubble.textContent = fullText;
+                            bubble.innerHTML = mdToHtml(fullText);
                             scrollBottom();
                         }
                     } catch {}
