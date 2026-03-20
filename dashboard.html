@@ -593,7 +593,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        const ADMIN_UID = 'lhS9Q7K2GOZw0NmsKDeDPlSc8mG2';
+        const ADMIN_UIDS = ['lhS9Q7K2GOZw0NmsKDeDPlSc8mG2', 'KL38hcm5tzLEmWn3ZfkzkiSfOMB2'];
 
         let currentUser = null;
         let nodes = [];
@@ -606,7 +606,7 @@
             }
             currentUser = user;
             document.getElementById('userEmail').textContent = user.email;
-            if (user.uid === ADMIN_UID) {
+            if (ADMIN_UIDS.includes(user.uid)) {
                 document.getElementById('adminLink').style.display = 'inline-block';
             }
             document.getElementById('pageLoader').style.display = 'none';

@@ -470,7 +470,7 @@
             query
         } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-        const ADMIN_UID = 'lhS9Q7K2GOZw0NmsKDeDPlSc8mG2';
+        const ADMIN_UIDS = ['lhS9Q7K2GOZw0NmsKDeDPlSc8mG2', 'KL38hcm5tzLEmWn3ZfkzkiSfOMB2'];
 
         const firebaseConfig = {
             apiKey: "AIzaSyCZdse-Iad7L9i-3xMO2htcS1qGbz0k_4U",
@@ -490,7 +490,7 @@
         let noteTargetId = null;
 
         onAuthStateChanged(auth, async (user) => {
-            if (!user || user.uid !== ADMIN_UID) {
+            if (!user || !ADMIN_UIDS.includes(user.uid)) {
                 window.location.href = 'login.html';
                 return;
             }
