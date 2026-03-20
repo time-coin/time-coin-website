@@ -50,6 +50,12 @@ async function loadChat() {
         const div = document.createElement('div');
         div.innerHTML = html;
         document.body.appendChild(div);
+        // innerHTML doesn't execute scripts — re-run them manually
+        div.querySelectorAll('script').forEach(old => {
+            const s = document.createElement('script');
+            s.textContent = old.textContent;
+            document.body.appendChild(s);
+        });
     } catch {}
 }
 
