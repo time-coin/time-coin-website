@@ -343,7 +343,7 @@ This isn't just a speed improvement — it's a fundamentally different architect
 - Bug bounty program
 - Developer documentation and SDK
 
-### ⏳ Phase 3 — Mainnet Launch (Q3/Q4 2026)
+### 🚀 Phase 3 — Mainnet Launch (April 1, 2026)
 
 - Mainnet genesis with 100+ operators
 - Web and mobile wallet apps
