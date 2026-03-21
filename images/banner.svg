@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="728" height="90" viewBox="0 0 728 90">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0c29"/>
+      <stop offset="50%" style="stop-color:#302b63"/>
+      <stop offset="100%" style="stop-color:#24243e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="728" height="90" fill="url(#bg)"/>
+
+  <!-- Left accent bar -->
+  <rect x="0" y="0" width="4" height="90" fill="url(#accent)"/>
+
+  <!-- Logo mark (hourglass icon) -->
+  <g transform="translate(22, 14) scale(0.72)">
+    <circle cx="43" cy="43" r="40" fill="none" stroke="url(#accent)" stroke-width="3.5"/>
+    <!-- top triangle (outline) -->
+    <polygon points="43,12 70,34 16,34" fill="none" stroke="#667eea" stroke-width="3" stroke-linejoin="round"/>
+    <!-- bottom triangle (filled) -->
+    <polygon points="43,72 18,50 68,50" fill="#764ba2"/>
+    <!-- center lines -->
+    <line x1="16" y1="34" x2="43" y2="56" stroke="#667eea" stroke-width="2.5"/>
+    <line x1="70" y1="34" x2="43" y2="56" stroke="#667eea" stroke-width="2.5"/>
+  </g>
+
+  <!-- TIME COIN text -->
+  <text x="90" y="42" font-family="'Segoe UI', Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="4" fill="url(#accent)">TIME</text>
+  <text x="91" y="62" font-family="'Segoe UI', Arial, sans-serif" font-size="13" font-weight="400" letter-spacing="6" fill="#b8b8d4">COIN</text>
+
+  <!-- Divider -->
+  <rect x="200" y="18" width="1" height="54" fill="#667eea" opacity="0.4"/>
+
+  <!-- Tagline -->
+  <text x="218" y="38" font-family="'Segoe UI', Arial, sans-serif" font-size="15" font-weight="600" fill="#ffffff">Revolutionary Time-Based Cryptocurrency</text>
+  <text x="218" y="58" font-family="'Segoe UI', Arial, sans-serif" font-size="12" fill="#b8b8d4">10-Min Blocks  •  Sub-Second Finality  •  Fair Launch  •  No Pre-Mine</text>
+  <text x="218" y="76" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#667eea">time-coin.io</text>
+
+  <!-- Right CTA -->
+  <rect x="588" y="22" width="124" height="46" rx="6" fill="url(#accent)" opacity="0.15"/>
+  <rect x="588" y="22" width="124" height="46" rx="6" fill="none" stroke="url(#accent)" stroke-width="1.5"/>
+  <text x="650" y="42" font-family="'Segoe UI', Arial, sans-serif" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="1">TESTNET LIVE</text>
+  <text x="650" y="57" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#b8b8d4" text-anchor="middle">Mainnet: Apr 1, 2026</text>
+
+  <!-- Bottom accent line -->
+  <rect x="0" y="87" width="728" height="3" fill="url(#accent)" opacity="0.6"/>
+</svg>
