@@ -696,6 +696,19 @@
                     </div>
                 </div>
             </div>
+
+            <div class="faq-item" data-category="masternodes">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>My masternode fails to start with "Invalid collateral_txid hex" — how do I fix it?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>The <code>collateral_txid</code> in <code>time.conf</code> must be exactly 64 lowercase hex characters. This error often happens when users paste a full <code>masternode.conf</code> line — which includes the alias and IP:port — into the <code>collateral_txid=</code> field instead of just the transaction ID.</p>
+                        <p>Find the correct txid by running <code>time-cli listunspent</code> on your wallet — it is the 64-character hex string in the <code>txid</code> field. The <code>masternode.conf</code> file uses a different format: <code>alias txid vout</code> (no IP address). Your node's IP belongs in <code>time.conf</code> as <code>externalip=&lt;your-ip&gt;</code>.</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Development -->

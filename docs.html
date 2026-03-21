@@ -878,9 +878,9 @@ time-cli listunspent</code></pre>
 
             <h4>5. Update masternode.conf</h4>
             <pre><code>nano /root/.timecoin/masternode.conf</code></pre>
-            <p>Add one line per masternode (alias, IP:port, collateral TXID, output index):</p>
-            <pre><code># Format: alias  IP:port  collateral_txid  collateral_vout
-mn1 203.0.113.10:24000 abc123...def456 0</code></pre>
+            <p>Add one line per masternode (alias, collateral TXID, output index). Your node's IP is set via <code>externalip=</code> in <code>time.conf</code>, not here.</p>
+            <pre><code># Format: alias  collateral_txid  collateral_vout
+mn1 abc123...def456 0</code></pre>
 
             <h4>6. Restart and Verify</h4>
             <pre><code># Restart the service
@@ -1273,9 +1273,10 @@ rpcuser=timecoinrpc
 rpcpassword=&lt;auto-generated&gt;</code></pre>
 
             <h3>masternode.conf Format</h3>
-            <pre><code># alias  IP:port  collateral_txid  collateral_vout
-mn1 203.0.113.10:24000 abc123...def456 0
-mn2 203.0.113.11:24000 def456...abc789 1</code></pre>
+            <p>Your node's IP is set via <code>externalip=</code> in <code>time.conf</code>, not in <code>masternode.conf</code>.</p>
+            <pre><code># alias  collateral_txid  collateral_vout
+mn1 abc123...def456 0
+mn2 def456...abc789 1</code></pre>
 
             <h3>Upgrading</h3>
             <pre><code>cd time-masternode

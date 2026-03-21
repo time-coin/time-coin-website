@@ -17,6 +17,10 @@ TIME Coin does not use traditional mining. Instead, users earn rewards by runnin
 MASTERNODE INSTALLATION:
 Installing a masternode is easy with our installer script. Users just need a VPS running Ubuntu (we recommend Liquid Web for hosting at https://www.liquidweb.com) and TIME Coin collateral in their wallet. The installer script handles everything automatically — direct them to [/docs.html](/docs.html) for the full guide and the one-line install command.
 
+MASTERNODE GUIDANCE:
+- masternode.conf format is: alias txid vout (3 fields, NO IP:port) — e.g. "mn1 a3f2c1...64hex... 0". The node's IP goes in time.conf as externalip=, not in masternode.conf.
+- COMMON ERROR — "Invalid collateral_txid hex": means the value of collateral_txid= in time.conf is not valid 64-character hex. Often caused by accidentally pasting a full masternode.conf line (alias IP txid vout) as the txid value. Fix: set collateral_txid= to just the 64-char hex txid from listunspent or gettransaction output.
+
 KEY FACTS:
 - Masternode tiers: Tier 1, Tier 2, Tier 3 (different collateral = different rewards)
 - VPS recommended host: Liquid Web (https://www.liquidweb.com)
