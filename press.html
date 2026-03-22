@@ -17,6 +17,58 @@
     <!-- Header/Footer Includes -->
     <script src="js/includes.js" defer></script>
 
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+        import { getFirestore, collection, getDocs, orderBy, query } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCZdse-Iad7L9i-3xMO2htcS1qGbz0k_4U",
+            authDomain: "time-coin-c0144.firebaseapp.com",
+            projectId: "time-coin-c0144",
+            storageBucket: "time-coin-c0144.firebasestorage.app",
+            messagingSenderId: "679646525591",
+            appId: "1:679646525591:web:3c4175551b97adf67e11d2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function loadPressReleases() {
+            const container = document.getElementById('pressReleasesContainer');
+            try {
+                const q = query(collection(db, 'press_releases'), orderBy('createdAt', 'desc'));
+                const snap = await getDocs(q);
+                if (snap.empty) {
+                    container.innerHTML = '<p style="color:#b8b8d4;">No press releases published yet.</p>';
+                    return;
+                }
+                container.innerHTML = snap.docs.map(d => {
+                    const pr = d.data();
+                    const bodyLink = pr.body
+                        ? `<a href="#" class="press-release-link" onclick="toggleBody('body-${d.id}');return false;">Read Full Release →</a>
+                           <div id="body-${d.id}" style="display:none;margin-top:16px;color:#b8b8d4;line-height:1.7;white-space:pre-wrap;">${pr.body}</div>`
+                        : '';
+                    return `<div class="press-release-card">
+                        <div class="press-release-date">${pr.dateLabel}</div>
+                        <h3 class="press-release-title">${pr.title}</h3>
+                        <p class="press-release-excerpt">${pr.excerpt}</p>
+                        ${bodyLink}
+                    </div>`;
+                }).join('');
+            } catch (err) {
+                container.innerHTML = '<p style="color:#b8b8d4;">Unable to load press releases.</p>';
+            }
+        }
+
+        window.toggleBody = (id) => {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        };
+
+        loadPressReleases();
+    </script>
+
     <style>
         * {
             margin: 0;
@@ -507,7 +559,7 @@
             </div>
             <div class="fact-card">
                 <div class="fact-label">Launch Date</div>
-                <div class="fact-value">Q3-Q4 2025</div>
+                <div class="fact-value">April 1, 2026</div>
             </div>
             <div class="fact-card">
                 <div class="fact-label">Block Time</div>
@@ -610,27 +662,8 @@
         <h2 class="section-title">Press Releases</h2>
         <p class="section-subtitle">Latest announcements and news</p>
         
-        <div class="press-releases">
-            <div class="press-release-card">
-                <div class="press-release-date">October 12, 2025</div>
-                <h3 class="press-release-title">TIME Coin Website and Documentation Launch</h3>
-                <p class="press-release-excerpt">TIME Coin today launched its official website, comprehensive documentation, and community hub, marking a significant milestone in the project's development. The launch provides transparency into the project's innovative 10-minute block architecture and roadmap to mainnet launch on April 1, 2026.</p>
-                <a href="#" class="press-release-link">Read Full Release →</a>
-            </div>
-
-            <div class="press-release-card">
-                <div class="press-release-date">September 2025</div>
-                <h3 class="press-release-title">TIME Coin Development Roadmap Released</h3>
-                <p class="press-release-excerpt">The TIME Coin team unveiled a detailed 12-phase development roadmap, demonstrating the project's commitment to transparency and systematic execution. With Phase 1 and 2 complete and Phase 3 underway, the project remains on track for Q2 2025 testnet launch.</p>
-                <a href="roadmap.html" class="press-release-link">View Roadmap →</a>
-            </div>
-
-            <div class="press-release-card">
-                <div class="press-release-date">August 2025</div>
-                <h3 class="press-release-title">TIME Coin Announces Fair Launch, No Pre-Mine Model</h3>
-                <p class="press-release-excerpt">TIME Coin confirmed its commitment to fair distribution with a zero pre-mine, block reward emission model. Unlike traditional cryptocurrencies with founder allocations, TIME tokens are created exclusively through block rewards distributed to masternodes and block producers, ensuring complete fairness and transparency.</p>
-                <a href="#" class="press-release-link">Read Full Release →</a>
-            </div>
+        <div class="press-releases" id="pressReleasesContainer">
+            <p style="color:#b8b8d4;">Loading press releases...</p>
         </div>
     </section>
 

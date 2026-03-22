@@ -442,6 +442,47 @@
                     </table>
                 </div>
             </div>
+
+            <!-- Press Releases -->
+            <div class="section" style="margin-top:32px;">
+                <div class="section-header">
+                    <span class="section-title">Press Releases</span>
+                </div>
+
+                <form id="prForm" style="display:grid;gap:12px;margin-bottom:24px;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div>
+                            <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Title</label>
+                            <input id="prTitle" type="text" placeholder="e.g. TIME Coin Mainnet Launch" required
+                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;">
+                        </div>
+                        <div>
+                            <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Date Label (e.g. March 21, 2026)</label>
+                            <input id="prDate" type="text" placeholder="March 21, 2026" required
+                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;">
+                        </div>
+                    </div>
+                    <div>
+                        <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Excerpt</label>
+                        <textarea id="prExcerpt" placeholder="Short summary shown on the press page..." required rows="3"
+                            style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;resize:vertical;"></textarea>
+                    </div>
+                    <div>
+                        <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Full Release (optional)</label>
+                        <textarea id="prBody" placeholder="Full press release text..." rows="5"
+                            style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;resize:vertical;"></textarea>
+                    </div>
+                    <div>
+                        <button type="submit"
+                            style="padding:9px 20px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:7px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">
+                            Publish Press Release
+                        </button>
+                        <span id="prMsg" style="font-size:13px;margin-left:12px;color:var(--text-secondary);"></span>
+                    </div>
+                </form>
+
+                <div id="prList"><p style="color:var(--text-secondary);font-size:14px;">Loading...</p></div>
+            </div>
         </main>
     </div>
 
@@ -465,9 +506,12 @@
             collection,
             getDocs,
             updateDoc,
+            addDoc,
+            deleteDoc,
             doc,
             orderBy,
-            query
+            query,
+            serverTimestamp
         } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
         const ADMIN_UIDS = ['lhS9Q7K2GOZw0NmsKDeDPlSc8mG2', 'KL38hcm5tzLEmWn3ZfkzkiSfOMB2'];
@@ -498,6 +542,7 @@
             document.getElementById('pageLoader').style.display = 'none';
             document.getElementById('dashWrapper').style.display = 'block';
             await loadSubmissions();
+            await loadPressReleases();
         });
 
         document.getElementById('signOutBtn').addEventListener('click', async () => {
@@ -700,6 +745,67 @@
                 closeNoteModal();
             } catch (err) {
                 alert('Failed to save note: ' + err.message);
+            }
+        };
+
+        // ── Press Releases ────────────────────────────────────────────────────
+
+        async function loadPressReleases() {
+            const list = document.getElementById('prList');
+            try {
+                const q = query(collection(db, 'press_releases'), orderBy('createdAt', 'desc'));
+                const snap = await getDocs(q);
+                if (snap.empty) {
+                    list.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;">No press releases yet.</p>';
+                    return;
+                }
+                list.innerHTML = snap.docs.map(d => {
+                    const pr = d.data();
+                    return `<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:16px 20px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
+                        <div>
+                            <div style="font-size:12px;color:#667eea;font-weight:600;margin-bottom:4px;">${pr.dateLabel}</div>
+                            <div style="font-size:15px;font-weight:600;margin-bottom:6px;">${pr.title}</div>
+                            <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">${pr.excerpt}</div>
+                        </div>
+                        <button onclick="deletePressRelease('${d.id}')"
+                            style="flex-shrink:0;padding:6px 12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:6px;color:#ef4444;font-size:12px;font-weight:600;cursor:pointer;">
+                            Delete
+                        </button>
+                    </div>`;
+                }).join('');
+            } catch (err) {
+                list.innerHTML = '<p style="color:#ef4444;font-size:14px;">Failed to load press releases.</p>';
+            }
+        }
+
+        document.getElementById('prForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('prMsg');
+            msg.textContent = 'Publishing...';
+            try {
+                await addDoc(collection(db, 'press_releases'), {
+                    title: document.getElementById('prTitle').value.trim(),
+                    dateLabel: document.getElementById('prDate').value.trim(),
+                    excerpt: document.getElementById('prExcerpt').value.trim(),
+                    body: document.getElementById('prBody').value.trim(),
+                    createdAt: serverTimestamp(),
+                });
+                document.getElementById('prForm').reset();
+                msg.textContent = 'Published!';
+                setTimeout(() => msg.textContent = '', 3000);
+                await loadPressReleases();
+            } catch (err) {
+                msg.textContent = 'Error: ' + err.message;
+            }
+        });
+
+        window.deletePressRelease = async (id) => {
+            if (!confirm('Delete this press release?')) return;
+            try {
+                await deleteDoc(doc(db, 'press_releases', id));
+                await loadPressReleases();
+            } catch (err) {
+                alert('Failed to delete: ' + err.message);
             }
         };
     </script>
