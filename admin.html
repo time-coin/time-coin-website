@@ -471,6 +471,7 @@
             <nav class="tab-nav">
                 <button class="tab-btn active" onclick="switchTab('masternodes', this)">Masternodes</button>
                 <button class="tab-btn" onclick="switchTab('press', this)">Press Releases</button>
+                <button class="tab-btn" onclick="switchTab('campaigns', this)">Email Campaigns</button>
             </nav>
 
             <!-- Masternodes tab -->
@@ -591,6 +592,88 @@
                         <span class="section-title">Published Releases</span>
                     </div>
                     <div id="prList"><p style="color:var(--text-secondary);font-size:14px;">Loading…</p></div>
+                </div>
+            </div>
+
+            <!-- Email Campaigns tab -->
+            <div id="tab-campaigns" class="tab-panel">
+                <h1 class="dash-title">Email Campaigns</h1>
+                <p class="dash-subtitle">Send press releases directly to your media contacts via Gmail.</p>
+
+                <!-- Apps Script connection -->
+                <div class="section">
+                    <div class="section-header"><span class="section-title">Apps Script Connection</span></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+                        <div>
+                            <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Web App URL</label>
+                            <input id="gasUrl" type="text" placeholder="https://script.google.com/macros/s/…/exec"
+                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;box-sizing:border-box;">
+                        </div>
+                        <div>
+                            <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Secret Token</label>
+                            <input id="gasToken" type="password" placeholder="Your SECRET_TOKEN value"
+                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;box-sizing:border-box;">
+                        </div>
+                    </div>
+                    <button onclick="saveGasConfig()" style="padding:8px 18px;background:rgba(102,126,234,0.15);border:1px solid rgba(102,126,234,0.3);border-radius:7px;color:#667eea;font-size:13px;font-weight:600;cursor:pointer;">Save &amp; Test Connection</button>
+                    <span id="gasStatus" style="font-size:13px;margin-left:12px;color:var(--text-secondary);"></span>
+                </div>
+
+                <!-- Contacts -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-title">Press Contacts</span>
+                        <button onclick="loadContacts()" style="padding:6px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:12px;cursor:pointer;">↻ Refresh</button>
+                    </div>
+                    <div id="contactsTable" style="margin-bottom:16px;"><p style="color:var(--text-secondary);font-size:14px;">Save connection settings above to load contacts.</p></div>
+                    <!-- Add contact -->
+                    <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);">
+                        <div>
+                            <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Outlet</label>
+                            <input id="newOutlet" type="text" placeholder="CoinDesk"
+                                style="padding:8px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;width:160px;">
+                        </div>
+                        <div>
+                            <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Email</label>
+                            <input id="newEmail" type="email" placeholder="editor@coindesk.com"
+                                style="padding:8px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;width:220px;">
+                        </div>
+                        <button onclick="addContact()" style="padding:8px 16px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.25);border-radius:7px;color:#34d399;font-size:13px;font-weight:600;cursor:pointer;">+ Add Contact</button>
+                        <span id="contactMsg" style="font-size:13px;color:var(--text-secondary);"></span>
+                    </div>
+                </div>
+
+                <!-- Compose -->
+                <div class="section">
+                    <div class="section-header"><span class="section-title">Compose Campaign</span></div>
+                    <div style="display:grid;gap:12px;">
+                        <div>
+                            <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Subject Line</label>
+                            <input id="campSubject" type="text" placeholder="e.g. TIME Coin Launches on Mainnet — April 1, 2026"
+                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;box-sizing:border-box;">
+                        </div>
+                        <div>
+                            <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Body (plain text — will be wrapped in branded HTML for recipients)</label>
+                            <textarea id="campBody" rows="14" placeholder="Paste your press release text here…"
+                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;line-height:1.6;resize:vertical;box-sizing:border-box;font-family:monospace;"></textarea>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+                            <button onclick="sendCampaign()" id="sendBtn"
+                                style="padding:10px 24px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:7px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">
+                                Send to All Active Contacts
+                            </button>
+                            <span id="campMsg" style="font-size:13px;color:var(--text-secondary);"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campaign history -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-title">Campaign History</span>
+                        <button onclick="loadCampaigns()" style="padding:6px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:12px;cursor:pointer;">↻ Refresh</button>
+                    </div>
+                    <div id="campaignHistory"><p style="color:var(--text-secondary);font-size:14px;">No campaigns sent yet.</p></div>
                 </div>
             </div>
 
@@ -980,6 +1063,156 @@
                 alert('Failed to delete: ' + err.message);
             }
         };
+
+        // ── Email Campaigns ───────────────────────────────────────────────────
+
+        function gasConfig() {
+            return {
+                url:   localStorage.getItem('gasUrl')   || '',
+                token: localStorage.getItem('gasToken') || '',
+            };
+        }
+
+        async function gasCall(payload) {
+            const { url, token } = gasConfig();
+            if (!url || !token) throw new Error('Apps Script not configured — save your URL and token first.');
+            const res = await fetch(url, {
+                method: 'POST',
+                body: JSON.stringify({ ...payload, token }),
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error || 'Unknown error');
+            return data;
+        }
+
+        window.saveGasConfig = async function() {
+            const url   = document.getElementById('gasUrl').value.trim();
+            const token = document.getElementById('gasToken').value.trim();
+            const status = document.getElementById('gasStatus');
+            if (!url || !token) { status.textContent = 'Enter both URL and token.'; return; }
+            localStorage.setItem('gasUrl', url);
+            localStorage.setItem('gasToken', token);
+            status.textContent = 'Testing…';
+            try {
+                const res = await fetch(url + '?token=' + encodeURIComponent(token));
+                const data = await res.json();
+                if (data.success) {
+                    status.style.color = '#34d399';
+                    status.textContent = '✓ Connected';
+                    loadContacts();
+                    loadCampaigns();
+                } else {
+                    status.style.color = '#ef4444';
+                    status.textContent = '✕ ' + (data.error || 'Auth failed');
+                }
+            } catch (e) {
+                status.style.color = '#ef4444';
+                status.textContent = '✕ Network error — check URL';
+            }
+        };
+
+        window.loadContacts = async function() {
+            const el = document.getElementById('contactsTable');
+            el.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;">Loading…</p>';
+            try {
+                const { contacts } = await gasCall({ action: 'getContacts' });
+                if (!contacts.length) { el.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;">No contacts yet.</p>'; return; }
+                el.innerHTML = '<table><thead><tr><th>Outlet</th><th>Email</th><th>Active</th><th></th></tr></thead><tbody>'
+                    + contacts.map(c => `<tr>
+                        <td>${c.outlet || '—'}</td>
+                        <td style="font-size:13px;">${c.email}</td>
+                        <td><label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+                            <input type="checkbox" ${c.active ? 'checked' : ''} onchange="toggleContact(${c.row}, this.checked)"
+                                style="width:16px;height:16px;cursor:pointer;accent-color:#667eea;">
+                            <span style="font-size:12px;color:var(--text-secondary)">${c.active ? 'Active' : 'Disabled'}</span>
+                        </label></td>
+                        <td><button onclick="deleteContact(${c.row})"
+                            style="padding:4px 10px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:5px;color:#ef4444;font-size:12px;cursor:pointer;">Remove</button></td>
+                    </tr>`).join('')
+                    + '</tbody></table>';
+            } catch (err) {
+                el.innerHTML = '<p style="color:#ef4444;font-size:14px;">' + err.message + '</p>';
+            }
+        };
+
+        window.toggleContact = async function(row, active) {
+            try { await gasCall({ action: 'toggleContact', row, active }); loadContacts(); }
+            catch (err) { alert('Error: ' + err.message); }
+        };
+
+        window.deleteContact = async function(row) {
+            if (!confirm('Remove this contact?')) return;
+            try { await gasCall({ action: 'deleteContact', row }); loadContacts(); }
+            catch (err) { alert('Error: ' + err.message); }
+        };
+
+        window.addContact = async function() {
+            const outlet = document.getElementById('newOutlet').value.trim();
+            const email  = document.getElementById('newEmail').value.trim();
+            const msg    = document.getElementById('contactMsg');
+            if (!email) { msg.textContent = 'Email is required.'; return; }
+            msg.textContent = 'Adding…';
+            try {
+                await gasCall({ action: 'addContact', outlet, email });
+                document.getElementById('newOutlet').value = '';
+                document.getElementById('newEmail').value  = '';
+                msg.style.color = '#34d399';
+                msg.textContent = '✓ Added';
+                setTimeout(() => msg.textContent = '', 2000);
+                loadContacts();
+            } catch (err) {
+                msg.style.color = '#ef4444';
+                msg.textContent = '✕ ' + err.message;
+            }
+        };
+
+        window.sendCampaign = async function() {
+            const subject = document.getElementById('campSubject').value.trim();
+            const body    = document.getElementById('campBody').value.trim();
+            const msg     = document.getElementById('campMsg');
+            const btn     = document.getElementById('sendBtn');
+            if (!subject || !body) { msg.textContent = 'Subject and body are required.'; return; }
+            const { contacts } = await gasCall({ action: 'getContacts' }).catch(() => ({ contacts: [] }));
+            const active = contacts.filter(c => c.active).length;
+            if (!confirm(`Send "${subject}" to ${active} active contact${active !== 1 ? 's' : ''}?`)) return;
+            btn.disabled = true;
+            msg.style.color = 'var(--text-secondary)';
+            msg.textContent = 'Sending…';
+            try {
+                const result = await gasCall({ action: 'sendCampaign', subject, body });
+                msg.style.color = '#34d399';
+                msg.textContent = '✓ ' + result.message;
+                loadCampaigns();
+            } catch (err) {
+                msg.style.color = '#ef4444';
+                msg.textContent = '✕ ' + err.message;
+            }
+            btn.disabled = false;
+        };
+
+        window.loadCampaigns = async function() {
+            const el = document.getElementById('campaignHistory');
+            try {
+                const { campaigns } = await gasCall({ action: 'getCampaigns' });
+                if (!campaigns.length) { el.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;">No campaigns sent yet.</p>'; return; }
+                el.innerHTML = '<table><thead><tr><th>Date</th><th>Subject</th><th>Recipients</th><th>Status</th></tr></thead><tbody>'
+                    + campaigns.map(c => `<tr>
+                        <td style="font-size:12px;white-space:nowrap;">${new Date(c.date).toLocaleString()}</td>
+                        <td>${c.subject}</td>
+                        <td style="text-align:center;">${c.recipients}</td>
+                        <td style="font-size:12px;color:var(--text-secondary);">${c.status}</td>
+                    </tr>`).join('')
+                    + '</tbody></table>';
+            } catch (err) {
+                el.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;">Save connection settings to view history.</p>';
+            }
+        };
+
+        // Restore saved GAS config on page load
+        const savedUrl   = localStorage.getItem('gasUrl');
+        const savedToken = localStorage.getItem('gasToken');
+        if (savedUrl)   document.getElementById('gasUrl').value   = savedUrl;
+        if (savedToken) document.getElementById('gasToken').value = savedToken;
     </script>
 </body>
 </html>
