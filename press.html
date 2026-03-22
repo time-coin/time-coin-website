@@ -17,6 +17,9 @@
     <!-- Header/Footer Includes -->
     <script src="js/includes.js" defer></script>
 
+    <!-- Markdown renderer -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+
     <!-- Firebase -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -47,7 +50,7 @@
                     const pr = d.data();
                     const bodyLink = pr.body
                         ? `<a href="#" class="press-release-link" onclick="toggleBody('body-${d.id}');return false;">Read Full Release →</a>
-                           <div id="body-${d.id}" style="display:none;margin-top:16px;color:#b8b8d4;line-height:1.7;white-space:pre-wrap;">${pr.body}</div>`
+                           <div id="body-${d.id}" class="pr-body" style="display:none;">${marked.parse(pr.body)}</div>`
                         : '';
                     return `<div class="press-release-card">
                         <div class="press-release-date">${pr.dateLabel}</div>
@@ -501,6 +504,61 @@
             color: #b8b8d4;
             font-size: 18px;
             margin-bottom: 30px;
+        }
+
+        /* Markdown body in press releases */
+        .pr-body {
+            margin-top: 20px;
+            color: #b8b8d4;
+            line-height: 1.8;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding-top: 20px;
+        }
+
+        .pr-body h1, .pr-body h2, .pr-body h3 {
+            color: #ffffff;
+            margin: 1.4em 0 0.5em;
+            line-height: 1.3;
+        }
+
+        .pr-body h1 { font-size: 1.4em; }
+        .pr-body h2 { font-size: 1.2em; }
+        .pr-body h3 { font-size: 1.05em; color: #667eea; }
+
+        .pr-body p { margin: 0 0 1em; }
+
+        .pr-body strong { color: #ffffff; font-weight: 600; }
+
+        .pr-body em { color: #c8c8e8; }
+
+        .pr-body ul, .pr-body ol {
+            margin: 0.5em 0 1em 1.4em;
+        }
+
+        .pr-body li { margin: 0.3em 0; }
+
+        .pr-body a { color: #667eea; text-decoration: none; }
+        .pr-body a:hover { text-decoration: underline; }
+
+        .pr-body hr {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.12);
+            margin: 1.5em 0;
+        }
+
+        .pr-body blockquote {
+            border-left: 3px solid #667eea;
+            padding-left: 1em;
+            color: #9898b8;
+            margin: 1em 0;
+        }
+
+        .pr-body code {
+            background: rgba(255,255,255,0.07);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: monospace;
         }
 
         /* Mobile Responsive */
