@@ -356,11 +356,94 @@
             cursor: pointer;
         }
 
+        /* Tabs */
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding-bottom: 0;
+        }
+
+        .tab-btn {
+            padding: 9px 20px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: -1px;
+        }
+
+        .tab-btn:hover { color: #fff; }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Search */
+        .search-input {
+            padding: 7px 13px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 13px;
+            width: 220px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus { border-color: rgba(102,126,234,0.5); }
+        .search-input::placeholder { color: var(--text-secondary); }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 4px 0;
+            font-size: 13px;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .page-btns { display: flex; gap: 6px; }
+
+        .page-btn {
+            padding: 5px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.05);
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: rgba(102,126,234,0.15);
+            border-color: rgba(102,126,234,0.4);
+            color: #667eea;
+        }
+
+        .page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+        .page-btn.current { background: rgba(102,126,234,0.2); border-color: rgba(102,126,234,0.5); color: #667eea; }
+
         @media (max-width: 768px) {
             .stats-grid { grid-template-columns: 1fr 1fr; }
             .dash-main  { padding: 24px 16px 60px; }
             .user-email { display: none; }
             th:nth-child(3), td:nth-child(3) { display: none; }
+            .search-input { width: 100%; }
         }
     </style>
 </head>
@@ -383,106 +466,134 @@
         </header>
 
         <main class="dash-main">
-            <h1 class="dash-title">Masternode Submissions</h1>
-            <p class="dash-subtitle">Review and approve or reject masternode applications.</p>
-            <div style="margin-bottom:24px">
-                <button id="syncAllBtn" style="padding:8px 18px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);border-radius:8px;color:#38bdf8;font-size:13px;font-weight:600;cursor:pointer">
-                    Sync All Approved → Peers Table
-                </button>
-                <span id="syncAllMsg" style="font-size:13px;margin-left:12px;color:var(--text-secondary)"></span>
-            </div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Total</div>
-                    <div class="stat-value purple" id="statTotal">—</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Pending</div>
-                    <div class="stat-value yellow" id="statPending">—</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Approved</div>
-                    <div class="stat-value green" id="statApproved">—</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Rejected</div>
-                    <div class="stat-value red" id="statRejected">—</div>
-                </div>
-            </div>
+            <!-- Tab navigation -->
+            <nav class="tab-nav">
+                <button class="tab-btn active" onclick="switchTab('masternodes', this)">Masternodes</button>
+                <button class="tab-btn" onclick="switchTab('press', this)">Press Releases</button>
+            </nav>
 
-            <div class="section">
-                <div class="section-header">
-                    <span class="section-title">Submissions</span>
-                    <div class="filter-bar">
-                        <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
-                        <button class="filter-btn" onclick="setFilter('pending', this)">Pending</button>
-                        <button class="filter-btn" onclick="setFilter('approved', this)">Approved</button>
-                        <button class="filter-btn" onclick="setFilter('rejected', this)">Rejected</button>
+            <!-- Masternodes tab -->
+            <div id="tab-masternodes" class="tab-panel active">
+                <h1 class="dash-title">Masternode Submissions</h1>
+                <p class="dash-subtitle">Review and approve or reject masternode applications.</p>
+                <div style="margin-bottom:24px">
+                    <button id="syncAllBtn" style="padding:8px 18px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);border-radius:8px;color:#38bdf8;font-size:13px;font-weight:600;cursor:pointer">
+                        Sync All Approved → Peers Table
+                    </button>
+                    <span id="syncAllMsg" style="font-size:13px;margin-left:12px;color:var(--text-secondary)"></span>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total</div>
+                        <div class="stat-value purple" id="statTotal">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Pending</div>
+                        <div class="stat-value yellow" id="statPending">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Approved</div>
+                        <div class="stat-value green" id="statApproved">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Rejected</div>
+                        <div class="stat-value red" id="statRejected">—</div>
                     </div>
                 </div>
 
-                <div id="tableWrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>IP : Port</th>
-                                <th>Tier</th>
-                                <th>Network</th>
-                                <th>Submitted by</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Ping</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="submissionsBody">
-                            <tr><td colspan="8" class="empty-state">Loading...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Press Releases -->
-            <div class="section" style="margin-top:32px;">
-                <div class="section-header">
-                    <span class="section-title">Press Releases</span>
-                </div>
-
-                <form id="prForm" style="display:grid;gap:12px;margin-bottom:24px;">
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                        <div>
-                            <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Title</label>
-                            <input id="prTitle" type="text" placeholder="e.g. TIME Coin Mainnet Launch" required
-                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;">
-                        </div>
-                        <div>
-                            <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Date Label (e.g. March 21, 2026)</label>
-                            <input id="prDate" type="text" placeholder="March 21, 2026" required
-                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;">
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-title">Submissions</span>
+                        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                            <input class="search-input" id="searchInput" type="text" placeholder="Search IP, tier, email…">
+                            <div class="filter-bar">
+                                <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+                                <button class="filter-btn" onclick="setFilter('pending', this)">Pending</button>
+                                <button class="filter-btn" onclick="setFilter('approved', this)">Approved</button>
+                                <button class="filter-btn" onclick="setFilter('rejected', this)">Rejected</button>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Excerpt</label>
-                        <textarea id="prExcerpt" placeholder="Short summary shown on the press page..." required rows="3"
-                            style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;resize:vertical;"></textarea>
-                    </div>
-                    <div>
-                        <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Full Release (optional)</label>
-                        <textarea id="prBody" placeholder="Full press release text..." rows="5"
-                            style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;resize:vertical;"></textarea>
-                    </div>
-                    <div>
-                        <button type="submit"
-                            style="padding:9px 20px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:7px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">
-                            Publish Press Release
-                        </button>
-                        <span id="prMsg" style="font-size:13px;margin-left:12px;color:var(--text-secondary);"></span>
-                    </div>
-                </form>
 
-                <div id="prList"><p style="color:var(--text-secondary);font-size:14px;">Loading...</p></div>
+                    <div id="tableWrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>IP : Port</th>
+                                    <th>Tier</th>
+                                    <th>Network</th>
+                                    <th>Submitted by</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Ping</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="submissionsBody">
+                                <tr><td colspan="8" class="empty-state">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination" id="pagination" style="display:none">
+                        <span id="pageInfo"></span>
+                        <div class="page-btns" id="pageBtns"></div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Press Releases tab -->
+            <div id="tab-press" class="tab-panel">
+                <h1 class="dash-title">Press Releases</h1>
+                <p class="dash-subtitle">Publish and manage press releases shown on the public press page.</p>
+
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-title">New Release</span>
+                    </div>
+                    <form id="prForm" style="display:grid;gap:12px;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                            <div>
+                                <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Title</label>
+                                <input id="prTitle" type="text" placeholder="e.g. TIME Coin Mainnet Launch" required
+                                    style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;">
+                            </div>
+                            <div>
+                                <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Date Label (e.g. March 21, 2026)</label>
+                                <input id="prDate" type="text" placeholder="March 21, 2026" required
+                                    style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;">
+                            </div>
+                        </div>
+                        <div>
+                            <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Excerpt</label>
+                            <textarea id="prExcerpt" placeholder="Short summary shown on the press page…" required rows="3"
+                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;resize:vertical;"></textarea>
+                        </div>
+                        <div>
+                            <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Full Release (optional)</label>
+                            <textarea id="prBody" placeholder="Full press release text…" rows="6"
+                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;resize:vertical;"></textarea>
+                        </div>
+                        <div>
+                            <button type="submit"
+                                style="padding:9px 20px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:7px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">
+                                Publish Press Release
+                            </button>
+                            <span id="prMsg" style="font-size:13px;margin-left:12px;color:var(--text-secondary);"></span>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="section" style="margin-top:0">
+                    <div class="section-header">
+                        <span class="section-title">Published Releases</span>
+                    </div>
+                    <div id="prList"><p style="color:var(--text-secondary);font-size:14px;">Loading…</p></div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -531,6 +642,9 @@
 
         let allSubmissions = [];
         let currentFilter = 'all';
+        let currentSearch = '';
+        let currentPage = 1;
+        const PAGE_SIZE = 20;
         let noteTargetId = null;
 
         onAuthStateChanged(auth, async (user) => {
@@ -571,16 +685,54 @@
         }
 
         function renderTable() {
-            const filtered = currentFilter === 'all'
+            let filtered = currentFilter === 'all'
                 ? allSubmissions
                 : allSubmissions.filter(s => s.status === currentFilter);
+
+            if (currentSearch) {
+                const q = currentSearch.toLowerCase();
+                filtered = filtered.filter(s =>
+                    (s.ip || '').toLowerCase().includes(q) ||
+                    (s.tier || '').toLowerCase().includes(q) ||
+                    (s.network || '').toLowerCase().includes(q) ||
+                    (s.userEmail || '').toLowerCase().includes(q) ||
+                    (s.label || '').toLowerCase().includes(q)
+                );
+            }
+
+            const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+            if (currentPage > totalPages) currentPage = totalPages;
+            const start = (currentPage - 1) * PAGE_SIZE;
+            const page = filtered.slice(start, start + PAGE_SIZE);
 
             const tbody = document.getElementById('submissionsBody');
 
             if (filtered.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No submissions found.</td></tr>`;
+                document.getElementById('pagination').style.display = 'none';
                 return;
             }
+
+            // Pagination UI
+            const pag = document.getElementById('pagination');
+            pag.style.display = 'flex';
+            document.getElementById('pageInfo').textContent =
+                `Showing ${start + 1}–${Math.min(start + PAGE_SIZE, filtered.length)} of ${filtered.length}`;
+            const btns = document.getElementById('pageBtns');
+            btns.innerHTML = `
+                <button class="page-btn" onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹ Prev</button>
+                ${Array.from({length: totalPages}, (_, i) => i + 1)
+                    .filter(p => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 2)
+                    .reduce((acc, p, i, arr) => {
+                        if (i > 0 && arr[i-1] !== p - 1) acc.push('…');
+                        acc.push(p);
+                        return acc;
+                    }, [])
+                    .map(p => p === '…'
+                        ? `<span style="padding:5px 4px;color:var(--text-secondary)">…</span>`
+                        : `<button class="page-btn ${p === currentPage ? 'current' : ''}" onclick="goPage(${p})">${p}</button>`)
+                    .join('')}
+                <button class="page-btn" onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Next ›</button>`;
 
             const statusBadge = {
                 pending:  '<span class="badge badge-pending">⏳ Pending</span>',
@@ -588,7 +740,7 @@
                 rejected: '<span class="badge badge-rejected">✕ Rejected</span>',
             };
 
-            tbody.innerHTML = filtered.map(s => {
+            tbody.innerHTML = page.map(s => {
                 const tierKey = (s.tier || 'free').toLowerCase();
                 const date = s.submittedAt?.toDate
                     ? s.submittedAt.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
@@ -660,10 +812,30 @@
 
         window.setFilter = function(filter, btn) {
             currentFilter = filter;
+            currentPage = 1;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             renderTable();
         };
+
+        window.goPage = function(page) {
+            currentPage = page;
+            renderTable();
+            document.getElementById('tab-masternodes').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        window.switchTab = function(tab, btn) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            btn.classList.add('active');
+        };
+
+        document.getElementById('searchInput').addEventListener('input', function() {
+            currentSearch = this.value.trim();
+            currentPage = 1;
+            renderTable();
+        });
 
         window.setStatus = async function(id, status) {
             try {
