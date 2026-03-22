@@ -75,10 +75,18 @@
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('pressSignupForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const outlet = document.getElementById('signupOutlet').value.trim();
-                const email  = document.getElementById('signupEmail').value.trim();
-                const msg    = document.getElementById('signupMsg');
+                const outlet  = document.getElementById('signupOutlet').value.trim();
+                const email   = document.getElementById('signupEmail').value.trim();
+                const honeypot = document.getElementById('signupWebsite').value;
+                const msg     = document.getElementById('signupMsg');
                 if (!email) return;
+                // Silently succeed if honeypot filled — bot submission
+                if (honeypot) {
+                    msg.style.color = '#34d399';
+                    msg.textContent = '✓ Request received — we\'ll add you to the list shortly.';
+                    document.getElementById('pressSignupForm').reset();
+                    return;
+                }
                 msg.style.color = '#b8b8d4';
                 msg.textContent = 'Submitting…';
                 try {
@@ -927,6 +935,10 @@
         <p class="section-subtitle">Get TIME Coin press releases delivered directly to your inbox</p>
         <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:15px;padding:36px;max-width:520px;margin:0 auto;">
             <form id="pressSignupForm">
+                <!-- Honeypot — hidden from humans, bots fill it in -->
+                <div style="display:none;" aria-hidden="true">
+                    <input id="signupWebsite" type="text" tabindex="-1" autocomplete="off">
+                </div>
                 <div style="margin-bottom:16px;">
                     <label style="display:block;font-size:13px;color:#b8b8d4;margin-bottom:6px;">Publication / Outlet</label>
                     <input id="signupOutlet" type="text" placeholder="e.g. CoinDesk, Independent Blogger…" autocomplete="off"
