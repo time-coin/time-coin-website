@@ -1173,7 +1173,9 @@
                         recipients: [{ outlet: 'Test', email }],
                     }),
                 });
-                const result = await res.json();
+                const text = await res.text();
+                let result;
+                try { result = JSON.parse(text); } catch { throw new Error(`Server error ${res.status} — check backend logs`); }
                 if (!res.ok) throw new Error(result.error || 'Send failed');
                 msg.style.color = '#34d399';
                 msg.textContent = '✓ Test sent — check your inbox';
@@ -1202,7 +1204,9 @@
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
                     body: JSON.stringify({ subject, body, recipients: active.map(c => ({ outlet: c.outlet, email: c.email })) }),
                 });
-                const result = await res.json();
+                const text = await res.text();
+                let result;
+                try { result = JSON.parse(text); } catch { throw new Error(`Server error ${res.status} — check backend logs`); }
                 if (!res.ok) throw new Error(result.error || 'Send failed');
                 // Log to Firestore
                 await addDoc(collection(db, 'email_campaigns'), {
