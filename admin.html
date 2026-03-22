@@ -1064,7 +1064,7 @@
             if (!pr) return;
             document.getElementById('campSubject').value = pr.title || '';
             const bodyEl = document.getElementById('campBody');
-            bodyEl.value = pr.body || pr.excerpt || '';
+            bodyEl.value = (pr.body || pr.excerpt || '').replace(/\r\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
             const btn = document.querySelector('.tab-btn:nth-child(3)');
             if (btn) btn.click();
             setTimeout(() => {
