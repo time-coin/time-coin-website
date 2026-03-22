@@ -624,6 +624,20 @@
                     </div>
                 </div>
 
+                <!-- Test email -->
+                <div class="section">
+                    <div class="section-header"><span class="section-title">Test Email</span></div>
+                    <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+                        <div>
+                            <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Send test to</label>
+                            <input id="testEmail" type="email" placeholder="your@email.com"
+                                style="padding:8px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;width:240px;">
+                        </div>
+                        <button onclick="sendTestEmail()" style="padding:8px 16px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);border-radius:7px;color:#38bdf8;font-size:13px;font-weight:600;cursor:pointer;">Send Test</button>
+                        <span id="testMsg" style="font-size:13px;color:var(--text-secondary);"></span>
+                    </div>
+                </div>
+
                 <!-- Compose -->
                 <div class="section">
                     <div class="section-header"><span class="section-title">Compose Campaign</span></div>
@@ -997,16 +1011,24 @@
                 }
                 list.innerHTML = snap.docs.map(d => {
                     const pr = d.data();
+                    const safeTitle = pr.title.replace(/'/g, "\\'");
+                    const safeBody  = (pr.body || pr.excerpt).replace(/'/g, "\\'").replace(/\n/g, '\\n');
                     return `<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:16px 20px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
-                        <div>
+                        <div style="flex:1;min-width:0;">
                             <div style="font-size:12px;color:#667eea;font-weight:600;margin-bottom:4px;">${pr.dateLabel}</div>
                             <div style="font-size:15px;font-weight:600;margin-bottom:6px;">${pr.title}</div>
                             <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">${pr.excerpt}</div>
                         </div>
-                        <button onclick="deletePressRelease('${d.id}')"
-                            style="flex-shrink:0;padding:6px 12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:6px;color:#ef4444;font-size:12px;font-weight:600;cursor:pointer;">
-                            Delete
-                        </button>
+                        <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;">
+                            <button onclick="sendPressRelease('${safeTitle}','${safeBody}')"
+                                style="padding:6px 12px;background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.3);border-radius:6px;color:#667eea;font-size:12px;font-weight:600;cursor:pointer;">
+                                Send Campaign
+                            </button>
+                            <button onclick="deletePressRelease('${d.id}')"
+                                style="padding:6px 12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:6px;color:#ef4444;font-size:12px;font-weight:600;cursor:pointer;">
+                                Delete
+                            </button>
+                        </div>
                     </div>`;
                 }).join('');
             } catch (err) {
@@ -1034,6 +1056,14 @@
                 msg.textContent = 'Error: ' + err.message;
             }
         });
+
+        window.sendPressRelease = function(title, body) {
+            document.getElementById('campSubject').value = title;
+            document.getElementById('campBody').value = body;
+            const btn = document.querySelector('.tab-btn:nth-child(3)');
+            if (btn) btn.click();
+            document.getElementById('campSubject').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        };
 
         window.deletePressRelease = async (id) => {
             if (!confirm('Delete this press release?')) return;
@@ -1107,6 +1137,33 @@
                 msg.textContent = '✓ Added';
                 setTimeout(() => msg.textContent = '', 2000);
                 loadContacts();
+            } catch (err) {
+                msg.style.color = '#ef4444';
+                msg.textContent = '✕ ' + err.message;
+            }
+        };
+
+        window.sendTestEmail = async function() {
+            const email = document.getElementById('testEmail').value.trim();
+            const msg   = document.getElementById('testMsg');
+            if (!email) { msg.textContent = 'Enter an email address.'; return; }
+            msg.style.color = 'var(--text-secondary)';
+            msg.textContent = 'Sending…';
+            try {
+                const idToken = await auth.currentUser?.getIdToken();
+                const res = await fetch('/api/v1/email/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
+                    body: JSON.stringify({
+                        subject: 'TIME Coin — Email Test',
+                        body: 'This is a test email from the TIME Coin admin panel. If you received this, the email system is working correctly.',
+                        recipients: [{ outlet: 'Test', email }],
+                    }),
+                });
+                const result = await res.json();
+                if (!res.ok) throw new Error(result.error || 'Send failed');
+                msg.style.color = '#34d399';
+                msg.textContent = '✓ Test sent — check your inbox';
             } catch (err) {
                 msg.style.color = '#ef4444';
                 msg.textContent = '✕ ' + err.message;
