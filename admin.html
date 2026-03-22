@@ -1065,11 +1065,13 @@
             document.getElementById('campSubject').value = pr.title || '';
             const bodyEl = document.getElementById('campBody');
             bodyEl.value = pr.body || pr.excerpt || '';
-            bodyEl.style.height = 'auto';
-            bodyEl.style.height = bodyEl.scrollHeight + 'px';
             const btn = document.querySelector('.tab-btn:nth-child(3)');
             if (btn) btn.click();
-            document.getElementById('campSubject').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => {
+                bodyEl.style.height = 'auto';
+                bodyEl.style.height = bodyEl.scrollHeight + 'px';
+                document.getElementById('campSubject').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 50);
         };
 
         window.deletePressRelease = async (id) => {
