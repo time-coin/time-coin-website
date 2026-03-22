@@ -1197,6 +1197,7 @@
             btn.disabled = true;
             msg.style.color = 'var(--text-secondary)';
             msg.textContent = 'Sending…';
+            let logEntry = { subject, recipients: active.length, sentAt: serverTimestamp(), status: 'unknown' };
             try {
                 const idToken = await auth.currentUser?.getIdToken();
                 const res = await fetch('/api/v1/email/send', {
@@ -1206,19 +1207,25 @@
                 });
                 const text = await res.text();
                 let result;
-                try { result = JSON.parse(text); } catch { throw new Error(`Server error ${res.status} — check backend logs`); }
-                if (!res.ok) throw new Error(result.error || 'Send failed');
-                // Log to Firestore
-                await addDoc(collection(db, 'email_campaigns'), {
-                    subject, sent: result.sent, failed: result.failed,
-                    message: result.message, sentAt: serverTimestamp(),
-                });
+                try { result = JSON.parse(text); } catch {
+                    logEntry = { ...logEntry, status: 'error', message: `Server error ${res.status} — check backend logs` };
+                    throw new Error(logEntry.message);
+                }
+                if (!res.ok) {
+                    logEntry = { ...logEntry, status: 'error', message: result.error || 'Send failed' };
+                    throw new Error(logEntry.message);
+                }
+                logEntry = { ...logEntry, status: 'ok', sent: result.sent, failed: result.failed, message: result.message };
                 msg.style.color = '#34d399';
                 msg.textContent = '✓ ' + result.message;
-                loadCampaigns();
             } catch (err) {
                 msg.style.color = '#ef4444';
                 msg.textContent = '✕ ' + err.message;
+            } finally {
+                // Always log to Firestore regardless of success or failure
+                try { await addDoc(collection(db, 'email_campaigns'), logEntry); loadCampaigns(); } catch (logErr) {
+                    console.error('Failed to log campaign:', logErr);
+                }
             }
             btn.disabled = false;
         };
