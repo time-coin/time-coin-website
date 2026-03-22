@@ -1158,8 +1158,8 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
                     body: JSON.stringify({
-                        subject: 'TIME Coin — Email Test',
-                        body: 'This is a test email from the TIME Coin admin panel. If you received this, the email system is working correctly.',
+                        subject: document.getElementById('campSubject').value.trim() || 'TIME Coin — Email Test',
+                        body: document.getElementById('campBody').value.trim() || 'This is a test email from the TIME Coin admin panel.',
                         recipients: [{ outlet: 'Test', email }],
                     }),
                 });
