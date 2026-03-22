@@ -404,13 +404,13 @@
         <div class="progress-section">
             <div class="progress-header">
                 <div class="progress-title">Overall Development Progress</div>
-                <div class="progress-percentage">52%</div>
+                <div class="progress-percentage">85%</div>
             </div>
             <div class="progress-bar-container">
-                <div class="progress-bar" style="width: 52%"></div>
+                <div class="progress-bar" style="width: 85%"></div>
             </div>
             <div class="progress-info">
-                Node v1.2.3 • Wallet v0.4.0 • Security Audit Passed • Testnet Active • Phase 1 (Network Hardening) In Progress • Mainnet v2.0.0 target April 1, 2026
+                Node v1.6.0 • Wallet v0.4.0 • Security Audit Passed • Testnet Active • TLS Fully Implemented • On-Chain Governance Live • Mainnet v2.0.0 launching April 1, 2026
             </div>
         </div>
     </section>
@@ -525,25 +525,24 @@
             <div class="timeline-item">
                 <div class="timeline-dot">⏰</div>
                 <div class="timeline-content">
-                    <div class="timeline-phase">Phase 1 - Network Hardening</div>
+                    <div class="timeline-phase">Phase 5 - Network Hardening</div>
                     <h3 class="timeline-title">TLS, Stability &amp; Observability</h3>
-                    <div class="timeline-date">Q1–Q2 2026 • In Progress</div>
-                    <p class="timeline-description">Securing all network connections with mandatory TLS, completing API stubs, and building the infrastructure needed for a healthy public testnet.</p>
+                    <div class="timeline-date">Q1 2026 • Largely Complete</div>
+                    <p class="timeline-description">Secured all network connections with full TLS (P2P and RPC), implemented network partition detection, and stabilised the public testnet.</p>
                     <ul class="timeline-tasks">
-                        <li class="completed">TLS for P2P masternode connections (optional via tls=0)</li>
+                        <li class="completed">TLS for P2P masternode connections (rustls, self-signed)</li>
+                        <li class="completed">TLS for RPC server (HTTP/HTTPS auto-detection)</li>
                         <li class="completed">Dual mainnet + testnet daemon support</li>
                         <li class="completed">Encrypted transaction memos (ECDH + AES-256-GCM)</li>
                         <li class="completed">Payment request URI relay (timecoin: scheme)</li>
-                        <li>TLS for RPC server (configurable via time.conf)</li>
-                        <li>Network partition detection &amp; automatic recovery</li>
-                        <li>Complete blockchain API stubs (pending txs, UTXO state hash, confirmations…)</li>
-                        <li>Replace placeholder checkpoints with real testnet block hashes</li>
-                        <li>Block explorer — browse blocks, transactions &amp; masternode status</li>
+                        <li class="completed">Network partition detection &amp; automatic recovery</li>
+                        <li class="completed">Block size cap &amp; sync coordination improvements</li>
+                        <li>Complete blockchain API stubs (pending txs, UTXO state hash, confirmations)</li>
                         <li>IPv6 support</li>
                         <li>NAT traversal (UPnP / STUN hole punching)</li>
                         <li>Parallel block validation during sync</li>
                     </ul>
-                    <span class="status-badge status-current">⏰ Current Phase</span>
+                    <span class="status-badge status-current">⏰ In Progress</span>
                 </div>
             </div>
 
@@ -551,20 +550,21 @@
             <div class="timeline-item">
                 <div class="timeline-dot">📅</div>
                 <div class="timeline-content">
-                    <div class="timeline-phase">Phase 2 - Governance &amp; Ecosystem</div>
+                    <div class="timeline-phase">Phase 6 - Governance &amp; Ecosystem</div>
                     <h3 class="timeline-title">On-Chain Governance, SDKs &amp; Developer Tools</h3>
-                    <div class="timeline-date">Q2–Q3 2026</div>
-                    <p class="timeline-description">Empowering masternode holders with on-chain governance, launching a community treasury, and expanding the developer ecosystem with SDKs and additional API interfaces.</p>
+                    <div class="timeline-date">Q1 2026 • Largely Complete</div>
+                    <p class="timeline-description">Masternode holders can now vote on-chain via the governance dashboard. WebSocket event subscriptions are live. Community treasury and additional developer tooling to follow.</p>
                     <ul class="timeline-tasks">
-                        <li>On-chain governance proposals &amp; masternode voting</li>
+                        <li class="completed">On-chain governance proposals &amp; masternode voting</li>
+                        <li class="completed">Governance TUI dashboard (vote / reject interface)</li>
+                        <li class="completed">WebSocket subscription extensions (block events, masternode changes, governance votes)</li>
                         <li>Community treasury (portion of block rewards, governed by vote)</li>
                         <li>Fee schedule governance (masternodes can propose fee changes)</li>
                         <li>Rust and/or Python SDK for the RPC API</li>
                         <li>GraphQL interface alongside JSON-RPC</li>
-                        <li>WebSocket subscription extensions (block events, masternode changes, governance votes)</li>
                         <li>Public testnet faucet</li>
                     </ul>
-                    <span class="status-badge status-upcoming">Q2–Q3 2026</span>
+                    <span class="status-badge status-current">⏰ In Progress</span>
                 </div>
             </div>
 
@@ -590,19 +590,17 @@
             <div class="timeline-item">
                 <div class="timeline-dot">🎉</div>
                 <div class="timeline-content">
-                    <div class="timeline-phase">Phase 4 - Advanced Features &amp; Mainnet</div>
-                    <h3 class="timeline-title">Smart Contracts, Privacy &amp; Production Mainnet Launch</h3>
+                    <div class="timeline-phase">Phase 7 - Mainnet Launch</div>
+                    <h3 class="timeline-title">v2.0.0 Production Mainnet Launch</h3>
                     <div class="timeline-date">April 1, 2026</div>
-                    <p class="timeline-description">Full smart contract support, optional privacy features, cross-chain infrastructure, and the official v2.0.0 mainnet launch.</p>
+                    <p class="timeline-description">The official TIME Coin mainnet genesis. Full production network with 100+ masternode operators, mobile wallet support, and the beginning of exchange listings.</p>
                     <ul class="timeline-tasks">
-                        <li>Sandboxed smart contract VM (TIME-native scripting)</li>
-                        <li>Contract deployment &amp; invocation via RPC</li>
-                        <li>Confidential transaction amounts (Pedersen commitments — research)</li>
-                        <li>Zero-knowledge proof integration (research)</li>
-                        <li>Multi-signature wallet support</li>
-                        <li>Mobile wallet compatibility</li>
-                        <li>Atomic swaps &amp; cross-chain bridge research</li>
                         <li>v2.0.0 mainnet genesis &amp; launch</li>
+                        <li>Mobile wallet (iOS &amp; Android — currently in beta)</li>
+                        <li>Exchange listings</li>
+                        <li>Block explorer public launch</li>
+                        <li>Multi-signature wallet support</li>
+                        <li>Hardware wallet support (Ledger / Trezor — research)</li>
                     </ul>
                     <span class="status-badge status-upcoming">April 1, 2026</span>
                 </div>
@@ -635,23 +633,18 @@
                         <td style="padding: 10px 16px;"><span class="status-badge status-completed" style="font-size:0.75rem;">Released</span></td>
                     </tr>
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.07);">
-                        <td style="padding: 10px 16px;"><strong>1.3.0</strong></td>
-                        <td style="padding: 10px 16px;">Mandatory TLS, partition detection, stub completion</td>
-                        <td style="padding: 10px 16px;">Q2 2026</td>
+                        <td style="padding: 10px 16px;"><strong>1.6.0</strong></td>
+                        <td style="padding: 10px 16px;">TLS for RPC, partition detection, on-chain governance, WebSocket events, consensus &amp; fork resolution fixes</td>
+                        <td style="padding: 10px 16px;"><span class="status-badge status-completed" style="font-size:0.75rem;">Released</span></td>
                     </tr>
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.07);">
-                        <td style="padding: 10px 16px;"><strong>1.4.0</strong></td>
-                        <td style="padding: 10px 16px;">Block explorer, governance proposals, treasury</td>
-                        <td style="padding: 10px 16px;">Q3 2026</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.07);">
-                        <td style="padding: 10px 16px;"><strong>1.5.0</strong></td>
-                        <td style="padding: 10px 16px;">Light clients, state compression, DHT discovery</td>
-                        <td style="padding: 10px 16px;">Q4 2026</td>
+                        <td style="padding: 10px 16px;"><strong>1.7.0</strong></td>
+                        <td style="padding: 10px 16px;">API stub completion, IPv6, NAT traversal, parallel block validation</td>
+                        <td style="padding: 10px 16px;">Pre-Mainnet</td>
                     </tr>
                     <tr>
                         <td style="padding: 10px 16px;"><strong style="color: #667eea;">2.0.0</strong></td>
-                        <td style="padding: 10px 16px;">Smart contracts, production mainnet launch</td>
+                        <td style="padding: 10px 16px;">Production mainnet genesis, mobile wallet, exchange listings</td>
                         <td style="padding: 10px 16px;"><strong>April 1, 2026</strong></td>
                     </tr>
                 </tbody>
@@ -677,7 +670,7 @@
         window.addEventListener('load', () => {
             const progressBar = document.querySelector('.progress-bar');
             setTimeout(() => {
-                progressBar.style.width = '52%';
+                progressBar.style.width = '85%';
             }, 300);
         });
 
