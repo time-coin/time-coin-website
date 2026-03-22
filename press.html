@@ -24,7 +24,7 @@
     <!-- Firebase -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-        import { getFirestore, collection, getDocs, orderBy, query } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+        import { getFirestore, collection, getDocs, addDoc, orderBy, query, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyCZdse-Iad7L9i-3xMO2htcS1qGbz0k_4U",
@@ -71,6 +71,33 @@
         };
 
         loadPressReleases();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('pressSignupForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const outlet = document.getElementById('signupOutlet').value.trim();
+                const email  = document.getElementById('signupEmail').value.trim();
+                const msg    = document.getElementById('signupMsg');
+                if (!email) return;
+                msg.style.color = '#b8b8d4';
+                msg.textContent = 'Submitting…';
+                try {
+                    await addDoc(collection(db, 'press_contacts'), {
+                        outlet: outlet || '',
+                        email,
+                        active: false,
+                        source: 'press-page-signup',
+                        createdAt: serverTimestamp(),
+                    });
+                    msg.style.color = '#34d399';
+                    msg.textContent = '✓ Request received — we\'ll add you to the list shortly.';
+                    document.getElementById('pressSignupForm').reset();
+                } catch (err) {
+                    msg.style.color = '#ef4444';
+                    msg.textContent = 'Something went wrong — please email press@time-coin.io directly.';
+                }
+            });
+        });
     </script>
 
     <style>
@@ -891,6 +918,31 @@
                 <h3 class="resource-title">Twitter/X</h3>
                 <a href="https://x.com/TIMEcoin515010" class="resource-link" target="_blank" rel="noopener">Follow Us →</a>
             </div>
+        </div>
+    </section>
+
+    <!-- Press List Signup -->
+    <section class="press-section container">
+        <h2 class="section-title">Join Our Press List</h2>
+        <p class="section-subtitle">Get TIME Coin press releases delivered directly to your inbox</p>
+        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:15px;padding:36px;max-width:520px;margin:0 auto;">
+            <form id="pressSignupForm">
+                <div style="margin-bottom:16px;">
+                    <label style="display:block;font-size:13px;color:#b8b8d4;margin-bottom:6px;">Publication / Outlet</label>
+                    <input id="signupOutlet" type="text" placeholder="e.g. CoinDesk, Independent Blogger…" autocomplete="off"
+                        style="width:100%;padding:10px 14px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;">
+                </div>
+                <div style="margin-bottom:20px;">
+                    <label style="display:block;font-size:13px;color:#b8b8d4;margin-bottom:6px;">Email Address <span style="color:#ef4444;">*</span></label>
+                    <input id="signupEmail" type="email" placeholder="press@youroutlet.com" required autocomplete="off"
+                        style="width:100%;padding:10px 14px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;">
+                </div>
+                <button type="submit"
+                    style="width:100%;padding:12px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:8px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;">
+                    Request to Join Press List
+                </button>
+                <p id="signupMsg" style="margin:12px 0 0;font-size:13px;text-align:center;color:#b8b8d4;min-height:20px;"></p>
+            </form>
         </div>
     </section>
 
