@@ -14,6 +14,8 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/main.css">
 
+    <!-- Site-wide config (versions, dates, stats) -->
+    <script src="js/config.js"></script>
     <!-- Header/Footer Includes -->
     <script src="js/includes.js" defer></script>
 
@@ -404,12 +406,12 @@
         <div class="progress-section">
             <div class="progress-header">
                 <div class="progress-title">Overall Development Progress</div>
-                <div class="progress-percentage">85%</div>
+                <div class="progress-percentage" data-config="devProgress">85%</div>
             </div>
             <div class="progress-bar-container">
                 <div class="progress-bar" style="width: 85%"></div>
             </div>
-            <div class="progress-info">
+            <div class="progress-info" data-config="progressInfo">
                 Node v1.6.0 • Wallet v0.4.0 • Security Audit Passed • Testnet Active • TLS Fully Implemented • On-Chain Governance Live • Mainnet v2.0.0 launching April 1, 2026
             </div>
         </div>
@@ -670,7 +672,7 @@
         window.addEventListener('load', () => {
             const progressBar = document.querySelector('.progress-bar');
             setTimeout(() => {
-                progressBar.style.width = '85%';
+                progressBar.style.width = TIME_CONFIG.devProgress;
             }, 300);
         });
 
