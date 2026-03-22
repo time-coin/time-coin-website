@@ -650,7 +650,8 @@
                         <div>
                             <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Body (plain text — will be wrapped in branded HTML for recipients)</label>
                             <textarea id="campBody" rows="14" placeholder="Paste your press release text here…"
-                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;line-height:1.6;resize:vertical;box-sizing:border-box;font-family:monospace;"></textarea>
+                                oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"
+                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;line-height:1.6;resize:none;box-sizing:border-box;font-family:monospace;overflow:hidden;"></textarea>
                         </div>
                         <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
                             <button onclick="sendCampaign()" id="sendBtn"
@@ -1062,7 +1063,10 @@
             const pr = prDataMap[id];
             if (!pr) return;
             document.getElementById('campSubject').value = pr.title || '';
-            document.getElementById('campBody').value = pr.body || pr.excerpt || '';
+            const bodyEl = document.getElementById('campBody');
+            bodyEl.value = pr.body || pr.excerpt || '';
+            bodyEl.style.height = 'auto';
+            bodyEl.style.height = bodyEl.scrollHeight + 'px';
             const btn = document.querySelector('.tab-btn:nth-child(3)');
             if (btn) btn.click();
             document.getElementById('campSubject').scrollIntoView({ behavior: 'smooth', block: 'center' });
