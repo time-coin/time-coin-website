@@ -865,15 +865,6 @@
                                     <div class="subtext" id="sendAmountHint">—</div>
                                 </div>
 
-                                <!-- BTC/LTC: checkout link -->
-                                <div id="checkoutBlock" style="display:none">
-                                    <a id="checkoutLink" href="#" target="_blank" rel="noopener"
-                                       class="checkout-link-btn">
-                                        Open Secure Payment Page →
-                                    </a>
-                                </div>
-
-                                <!-- Other coins: address + QR -->
                                 <div id="addressBlock">
                                     <div class="qr-wrap">
                                         <div id="qrCanvas"></div>
@@ -1374,12 +1365,10 @@ function showPaymentPanel(order) {
     document.getElementById('swapForm').style.display = 'none';
     document.getElementById('paymentPanel').classList.add('show');
 
-    const isBtcPay = order.paymentCoin === 'BTC';
-
     document.getElementById('sendAmountDisplay').textContent =
         `${order.payAmount} ${order.paymentCoin}`;
     document.getElementById('sendAmountHint').textContent =
-        isBtcPay ? 'via the secure payment link below' : `to the ${order.paymentCoin} address below`;
+        `to the ${order.paymentCoin} address below`;
 
     document.getElementById('osReceive').textContent =
         `${Number(order.timeAmountDisplay).toLocaleString()} TIME`;
@@ -1387,14 +1376,8 @@ function showPaymentPanel(order) {
         order.timeAddress ? order.timeAddress.substring(0, 22) + '…' : '—';
     document.getElementById('osOrderId').textContent = order.orderId || '—';
 
-    if (isBtcPay) {
-        document.getElementById('addressBlock').style.display = 'none';
-        document.getElementById('checkoutBlock').style.display = 'block';
-        document.getElementById('checkoutLink').href = order.payAddress;
-    } else {
-        document.getElementById('depositAddrText').textContent = order.payAddress;
-        generateQR(order.payAddress);
-    }
+    document.getElementById('depositAddrText').textContent = order.payAddress;
+    generateQR(order.payAddress);
 
     startCountdown(new Date(order.expiresAt));
     startPolling(order.orderId);
