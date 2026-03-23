@@ -741,7 +741,10 @@
                 <div class="panel">
                     <div class="panel-head">
                         <h2>Swap</h2>
-                        <span id="liveRateLabel" style="font-size:0.8rem;color:var(--text-secondary)">Loading rates…</span>
+                        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+                            <span id="liveRateLabel" style="font-size:0.8rem;color:var(--text-secondary)">Loading rates…</span>
+                            <span id="availabilityBadge" style="font-size:0.75rem;color:var(--text-secondary)"></span>
+                        </div>
                     </div>
                     <div class="panel-body">
 
@@ -989,6 +992,7 @@ const API = '/api/v1';
 
 // ── State ──
 let rates = {};           // { COIN: rateObj }
+let availableTimeUnits = null;  // BigInt, null = unknown
 let selectedCoin = null;
 let lastEditedSide = 'pay';  // 'pay' or 'receive'
 let currentOrder = null;
@@ -1026,8 +1030,11 @@ function coinIconHTML(sym, cls = '') {
 // ── Load rates ──
 async function loadRates() {
     try {
-        const res = await fetch(`${API}/rates`);
-        const data = await res.json();
+        const [ratesRes, availRes] = await Promise.all([
+            fetch(`${API}/rates`),
+            fetch(`${API}/rates/available`),
+        ]);
+        const data = await ratesRes.json();
 
         rates = {};
         data.forEach(r => { rates[r.payment_coin] = r; });
@@ -1041,11 +1048,25 @@ async function loadRates() {
 
         document.getElementById('liveRateLabel').textContent = `${data.length} pair${data.length !== 1 ? 's' : ''} available`;
 
+        if (availRes.ok) {
+            const avail = await availRes.json();
+            availableTimeUnits = BigInt(avail.available_units);
+            updateAvailabilityBadge();
+        }
+
     } catch (e) {
         document.getElementById('liveRateLabel').textContent = 'Failed to load rates';
         document.getElementById('ratesTableWrap').innerHTML =
             '<div class="rates-loading" style="color:var(--danger-red)">Failed to load rates</div>';
     }
+}
+
+function updateAvailabilityBadge() {
+    const badge = document.getElementById('availabilityBadge');
+    if (availableTimeUnits === null) { badge.textContent = ''; return; }
+    const display = Number(availableTimeUnits) / 1e8;
+    const formatted = display.toLocaleString(undefined, { maximumFractionDigits: 0 });
+    badge.innerHTML = `<span style="color:var(--success-green)">●</span> ${formatted} TIME available`;
 }
 
 // ── Ticker ──
@@ -1216,8 +1237,15 @@ function showRateStrip(payAmt, timeAmt, coin, timePerCoin) {
 
     document.getElementById('paySubInfo').innerHTML =
         `≈ <span>${payAmt.toFixed(8).replace(/\.?0+$/, '')} ${coin}</span>`;
-    document.getElementById('receiveSubInfo').innerHTML =
-        `Fee: <span>${fee.toLocaleString(undefined, {maximumFractionDigits: 4})} TIME</span>`;
+
+    // Availability warning
+    const timeUnitsRequested = BigInt(Math.floor(timeAmt * 1e8));
+    let receiveSubHtml = `Fee: <span>${fee.toLocaleString(undefined, {maximumFractionDigits: 4})} TIME</span>`;
+    if (availableTimeUnits !== null && timeUnitsRequested > availableTimeUnits) {
+        const maxTime = Number(availableTimeUnits) / 1e8;
+        receiveSubHtml = `<span style="color:var(--danger-red)">⚠ Exceeds available supply (${maxTime.toLocaleString(undefined,{maximumFractionDigits:0})} TIME max)</span>`;
+    }
+    document.getElementById('receiveSubInfo').innerHTML = receiveSubHtml;
 
     document.getElementById('rateStrip').style.display = 'block';
 }
@@ -1309,6 +1337,15 @@ async function submitOrder() {
     if (!selectedCoin) return showError('formError', 'Please select a payment coin.');
     if (!rates[selectedCoin]) return showError('formError', 'Rate unavailable. Please refresh.');
     if (isNaN(payAmt) || payAmt <= 0) return showError('formError', 'Please enter an amount to pay.');
+
+    const timeAmt = parseFloat(document.getElementById('receiveInput').value);
+    if (availableTimeUnits !== null && !isNaN(timeAmt) && timeAmt > 0) {
+        const requested = BigInt(Math.floor(timeAmt * 1e8));
+        if (requested > availableTimeUnits) {
+            const max = Number(availableTimeUnits) / 1e8;
+            return showError('formError', `Insufficient liquidity. Maximum available: ${max.toLocaleString(undefined, { maximumFractionDigits: 0 })} TIME.`);
+        }
+    }
 
     const payAmount = payAmt.toFixed(8);
     const btn = document.getElementById('btnContinue');
