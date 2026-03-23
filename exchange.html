@@ -1006,7 +1006,6 @@ const COIN_META = {
     ETH:  { color: '#627eea', label: 'Ethereum' },
     USDT: { color: '#26a17b', label: 'Tether' },
     USDC: { color: '#2775ca', label: 'USD Coin' },
-    LTC:  { color: '#bfbbbb', label: 'Litecoin' },
     SOL:  { color: '#9945ff', label: 'Solana' },
     XRP:  { color: '#0085c0', label: 'XRP' },
     DOGE: { color: '#c2a633', label: 'Dogecoin' },
@@ -1375,7 +1374,7 @@ function showPaymentPanel(order) {
     document.getElementById('swapForm').style.display = 'none';
     document.getElementById('paymentPanel').classList.add('show');
 
-    const isBtcPay = ['BTC', 'LTC'].includes(order.paymentCoin);
+    const isBtcPay = order.paymentCoin === 'BTC';
 
     document.getElementById('sendAmountDisplay').textContent =
         `${order.payAmount} ${order.paymentCoin}`;
