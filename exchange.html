@@ -3,465 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buy TIME Coins - TIME Coin Exchange</title>
-    <meta name="description" content="Purchase TIME Coin instantly with Bitcoin, Ethereum, USDT, and 6 more cryptocurrencies. Instant delivery to your TIME wallet.">
+    <title>TIME Exchange — Buy TIME Coins</title>
+    <meta name="description" content="Buy TIME Coin instantly with Bitcoin, Ethereum, USDT, and more. Fast, automatic delivery to your TIME wallet.">
+    <meta name="keywords" content="TIME Coin, buy TIME, crypto exchange, TIME wallet, Bitcoin, Ethereum, USDT">
+    <meta property="og:title" content="TIME Exchange — Buy TIME Coins">
+    <meta property="og:description" content="Buy TIME Coin instantly with Bitcoin, Ethereum, USDT, and more.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="TIME Exchange — Buy TIME Coins">
+    <link rel="canonical" href="https://time-coin.io/exchange">
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
     <link rel="stylesheet" href="css/main.css">
     <script src="js/includes.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        .exchange-section {
-            min-height: calc(100vh - 70px);
-            padding: 60px 0 80px;
+        /* ── Ticker bar ── */
+        .ticker-wrap {
+            background: rgba(255,255,255,0.04);
+            border-bottom: 1px solid var(--border-color);
+            overflow: hidden;
+            height: 36px;
+            display: flex;
+            align-items: center;
+        }
+        .ticker-track {
+            display: flex;
+            gap: 0;
+            white-space: nowrap;
+            animation: ticker 35s linear infinite;
+        }
+        .ticker-track:hover { animation-play-state: paused; }
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 28px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            border-right: 1px solid var(--border-color);
+        }
+        .ticker-item .t-rate { color: var(--text-primary); font-weight: 600; }
+        @keyframes ticker {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
         }
 
+        /* ── Page layout ── */
+        .exchange-page {
+            padding: 48px 0 80px;
+        }
         .exchange-hero {
             text-align: center;
-            margin-bottom: 48px;
+            margin-bottom: 40px;
         }
-
         .exchange-hero h1 {
-            font-size: clamp(2rem, 5vw, 3rem);
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
             font-weight: 700;
-            margin-bottom: 16px;
+            margin-bottom: 10px;
         }
-
         .exchange-hero p {
             color: var(--text-secondary);
-            font-size: 1.1rem;
-            max-width: 500px;
+            font-size: 1rem;
+            max-width: 480px;
             margin: 0 auto;
         }
 
-        /* Rates Bar */
-        .rates-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 48px;
-        }
-
-        .rate-chip {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 30px;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
+        /* ── Coming soon banner ── */
+        .coming-soon-banner {
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: border-color 0.2s;
+            gap: 14px;
+            background: rgba(251,191,36,0.07);
+            border: 1px solid rgba(251,191,36,0.25);
+            border-radius: 12px;
+            padding: 14px 20px;
+            max-width: 860px;
+            margin: 0 auto 36px;
+            font-size: 0.9rem;
+        }
+        .coming-soon-banner strong { color: var(--warning-yellow); }
+        .coming-soon-banner p { color: var(--text-secondary); margin: 2px 0 0; font-size: 0.85rem; }
+
+        /* ── Two-column grid ── */
+        .exchange-grid {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 24px;
+            align-items: start;
+        }
+        @media (max-width: 900px) {
+            .exchange-grid { grid-template-columns: 1fr; }
         }
 
-        .rate-chip .coin-icon {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: 700;
-            background: rgba(102, 126, 234, 0.2);
-            color: var(--primary-purple);
-        }
-
-        .rate-chip strong {
-            color: var(--text-primary);
-        }
-
-        /* Exchange Card */
-        .exchange-card {
-            max-width: 520px;
-            margin: 0 auto;
+        /* ── Panel (card) ── */
+        .panel {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 20px;
-            padding: 36px;
-            backdrop-filter: blur(10px);
+            overflow: hidden;
         }
-
-        .step-indicator {
+        .panel-head {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 32px;
+            align-items: center;
+            justify-content: space-between;
         }
-
-        .step-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--border-color);
-            transition: background 0.3s;
-        }
-
-        .step-dot.active {
-            background: var(--primary-purple);
-            box-shadow: 0 0 8px rgba(102, 126, 234, 0.5);
-        }
-
-        .step-dot.done {
-            background: var(--success-green);
-        }
-
-        /* Form */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 8px;
-        }
-
-        .form-input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 14px 16px;
-            color: var(--text-primary);
+        .panel-head h2 {
             font-size: 1rem;
-            font-family: inherit;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            outline: none;
+            font-weight: 700;
+            letter-spacing: 0.02em;
         }
+        .panel-body { padding: 24px; }
 
-        .form-input:focus {
-            border-color: var(--primary-purple);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+        /* ── Swap widget ── */
+        .swap-amount-row {
+            position: relative;
         }
-
-        .form-input::placeholder {
-            color: rgba(255, 255, 255, 0.3);
-        }
-
-        select.form-input {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23b8b8d4' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            padding-right: 40px;
-            cursor: pointer;
-        }
-
-        select.form-input option {
-            background: #1a1a2e;
-        }
-
-        /* Tier quick-select buttons */
-        .tier-btns {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .tier-btn {
+        .swap-box {
             background: rgba(255,255,255,0.04);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 10px 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            font-family: inherit;
+            border-radius: 14px;
+            padding: 16px 18px;
+            transition: border-color 0.2s;
         }
-
-        .tier-btn:hover {
-            border-color: var(--primary-purple);
-            background: rgba(102,126,234,0.08);
+        .swap-box:focus-within {
+            border-color: rgba(102,126,234,0.6);
         }
-
-        .tier-btn.selected {
-            border-color: var(--primary-purple);
-            background: rgba(102,126,234,0.12);
-        }
-
-        .tier-btn .tier-name {
-            font-size: 0.7rem;
-            font-weight: 700;
+        .swap-box-label {
+            font-size: 0.75rem;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
         }
+        .swap-input-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .swap-input {
+            flex: 1;
+            background: none;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-size: 1.6rem;
+            font-weight: 600;
+            font-family: inherit;
+            width: 0; /* allow flex shrink */
+        }
+        .swap-input::placeholder { color: rgba(255,255,255,0.2); font-weight: 400; }
+        .swap-input::-webkit-inner-spin-button,
+        .swap-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
-        .tier-btn .tier-amount {
-            font-size: 0.8rem;
+        /* Coin selector button */
+        .coin-select-wrap { position: relative; flex-shrink: 0; }
+        .coin-select-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            padding: 8px 14px 8px 8px;
+            cursor: pointer;
+            font-family: inherit;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: background 0.2s, border-color 0.2s;
+            white-space: nowrap;
+        }
+        .coin-select-btn:hover { background: rgba(255,255,255,0.12); border-color: rgba(102,126,234,0.4); }
+        .coin-select-btn .arrow { color: var(--text-secondary); font-size: 0.65rem; margin-left: 2px; }
+        .coin-select-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: #1c1b30;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            min-width: 220px;
+            z-index: 100;
+            overflow: hidden;
+            display: none;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+        }
+        .coin-select-menu.open { display: block; }
+        .coin-select-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.15s;
+            font-size: 0.9rem;
+        }
+        .coin-select-option:hover { background: rgba(255,255,255,0.06); }
+        .coin-select-option.selected { background: rgba(102,126,234,0.12); }
+        .coin-select-option .opt-rate {
+            margin-left: auto;
+            font-size: 0.78rem;
             color: var(--text-secondary);
         }
 
-        .tier-btn.bronze .tier-name { color: #cd7f32; }
-        .tier-btn.silver .tier-name { color: #c0c0c0; }
-        .tier-btn.gold   .tier-name { color: #ffd700; }
+        /* Coin icon circle */
+        .coin-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        .coin-icon.sm {
+            width: 22px;
+            height: 22px;
+            font-size: 0.65rem;
+        }
 
-        /* Preview box */
-        .preview-box {
-            background: rgba(102, 126, 234, 0.08);
-            border: 1px solid rgba(102, 126, 234, 0.25);
+        /* TIME coin display (right side of swap) */
+        .time-coin-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+            background: rgba(102,126,234,0.1);
+            border: 1px solid rgba(102,126,234,0.25);
+            border-radius: 30px;
+            padding: 8px 16px 8px 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        /* Swap direction arrow */
+        .swap-arrow-row {
+            display: flex;
+            justify-content: center;
+            margin: -4px 0;
+            position: relative;
+            z-index: 1;
+        }
+        .swap-arrow-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: default;
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Swap sub-info */
+        .swap-sub {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+        .swap-sub span { color: var(--text-primary); }
+
+        /* Rate summary strip */
+        .rate-strip {
+            background: rgba(255,255,255,0.025);
             border-radius: 12px;
-            padding: 16px 20px;
-            margin: 24px 0;
-            display: none;
+            padding: 14px 18px;
+            margin: 20px 0;
         }
-
-        .preview-box.visible {
-            display: block;
-        }
-
-        .preview-row {
+        .rate-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            font-size: 0.85rem;
             margin-bottom: 8px;
-            font-size: 0.9rem;
         }
+        .rate-row:last-child { margin-bottom: 0; }
+        .rate-row .label { color: var(--text-secondary); }
+        .rate-row .value { font-weight: 600; }
 
-        .preview-row:last-child {
-            margin-bottom: 0;
-        }
-
-        .preview-label {
-            color: var(--text-secondary);
-        }
-
-        .preview-value {
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .preview-value.highlight {
-            color: var(--success-green);
-            font-size: 1.1rem;
-        }
-
-        /* Payment instructions */
-        .payment-box {
-            display: none;
-        }
-
-        .payment-box.visible {
-            display: block;
-        }
-
-        .payment-address-wrap {
-            background: rgba(255,255,255,0.03);
+        /* Address field */
+        .addr-field {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 16px;
-            word-break: break-all;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .payment-summary {
-            background: rgba(102, 126, 234, 0.08);
-            border: 1px solid rgba(102, 126, 234, 0.25);
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 13px 16px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
         }
-
-        .payment-summary .big-amount {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 4px;
+        .addr-field:focus { border-color: rgba(102,126,234,0.6); }
+        .addr-field::placeholder { color: rgba(255,255,255,0.25); }
+        .addr-field.valid   { border-color: rgba(74,222,128,0.5); }
+        .addr-field.invalid { border-color: rgba(239,68,68,0.5); }
+        .addr-hint {
+            font-size: 0.78rem;
+            margin-top: 6px;
+            min-height: 18px;
         }
-
-        .payment-summary .sub-text {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        /* Status badge */
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .status-badge.awaiting {
-            background: rgba(251, 191, 36, 0.15);
-            color: var(--warning-yellow);
-            border: 1px solid rgba(251, 191, 36, 0.3);
-        }
-
-        .status-badge.confirmed {
-            background: rgba(74, 222, 128, 0.15);
-            color: var(--success-green);
-            border: 1px solid rgba(74, 222, 128, 0.3);
-        }
-
-        .status-badge.completed {
-            background: rgba(74, 222, 128, 0.2);
-            color: var(--success-green);
-            border: 1px solid rgba(74, 222, 128, 0.4);
-        }
-
-        .status-badge.failed {
-            background: rgba(239, 68, 68, 0.15);
-            color: var(--danger-red);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        .pulse {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: currentColor;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        /* Countdown */
-        .countdown {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            text-align: center;
-            margin-top: 12px;
-        }
-
-        .countdown span {
-            color: var(--warning-yellow);
-            font-weight: 600;
-        }
-
-        /* Copy button */
-        .copy-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            padding: 6px 12px;
-            cursor: pointer;
-            margin-top: 8px;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .copy-btn:hover {
-            background: rgba(102, 126, 234, 0.1);
-            color: var(--primary-purple);
-            border-color: var(--primary-purple);
-        }
+        .addr-hint.ok  { color: var(--success-green); }
+        .addr-hint.err { color: var(--danger-red); }
 
         /* Error box */
         .error-box {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.3);
             border-radius: 10px;
-            padding: 12px 16px;
+            padding: 11px 15px;
             color: var(--danger-red);
-            font-size: 0.9rem;
-            margin-bottom: 16px;
+            font-size: 0.88rem;
+            margin: 16px 0 0;
             display: none;
         }
+        .error-box.show { display: block; }
 
-        .error-box.visible {
-            display: block;
-        }
+        .btn-full { width: 100%; padding: 16px; font-size: 1rem; margin-top: 20px; font-family: inherit; }
 
-        .btn-full {
-            width: 100%;
-            padding: 16px;
-            font-size: 1rem;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            border-radius: 10px;
-            padding: 12px;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.9rem;
-            width: 100%;
-            margin-top: 12px;
-            transition: all 0.2s;
-        }
-
-        .btn-outline:hover {
-            border-color: var(--primary-purple);
-            color: var(--primary-purple);
-        }
-
-        /* How it works */
-        .how-it-works {
-            max-width: 800px;
-            margin: 64px auto 0;
-            text-align: center;
-        }
-
-        .how-it-works h2 {
-            font-size: 1.8rem;
-            margin-bottom: 40px;
-        }
-
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 24px;
-        }
-
-        .step-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 28px 20px;
-            text-align: center;
-        }
-
-        .step-number {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin: 0 auto 16px;
-        }
-
-        .step-card h3 {
-            font-size: 1rem;
-            margin-bottom: 8px;
-        }
-
-        .step-card p {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            line-height: 1.5;
-        }
-
+        /* Spinner */
         .spinner {
             display: inline-block;
-            width: 16px;
-            height: 16px;
+            width: 15px;
+            height: 15px;
             border: 2px solid rgba(255,255,255,0.3);
             border-top-color: #fff;
             border-radius: 50%;
@@ -469,197 +340,690 @@
             vertical-align: middle;
             margin-right: 6px;
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        /* ── Step 2: Payment ── */
+        #paymentPanel { display: none; }
+        #paymentPanel.show { display: block; }
+
+        .payment-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        /* Progress steps */
+        .progress-steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 28px;
+        }
+        .pstep {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+        }
+        .pstep-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.04);
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+        .pstep-circle.active {
+            border-color: var(--primary-purple);
+            color: var(--primary-purple);
+            background: rgba(102,126,234,0.1);
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.15);
+        }
+        .pstep-circle.done {
+            border-color: var(--success-green);
+            background: rgba(74,222,128,0.15);
+            color: var(--success-green);
+        }
+        .pstep-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-align: center;
+            white-space: nowrap;
+        }
+        .pstep-label.active { color: var(--text-primary); font-weight: 600; }
+        .pstep-line {
+            flex: 1;
+            height: 2px;
+            background: var(--border-color);
+            margin-bottom: 18px;
+            transition: background 0.3s;
+        }
+        .pstep-line.done { background: var(--success-green); }
+        .pstep-line.active { background: var(--primary-purple); }
+
+        /* Send amount display */
+        .send-amount-display {
+            background: rgba(102,126,234,0.08);
+            border: 1px solid rgba(102,126,234,0.2);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .send-amount-display .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        .send-amount-display .amount {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .send-amount-display .subtext { color: var(--text-secondary); font-size: 0.85rem; margin-top: 4px; }
+
+        /* QR code */
+        .qr-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        #qrCanvas {
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        #qrCanvas canvas, #qrCanvas img { display: block; }
+
+        /* Address display */
+        .deposit-addr-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+        .deposit-addr-text {
+            flex: 1;
+            font-family: 'Courier New', monospace;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            word-break: break-all;
+        }
+        .copy-btn {
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover { background: rgba(102,126,234,0.15); color: var(--primary-purple); border-color: var(--primary-purple); }
+
+        /* BTC/LTC checkout link */
+        .checkout-link-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 16px;
+        }
+        .checkout-link-btn:hover { opacity: 0.9; }
+
+        /* Countdown */
+        .countdown-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.83rem;
+            color: var(--text-secondary);
+            margin-top: 16px;
+        }
+        .countdown-bar .time-left { color: var(--warning-yellow); font-weight: 700; }
+
+        /* Order summary footer */
+        .order-summary-footer {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .osf-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+        .osf-row .lbl { color: var(--text-secondary); }
+        .osf-row .val { font-weight: 600; }
+        .osf-row .val.green { color: var(--success-green); }
+
+        /* Completed state */
+        .completed-state {
+            text-align: center;
+            padding: 32px 20px;
+            display: none;
+        }
+        .completed-state.show { display: block; }
+        .completed-icon { font-size: 3.5rem; margin-bottom: 16px; }
+        .completed-state h3 { font-size: 1.3rem; margin-bottom: 8px; }
+        .completed-state p { color: var(--text-secondary); font-size: 0.9rem; }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.88rem;
+            padding: 10px 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 14px;
+            transition: all 0.2s;
+        }
+        .btn-ghost:hover { border-color: var(--primary-purple); color: var(--primary-purple); }
+
+        /* ── Right sidebar ── */
+        .sidebar-stack { display: flex; flex-direction: column; gap: 20px; }
+
+        /* Rates table */
+        .rates-table { width: 100%; border-collapse: collapse; }
+        .rates-table thead th {
+            text-align: left;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--text-secondary);
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .rates-table thead th:last-child { text-align: right; }
+        .rates-table tbody tr {
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .rates-table tbody tr:hover td { background: rgba(255,255,255,0.04); }
+        .rates-table tbody td {
+            padding: 11px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 0.88rem;
+        }
+        .rates-table tbody tr:last-child td { border-bottom: none; }
+        .rates-table .pair-cell { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+        .rates-table .rate-cell { text-align: right; color: var(--text-secondary); font-size: 0.82rem; }
+        .rates-table .select-cell { text-align: right; }
+        .rates-table .use-btn {
+            background: rgba(102,126,234,0.1);
+            border: 1px solid rgba(102,126,234,0.25);
+            border-radius: 20px;
+            color: var(--primary-purple);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .rates-table .use-btn:hover { background: rgba(102,126,234,0.2); }
+        .rates-loading { color: var(--text-secondary); font-size: 0.85rem; padding: 16px 0; text-align: center; }
+
+        /* Order lookup */
+        .lookup-input {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 11px 14px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-family: 'Courier New', monospace;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .lookup-input:focus { border-color: rgba(102,126,234,0.5); }
+        .lookup-input::placeholder { font-family: inherit; color: rgba(255,255,255,0.25); font-size: 0.85rem; }
+        .lookup-btn {
+            width: 100%;
+            padding: 11px;
+            margin-top: 10px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .lookup-btn:hover { background: rgba(102,126,234,0.12); border-color: rgba(102,126,234,0.3); }
+        .lookup-result {
+            margin-top: 14px;
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+        }
+        .lookup-result.show { display: block; }
+        .lr-head {
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .lr-body { padding: 12px 14px; }
+        .lr-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            margin-bottom: 6px;
+        }
+        .lr-row:last-child { margin-bottom: 0; }
+        .lr-row .lk { color: var(--text-secondary); }
+        .lr-row .lv { font-weight: 600; }
+
+        /* status colors */
+        .s-awaiting { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.2); }
+        .s-awaiting .lr-head { color: var(--warning-yellow); border-bottom: 1px solid rgba(251,191,36,0.15); }
+        .s-confirmed { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.2); }
+        .s-confirmed .lr-head { color: var(--success-green); border-bottom: 1px solid rgba(74,222,128,0.15); }
+        .s-completed { background: rgba(74,222,128,0.12); border: 1px solid rgba(74,222,128,0.3); }
+        .s-completed .lr-head { color: var(--success-green); border-bottom: 1px solid rgba(74,222,128,0.2); }
+        .s-failed { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); }
+        .s-failed .lr-head { color: var(--danger-red); border-bottom: 1px solid rgba(239,68,68,0.15); }
+
+        /* ── How it works ── */
+        .how-section {
+            margin-top: 64px;
+            text-align: center;
+        }
+        .how-section h2 { font-size: 1.6rem; margin-bottom: 32px; }
+        .how-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+        .how-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 28px 20px;
+        }
+        .how-num {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0 auto 14px;
+        }
+        .how-card h3 { font-size: 0.95rem; margin-bottom: 8px; }
+        .how-card p { color: var(--text-secondary); font-size: 0.82rem; line-height: 1.5; margin: 0; }
+
+        /* Pulse dot */
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            display: inline-block;
+            animation: pdot 1.4s ease-in-out infinite;
+        }
+        @keyframes pdot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.35; transform: scale(0.7); }
         }
 
         @media (max-width: 600px) {
-            .exchange-card { padding: 24px 20px; }
+            .panel-body { padding: 18px 16px; }
+            .swap-input { font-size: 1.25rem; }
+            .send-amount-display .amount { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <section class="exchange-section">
+    <!-- Live ticker -->
+    <div class="ticker-wrap" id="tickerWrap" style="display:none">
+        <div class="ticker-track" id="tickerTrack"></div>
+    </div>
+
+    <section class="exchange-page">
         <div class="container">
 
-            <div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.3);border-radius:12px;padding:16px 20px;margin-bottom:32px;display:flex;align-items:center;gap:14px;max-width:720px;margin-left:auto;margin-right:auto;">
-                <span style="font-size:1.4rem;flex-shrink:0">⚠️</span>
+            <!-- Coming soon notice -->
+            <div class="coming-soon-banner">
+                <span style="font-size:1.3rem;flex-shrink:0">⚠️</span>
                 <div>
-                    <strong style="color:var(--warning-yellow)">Exchange Coming Soon</strong>
-                    <p style="color:var(--text-secondary);font-size:0.9rem;margin:4px 0 0">The exchange is not yet live. Rates and order functionality are unavailable during testnet. We'll announce when it opens.</p>
+                    <strong>Exchange Coming Soon</strong>
+                    <p>The exchange is not yet live. Order functionality is unavailable during testnet. We'll announce when it opens.</p>
                 </div>
             </div>
 
             <div class="exchange-hero">
-                <h1>Buy <span class="gradient-text">TIME Coins</span></h1>
-                <p>Instant delivery to your TIME wallet. No account needed.</p>
+                <h1>TIME <span class="gradient-text">Exchange</span></h1>
+                <p>Swap BTC, ETH, USDT, and more for TIME coins. Instant delivery, no account needed.</p>
             </div>
 
-            <!-- Live rates bar -->
-            <div class="rates-bar" id="ratesBar">
-                <div class="rate-chip"><span style="color:var(--text-secondary);font-size:0.8rem">Loading rates…</span></div>
-            </div>
+            <div class="exchange-grid">
 
-            <!-- Exchange Card -->
-            <div class="exchange-card">
-                <div class="step-indicator">
-                    <div class="step-dot active" id="dot1"></div>
-                    <div class="step-dot" id="dot2"></div>
-                    <div class="step-dot" id="dot3"></div>
+                <!-- ─── LEFT: Swap Panel ─── -->
+                <div class="panel">
+                    <div class="panel-head">
+                        <h2>Swap</h2>
+                        <span id="liveRateLabel" style="font-size:0.8rem;color:var(--text-secondary)">Loading rates…</span>
+                    </div>
+                    <div class="panel-body">
+
+                        <!-- Form (step 1) -->
+                        <div id="swapForm">
+                            <!-- You Pay -->
+                            <div class="swap-amount-row">
+                                <div class="swap-box">
+                                    <div class="swap-box-label">You Pay</div>
+                                    <div class="swap-input-row">
+                                        <input type="number" class="swap-input" id="payInput"
+                                               placeholder="0.00" min="0" step="any"
+                                               oninput="onPayInput()">
+                                        <div class="coin-select-wrap">
+                                            <button class="coin-select-btn" id="coinSelectBtn" onclick="toggleCoinMenu(event)">
+                                                <span class="coin-icon sm" id="selectedCoinIcon"
+                                                      style="background:#667eea;color:#fff">?</span>
+                                                <span id="selectedCoinName">Select</span>
+                                                <span class="arrow">▾</span>
+                                            </button>
+                                            <div class="coin-select-menu" id="coinMenu"></div>
+                                        </div>
+                                    </div>
+                                    <div class="swap-sub" id="paySubInfo">&nbsp;</div>
+                                </div>
+                            </div>
+
+                            <div class="swap-arrow-row">
+                                <div class="swap-arrow-btn">↓</div>
+                            </div>
+
+                            <!-- You Receive -->
+                            <div class="swap-amount-row">
+                                <div class="swap-box">
+                                    <div class="swap-box-label">You Receive</div>
+                                    <div class="swap-input-row">
+                                        <input type="number" class="swap-input" id="receiveInput"
+                                               placeholder="0.00" min="0" step="any"
+                                               oninput="onReceiveInput()">
+                                        <div class="time-coin-display">
+                                            <span class="coin-icon sm"
+                                                  style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff">T</span>
+                                            TIME
+                                        </div>
+                                    </div>
+                                    <div class="swap-sub" id="receiveSubInfo">&nbsp;</div>
+                                </div>
+                            </div>
+
+                            <!-- Rate strip -->
+                            <div class="rate-strip" id="rateStrip" style="display:none">
+                                <div class="rate-row">
+                                    <span class="label">Rate</span>
+                                    <span class="value" id="rateDisplay">—</span>
+                                </div>
+                                <div class="rate-row">
+                                    <span class="label" id="feeLabel">Network fee</span>
+                                    <span class="value" id="feeDisplay" style="color:var(--text-secondary)">—</span>
+                                </div>
+                                <div class="rate-row" style="border-top:1px solid var(--border-color);padding-top:10px;margin-top:2px">
+                                    <span class="label">Total you pay</span>
+                                    <span class="value" id="totalPayDisplay">—</span>
+                                </div>
+                                <div class="rate-row">
+                                    <span class="label">Quote valid for</span>
+                                    <span class="value" style="color:var(--text-secondary)">30 min after order</span>
+                                </div>
+                            </div>
+
+                            <!-- TIME wallet address -->
+                            <div style="margin-top:20px">
+                                <label style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-secondary);margin-bottom:8px">
+                                    Your TIME Wallet Address
+                                </label>
+                                <input type="text" class="addr-field" id="timeAddress"
+                                       placeholder="TIME1…" autocomplete="off" spellcheck="false"
+                                       oninput="onAddressInput()">
+                                <div class="addr-hint" id="addrHint"></div>
+                            </div>
+
+                            <div class="error-box" id="formError"></div>
+
+                            <button class="btn btn-primary btn-full" id="btnContinue" onclick="submitOrder()">
+                                Continue to Payment →
+                            </button>
+                        </div>
+
+                        <!-- Payment step (step 2) -->
+                        <div id="paymentPanel">
+                            <!-- Progress -->
+                            <div class="progress-steps">
+                                <div class="pstep">
+                                    <div class="pstep-circle done" id="ps1">✓</div>
+                                    <div class="pstep-label" id="ps1l">Order</div>
+                                </div>
+                                <div class="pstep-line" id="pl1"></div>
+                                <div class="pstep">
+                                    <div class="pstep-circle active" id="ps2">2</div>
+                                    <div class="pstep-label active" id="ps2l">Payment</div>
+                                </div>
+                                <div class="pstep-line" id="pl2"></div>
+                                <div class="pstep">
+                                    <div class="pstep-circle" id="ps3">3</div>
+                                    <div class="pstep-label" id="ps3l">Confirmed</div>
+                                </div>
+                                <div class="pstep-line" id="pl3"></div>
+                                <div class="pstep">
+                                    <div class="pstep-circle" id="ps4">4</div>
+                                    <div class="pstep-label" id="ps4l">Delivered</div>
+                                </div>
+                            </div>
+
+                            <!-- Main payment content -->
+                            <div id="paymentContent">
+                                <div class="send-amount-display">
+                                    <div class="label">Send Exactly</div>
+                                    <div class="amount" id="sendAmountDisplay">—</div>
+                                    <div class="subtext" id="sendAmountHint">—</div>
+                                </div>
+
+                                <!-- BTC/LTC: checkout link -->
+                                <div id="checkoutBlock" style="display:none">
+                                    <a id="checkoutLink" href="#" target="_blank" rel="noopener"
+                                       class="checkout-link-btn">
+                                        Open Secure Payment Page →
+                                    </a>
+                                </div>
+
+                                <!-- Other coins: address + QR -->
+                                <div id="addressBlock">
+                                    <div class="qr-wrap">
+                                        <div id="qrCanvas"></div>
+                                    </div>
+
+                                    <label style="display:block;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-secondary);margin-bottom:8px">
+                                        Deposit Address
+                                    </label>
+                                    <div class="deposit-addr-wrap">
+                                        <div class="deposit-addr-text" id="depositAddrText">—</div>
+                                        <button class="copy-btn" onclick="copyAddress()">Copy</button>
+                                    </div>
+                                </div>
+
+                                <div class="order-summary-footer">
+                                    <div class="osf-row">
+                                        <span class="lbl">You receive</span>
+                                        <span class="val green" id="osReceive">—</span>
+                                    </div>
+                                    <div class="osf-row">
+                                        <span class="lbl">TIME address</span>
+                                        <span class="val" style="font-family:monospace;font-size:0.78rem;color:var(--text-secondary)" id="osAddr">—</span>
+                                    </div>
+                                    <div class="osf-row">
+                                        <span class="lbl">Order ID</span>
+                                        <span class="val" style="font-family:monospace;font-size:0.78rem;color:var(--text-secondary)" id="osOrderId">—</span>
+                                    </div>
+                                </div>
+
+                                <div class="countdown-bar" id="countdownBar">
+                                    <span class="pulse-dot" style="color:var(--warning-yellow)"></span>
+                                    Awaiting payment — expires in <span class="time-left" id="countdownVal">—</span>
+                                </div>
+
+                                <div class="error-box" id="paymentError" style="margin-top:14px"></div>
+                            </div>
+
+                            <!-- Completed -->
+                            <div class="completed-state" id="completedState">
+                                <div class="completed-icon">✅</div>
+                                <h3>Payment Complete!</h3>
+                                <p>Your TIME coins are on their way to your wallet.</p>
+                            </div>
+
+                            <button class="btn-ghost" onclick="startOver()">← New Order</button>
+                        </div>
+
+                    </div>
                 </div>
 
-                <!-- Step 1: Configure order -->
-                <div id="step1">
-                    <div class="form-group">
-                        <label class="form-label">Your TIME Wallet Address</label>
-                        <input type="text" class="form-input" id="timeAddress"
-                               placeholder="TIME1abc…" autocomplete="off" spellcheck="false">
-                    </div>
+                <!-- ─── RIGHT: Sidebar ─── -->
+                <div class="sidebar-stack">
 
-                    <div class="form-group">
-                        <label class="form-label">Pay With</label>
-                        <select class="form-input" id="coinSelect">
-                            <option value="">Loading…</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">TIME Coins to Buy</label>
-                        <input type="number" class="form-input" id="timeAmount"
-                               placeholder="e.g. 1000" min="1" step="any">
-                        <div class="tier-btns">
-                            <button class="tier-btn bronze" onclick="setTier(1003, this)">
-                                <span class="tier-name">Bronze</span>
-                                <span class="tier-amount">1,003 TIME</span>
-                            </button>
-                            <button class="tier-btn silver" onclick="setTier(10010, this)">
-                                <span class="tier-name">Silver</span>
-                                <span class="tier-amount">10,010 TIME</span>
-                            </button>
-                            <button class="tier-btn gold" onclick="setTier(100100, this)">
-                                <span class="tier-name">Gold</span>
-                                <span class="tier-amount">100,100 TIME</span>
-                            </button>
+                    <!-- Market rates -->
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2>Available Pairs</h2>
+                            <span style="font-size:0.75rem;color:var(--text-secondary)">TIME base</span>
+                        </div>
+                        <div class="panel-body" style="padding-top:16px">
+                            <div id="ratesTableWrap">
+                                <div class="rates-loading">Loading…</div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Preview -->
-                    <div class="preview-box" id="preview">
-                        <div class="preview-row">
-                            <span class="preview-label">You Receive</span>
-                            <span class="preview-value highlight" id="previewReceive">—</span>
+                    <!-- Order lookup -->
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2>Order Lookup</h2>
                         </div>
-                        <div class="preview-row">
-                            <span class="preview-label" id="previewFeeLabel">Network Fee</span>
-                            <span class="preview-value" id="previewFee" style="color:var(--text-secondary)">—</span>
-                        </div>
-                        <div class="preview-row">
-                            <span class="preview-label">Rate</span>
-                            <span class="preview-value" id="previewRate">—</span>
-                        </div>
-                        <div class="preview-row" style="border-top:1px solid rgba(255,255,255,0.07);padding-top:8px;margin-top:4px">
-                            <span class="preview-label">You Pay</span>
-                            <span class="preview-value" id="previewPay">—</span>
-                        </div>
-                        <div class="preview-row">
-                            <span class="preview-label">Expires in</span>
-                            <span class="preview-value">30 minutes</span>
+                        <div class="panel-body">
+                            <input type="text" class="lookup-input" id="lookupInput"
+                                   placeholder="Enter order ID…" autocomplete="off" spellcheck="false">
+                            <button class="lookup-btn" onclick="lookupOrder()">Look Up Order</button>
+                            <div class="lookup-result" id="lookupResult"></div>
                         </div>
                     </div>
 
-                    <div class="error-box" id="error1"></div>
-
-                    <button class="btn btn-primary btn-full" id="btnContinue" onclick="submitOrder()">
-                        Continue to Payment
-                    </button>
                 </div>
 
-                <!-- Step 2: Payment instructions -->
-                <div class="payment-box" id="step2">
-                    <div style="text-align:center;margin-bottom:20px">
-                        <div id="statusBadge" class="status-badge awaiting">
-                            <span class="pulse"></span>
-                            Awaiting Payment
-                        </div>
-                    </div>
-
-                    <div class="payment-summary">
-                        <div style="color:var(--text-secondary);font-size:0.8rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Send Exactly</div>
-                        <div class="big-amount" id="payAmountDisplay">—</div>
-                        <div class="sub-text" id="payAddressHint">—</div>
-                    </div>
-
-                    <div id="addressBlock">
-                        <label class="form-label">Deposit Address</label>
-                        <div class="payment-address-wrap" id="payAddressText">—</div>
-                        <button class="copy-btn" onclick="copyAddress()">📋 Copy Address</button>
-                    </div>
-
-                    <div id="checkoutBlock" style="display:none;margin-top:16px">
-                        <a id="checkoutLink" href="#" target="_blank" rel="noopener" class="btn btn-primary btn-full" style="display:block;text-align:center;text-decoration:none">
-                            Open Payment Page →
-                        </a>
-                    </div>
-
-                    <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border-color)">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:0.9rem">
-                            <span style="color:var(--text-secondary)">You will receive</span>
-                            <span style="font-weight:700;color:var(--success-green)" id="timeReceiveDisplay">—</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.9rem">
-                            <span style="color:var(--text-secondary)">TIME address</span>
-                            <span style="font-family:monospace;font-size:0.8rem;color:var(--text-secondary)" id="timeAddrDisplay">—</span>
-                        </div>
-                    </div>
-
-                    <div class="countdown" id="countdown"></div>
-
-                    <div id="completedMsg" style="display:none;text-align:center;padding:20px 0">
-                        <div style="font-size:3rem;margin-bottom:12px">✅</div>
-                        <div style="font-size:1.2rem;font-weight:700;margin-bottom:8px">Payment Complete!</div>
-                        <div style="color:var(--text-secondary);font-size:0.9rem">Your TIME coins are on their way to your wallet.</div>
-                    </div>
-
-                    <div class="error-box" id="error2"></div>
-
-                    <button class="btn-outline" onclick="startOver()">← Start New Order</button>
-                </div>
             </div>
 
             <!-- How it works -->
-            <div class="how-it-works">
+            <div class="how-section">
                 <h2>How It Works</h2>
-                <div class="steps-grid">
-                    <div class="step-card">
-                        <div class="step-number">1</div>
-                        <h3>Enter Your Details</h3>
-                        <p>Paste your TIME wallet address and choose how much you want to pay.</p>
+                <div class="how-grid">
+                    <div class="how-card">
+                        <div class="how-num">1</div>
+                        <h3>Configure Swap</h3>
+                        <p>Enter the amount and select your payment coin. Preview the rate and fee instantly.</p>
                     </div>
-                    <div class="step-card">
-                        <div class="step-number">2</div>
+                    <div class="how-card">
+                        <div class="how-num">2</div>
                         <h3>Send Payment</h3>
-                        <p>Send the exact crypto amount to the provided address. 30 minute window.</p>
+                        <p>Send the exact amount to the deposit address shown. 30-minute window.</p>
                     </div>
-                    <div class="step-card">
-                        <div class="step-number">3</div>
+                    <div class="how-card">
+                        <div class="how-num">3</div>
+                        <h3>Network Confirmation</h3>
+                        <p>We monitor the blockchain and confirm your transaction automatically.</p>
+                    </div>
+                    <div class="how-card">
+                        <div class="how-num">4</div>
                         <h3>Receive TIME</h3>
-                        <p>Once confirmed, TIME coins are sent automatically to your wallet.</p>
+                        <p>TIME coins are sent to your wallet as soon as the payment is confirmed.</p>
                     </div>
                 </div>
             </div>
+
         </div>
     </section>
 
 <script>
 const API = '/api/v1';
-let rates = {};
+
+// ── State ──
+let rates = {};           // { COIN: rateObj }
+let selectedCoin = null;
+let lastEditedSide = 'pay';  // 'pay' or 'receive'
 let currentOrder = null;
 let pollInterval = null;
 let countdownInterval = null;
+let addrValidTimer = null;
 
-// Load rates on page load
+// ── Coin metadata ──
+const COIN_META = {
+    BTC:  { color: '#f7931a', label: 'Bitcoin' },
+    ETH:  { color: '#627eea', label: 'Ethereum' },
+    USDT: { color: '#26a17b', label: 'Tether' },
+    USDC: { color: '#2775ca', label: 'USD Coin' },
+    LTC:  { color: '#bfbbbb', label: 'Litecoin' },
+    SOL:  { color: '#9945ff', label: 'Solana' },
+    XRP:  { color: '#0085c0', label: 'XRP' },
+    DOGE: { color: '#c2a633', label: 'Dogecoin' },
+    ADA:  { color: '#0033ad', label: 'Cardano' },
+    BNB:  { color: '#f3ba2f', label: 'BNB' },
+    MATIC:{ color: '#8247e5', label: 'Polygon' },
+    TRX:  { color: '#ef0027', label: 'TRON' },
+};
+
+function coinColor(sym) {
+    return (COIN_META[sym] || {}).color || '#667eea';
+}
+function coinLabel(sym) {
+    return (COIN_META[sym] || {}).label || sym;
+}
+function coinIconHTML(sym, cls = '') {
+    const c = coinColor(sym);
+    return `<span class="coin-icon ${cls}" style="background:${c};color:#fff">${sym.substring(0,1)}</span>`;
+}
+
+// ── Load rates ──
 async function loadRates() {
     try {
         const res = await fetch(`${API}/rates`);
@@ -668,98 +1032,212 @@ async function loadRates() {
         rates = {};
         data.forEach(r => { rates[r.payment_coin] = r; });
 
-        // Populate rates bar
-        const bar = document.getElementById('ratesBar');
-        if (data.length === 0) {
-            bar.innerHTML = '<div class="rate-chip"><span style="color:var(--text-secondary)">No rates available</span></div>';
-        } else {
-            bar.innerHTML = data.map(r => `
-                <div class="rate-chip">
-                    <span class="coin-icon">${r.payment_coin.substring(0,1)}</span>
-                    <strong>${r.payment_coin}</strong>
-                    <span>${Number(r.time_per_coin).toLocaleString()} TIME / ${r.payment_coin}</span>
-                </div>`).join('');
-        }
+        buildCoinMenu(data);
+        buildRatesTable(data);
+        buildTicker(data);
 
-        // Populate coin selector
-        const sel = document.getElementById('coinSelect');
-        sel.innerHTML = '<option value="">Select coin…</option>' +
-            data.map(r => `<option value="${r.payment_coin}">${r.payment_coin} — ${Number(r.time_per_coin).toLocaleString()} TIME per ${r.payment_coin}</option>`).join('');
+        const first = data[0];
+        if (first) selectCoin(first.payment_coin);
+
+        document.getElementById('liveRateLabel').textContent = `${data.length} pair${data.length !== 1 ? 's' : ''} available`;
 
     } catch (e) {
-        document.getElementById('ratesBar').innerHTML =
-            '<div class="rate-chip"><span style="color:var(--danger-red)">Failed to load rates</span></div>';
+        document.getElementById('liveRateLabel').textContent = 'Failed to load rates';
+        document.getElementById('ratesTableWrap').innerHTML =
+            '<div class="rates-loading" style="color:var(--danger-red)">Failed to load rates</div>';
     }
 }
 
-// Quick-select tier buttons
-function setTier(amount, btn) {
-    document.getElementById('timeAmount').value = amount;
-    document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    updatePreview();
+// ── Ticker ──
+function buildTicker(data) {
+    if (!data.length) return;
+
+    const items = data.map(r =>
+        `<div class="ticker-item">
+            ${coinIconHTML(r.payment_coin, 'sm')}
+            <strong>TIME/${r.payment_coin}</strong>
+            <span class="t-rate">${Number(r.time_per_coin).toLocaleString()} TIME</span>
+            <span style="color:rgba(255,255,255,0.2)">per ${r.payment_coin}</span>
+         </div>`
+    ).join('');
+
+    // duplicate for seamless loop
+    document.getElementById('tickerTrack').innerHTML = items + items;
+    document.getElementById('tickerWrap').style.display = 'flex';
 }
 
-// Tiered network fee schedule
-function calcFee(amount) {
-    if (amount < 100)   return amount * 0.01;    // 1%
-    if (amount < 1000)  return amount * 0.005;   // 0.5%
-    if (amount < 10000) return amount * 0.0025;  // 0.25%
-    return amount * 0.001;                        // 0.1%
+// ── Rates table ──
+function buildRatesTable(data) {
+    if (!data.length) {
+        document.getElementById('ratesTableWrap').innerHTML =
+            '<div class="rates-loading">No pairs available</div>';
+        return;
+    }
+    const rows = data.map(r => `
+        <tr onclick="selectCoin('${r.payment_coin}'); scrollToSwap()">
+            <td><div class="pair-cell">
+                ${coinIconHTML(r.payment_coin, 'sm')}
+                ${r.payment_coin}
+            </div></td>
+            <td class="rate-cell">${Number(r.time_per_coin).toLocaleString()}</td>
+            <td class="select-cell">
+                <button class="use-btn" onclick="event.stopPropagation();selectCoin('${r.payment_coin}');scrollToSwap()">Use</button>
+            </td>
+        </tr>`).join('');
+
+    document.getElementById('ratesTableWrap').innerHTML = `
+        <table class="rates-table">
+            <thead>
+                <tr>
+                    <th>Pair</th>
+                    <th style="text-align:right">TIME per coin</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>`;
 }
 
-function feeRate(amount) {
-    if (amount < 100)   return '1%';
-    if (amount < 1000)  return '0.5%';
-    if (amount < 10000) return '0.25%';
-    return '0.1%';
+function scrollToSwap() {
+    document.querySelector('.exchange-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Update preview when inputs change
-function updatePreview() {
-    const coin = document.getElementById('coinSelect').value;
-    const timeAmount = parseFloat(document.getElementById('timeAmount').value);
+// ── Coin dropdown ──
+function buildCoinMenu(data) {
+    const menu = document.getElementById('coinMenu');
+    menu.innerHTML = data.map(r => `
+        <div class="coin-select-option" data-coin="${r.payment_coin}" onclick="selectCoin('${r.payment_coin}');closeCoinMenu()">
+            ${coinIconHTML(r.payment_coin)}
+            <div>
+                <div style="font-weight:700;font-size:0.9rem">${r.payment_coin}</div>
+                <div style="font-size:0.75rem;color:var(--text-secondary)">${coinLabel(r.payment_coin)}</div>
+            </div>
+            <div class="opt-rate">${Number(r.time_per_coin).toLocaleString()} TIME</div>
+        </div>`).join('');
+}
 
-    const preview = document.getElementById('preview');
-    if (!coin || !rates[coin] || isNaN(timeAmount) || timeAmount <= 0) {
-        preview.classList.remove('visible');
+function toggleCoinMenu(e) {
+    e.stopPropagation();
+    document.getElementById('coinMenu').classList.toggle('open');
+}
+
+function closeCoinMenu() {
+    document.getElementById('coinMenu').classList.remove('open');
+}
+
+document.addEventListener('click', () => closeCoinMenu());
+
+function selectCoin(sym) {
+    selectedCoin = sym;
+    const rate = rates[sym];
+
+    // update button
+    document.getElementById('selectedCoinIcon').style.background = coinColor(sym);
+    document.getElementById('selectedCoinIcon').textContent = sym.substring(0,1);
+    document.getElementById('selectedCoinName').textContent = sym;
+
+    // highlight in menu
+    document.querySelectorAll('.coin-select-option').forEach(el => {
+        el.classList.toggle('selected', el.dataset.coin === sym);
+    });
+
+    // update rate strip
+    if (rate) {
+        document.getElementById('rateDisplay').textContent =
+            `1 ${sym} = ${Number(rate.time_per_coin).toLocaleString()} TIME`;
+    }
+
+    recalc();
+}
+
+// ── Bidirectional swap calc ──
+function onPayInput() {
+    lastEditedSide = 'pay';
+    recalc();
+}
+
+function onReceiveInput() {
+    lastEditedSide = 'receive';
+    recalc();
+}
+
+function recalc() {
+    const rate = selectedCoin ? rates[selectedCoin] : null;
+    const rateStrip = document.getElementById('rateStrip');
+
+    if (!rate) {
+        rateStrip.style.display = 'none';
         return;
     }
 
-    const rate = rates[coin];
-    const networkFee = calcFee(timeAmount);
-    const payCost = (timeAmount / parseFloat(rate.time_per_coin)).toFixed(8);
+    const timePerCoin = parseFloat(rate.time_per_coin);
+    const payVal = parseFloat(document.getElementById('payInput').value);
+    const recVal = parseFloat(document.getElementById('receiveInput').value);
 
-    document.getElementById('previewReceive').textContent = `${Number(timeAmount).toLocaleString()} TIME`;
-    document.getElementById('previewFeeLabel').textContent = `Network Fee (${feeRate(timeAmount)})`;
-    document.getElementById('previewFee').textContent = `${networkFee.toLocaleString(undefined, {maximumFractionDigits: 4})} TIME`;
-    document.getElementById('previewRate').textContent = `${Number(rate.time_per_coin).toLocaleString()} TIME / ${coin}`;
-    document.getElementById('previewPay').textContent = `${payCost} ${coin}`;
-    preview.classList.add('visible');
+    if (lastEditedSide === 'pay') {
+        if (!isNaN(payVal) && payVal > 0) {
+            const time = payVal * timePerCoin;
+            document.getElementById('receiveInput').value = time.toLocaleString(undefined, { maximumFractionDigits: 2 }).replace(/,/g, '');
+            showRateStrip(payVal, time, selectedCoin, timePerCoin);
+        } else {
+            document.getElementById('receiveInput').value = '';
+            rateStrip.style.display = 'none';
+        }
+    } else {
+        if (!isNaN(recVal) && recVal > 0) {
+            const pay = recVal / timePerCoin;
+            document.getElementById('payInput').value = pay.toFixed(8).replace(/\.?0+$/, '');
+            showRateStrip(pay, recVal, selectedCoin, timePerCoin);
+        } else {
+            document.getElementById('payInput').value = '';
+            rateStrip.style.display = 'none';
+        }
+    }
 }
 
-// TIME address validation
-// Format: TIME{0|1}{base58 payload} — total length 35-45 chars
-// Decoded payload must be 24 bytes: 20 bytes data + 4 byte checksum
+function feeRate(timeAmt) {
+    if (timeAmt < 100)    return { pct: '1%',     mul: 0.01 };
+    if (timeAmt < 1000)   return { pct: '0.5%',   mul: 0.005 };
+    if (timeAmt < 10000)  return { pct: '0.25%',  mul: 0.0025 };
+    return { pct: '0.1%', mul: 0.001 };
+}
+
+function showRateStrip(payAmt, timeAmt, coin, timePerCoin) {
+    const f = feeRate(timeAmt);
+    const fee = timeAmt * f.mul;
+
+    document.getElementById('rateDisplay').textContent =
+        `1 ${coin} = ${Number(timePerCoin).toLocaleString()} TIME`;
+    document.getElementById('feeLabel').textContent = `Network fee (${f.pct})`;
+    document.getElementById('feeDisplay').textContent =
+        `${fee.toLocaleString(undefined, { maximumFractionDigits: 4 })} TIME`;
+    document.getElementById('totalPayDisplay').textContent =
+        `${payAmt.toFixed(8).replace(/\.?0+$/, '')} ${coin}`;
+
+    document.getElementById('paySubInfo').innerHTML =
+        `≈ <span>${payAmt.toFixed(8).replace(/\.?0+$/, '')} ${coin}</span>`;
+    document.getElementById('receiveSubInfo').innerHTML =
+        `Fee: <span>${fee.toLocaleString(undefined, {maximumFractionDigits: 4})} TIME</span>`;
+
+    document.getElementById('rateStrip').style.display = 'block';
+}
+
+// ── Address validation ──
 const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 function base58Decode(str) {
     const bytes = [0];
     for (const char of str) {
         const idx = BASE58_ALPHABET.indexOf(char);
-        if (idx < 0) return null; // invalid character
+        if (idx < 0) return null;
         let carry = idx;
         for (let i = 0; i < bytes.length; i++) {
             carry += bytes[i] * 58;
             bytes[i] = carry & 0xff;
             carry >>= 8;
         }
-        while (carry > 0) {
-            bytes.push(carry & 0xff);
-            carry >>= 8;
-        }
+        while (carry > 0) { bytes.push(carry & 0xff); carry >>= 8; }
     }
-    // Add leading zero bytes for leading '1' characters
     for (const char of str) {
         if (char !== '1') break;
         bytes.push(0);
@@ -774,15 +1252,13 @@ async function sha256(data) {
 async function validateTimeAddress(address) {
     if (address.length < 35 || address.length > 45) return 'Invalid address length.';
     if (!address.startsWith('TIME')) return 'Address must start with TIME.';
-    const networkDigit = address[4];
-    if (networkDigit !== '0' && networkDigit !== '1') return 'Invalid network digit in address.';
-    if (networkDigit === '0') return 'Testnet addresses are not accepted. Please use a mainnet address (starts with TIME1).';
-
+    const net = address[4];
+    if (net !== '0' && net !== '1') return 'Invalid network digit.';
+    if (net === '0') return 'Testnet addresses are not accepted. Use a mainnet address (TIME1…).';
     const encoded = address.slice(5);
     const decoded = base58Decode(encoded);
     if (!decoded) return 'Address contains invalid characters.';
     if (decoded.length !== 24) return 'Invalid address payload length.';
-
     const payload = decoded.slice(0, 20);
     const checksum = decoded.slice(20);
     const hash1 = await sha256(payload);
@@ -790,25 +1266,51 @@ async function validateTimeAddress(address) {
     for (let i = 0; i < 4; i++) {
         if (hash2[i] !== checksum[i]) return 'Invalid address checksum.';
     }
-    return null; // valid
+    return null;
 }
 
-// Submit order
+function onAddressInput() {
+    clearTimeout(addrValidTimer);
+    const field = document.getElementById('timeAddress');
+    const hint  = document.getElementById('addrHint');
+    const val   = field.value.trim();
+
+    field.classList.remove('valid', 'invalid');
+    hint.className = 'addr-hint';
+    hint.textContent = '';
+
+    if (!val) return;
+    if (val.length < 10) return;
+
+    addrValidTimer = setTimeout(async () => {
+        const err = await validateTimeAddress(val);
+        if (err) {
+            field.classList.add('invalid');
+            hint.className = 'addr-hint err';
+            hint.textContent = err;
+        } else {
+            field.classList.add('valid');
+            hint.className = 'addr-hint ok';
+            hint.textContent = '✓ Valid TIME address';
+        }
+    }, 400);
+}
+
+// ── Submit order ──
 async function submitOrder() {
-    clearError('error1');
+    hideError('formError');
+
     const timeAddress = document.getElementById('timeAddress').value.trim();
-    const paymentCoin = document.getElementById('coinSelect').value;
-    const timeAmount = parseFloat(document.getElementById('timeAmount').value);
+    const payAmt = parseFloat(document.getElementById('payInput').value);
 
-    if (!timeAddress) return showError('error1', 'Please enter your TIME wallet address.');
-    const addrError = await validateTimeAddress(timeAddress);
-    if (addrError) return showError('error1', addrError);
-    if (!paymentCoin) return showError('error1', 'Please select a payment coin.');
-    if (!timeAmount || timeAmount <= 0) return showError('error1', 'Please enter how many TIME coins to buy.');
-    if (!rates[paymentCoin]) return showError('error1', 'Rate unavailable. Please refresh.');
+    if (!timeAddress) return showError('formError', 'Please enter your TIME wallet address.');
+    const addrErr = await validateTimeAddress(timeAddress);
+    if (addrErr) return showError('formError', addrErr);
+    if (!selectedCoin) return showError('formError', 'Please select a payment coin.');
+    if (!rates[selectedCoin]) return showError('formError', 'Rate unavailable. Please refresh.');
+    if (isNaN(payAmt) || payAmt <= 0) return showError('formError', 'Please enter an amount to pay.');
 
-    const payAmount = (timeAmount / parseFloat(rates[paymentCoin].time_per_coin)).toFixed(8);
-
+    const payAmount = payAmt.toFixed(8);
     const btn = document.getElementById('btnContinue');
     btn.innerHTML = '<span class="spinner"></span>Creating order…';
     btn.disabled = true;
@@ -817,90 +1319,97 @@ async function submitOrder() {
         const res = await fetch(`${API}/orders`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ timeAddress, paymentCoin, payAmount }),
+            body: JSON.stringify({ timeAddress, paymentCoin: selectedCoin, payAmount }),
         });
         const data = await res.json();
-
-        if (!res.ok) {
-            throw new Error(data.error || 'Failed to create order');
-        }
-
+        if (!res.ok) throw new Error(data.error || 'Failed to create order');
         currentOrder = data;
-        showPaymentStep(data);
-
+        showPaymentPanel(data);
     } catch (e) {
-        showError('error1', e.message);
+        showError('formError', e.message);
     } finally {
-        btn.innerHTML = 'Continue to Payment';
+        btn.innerHTML = 'Continue to Payment →';
         btn.disabled = false;
     }
 }
 
-function showPaymentStep(order) {
-    // Switch steps
-    document.getElementById('step1').style.display = 'none';
-    document.getElementById('step2').classList.add('visible');
-    setDot(2);
+// ── Payment panel ──
+function showPaymentPanel(order) {
+    document.getElementById('swapForm').style.display = 'none';
+    document.getElementById('paymentPanel').classList.add('show');
 
     const isBtcPay = ['BTC', 'LTC'].includes(order.paymentCoin);
 
-    // Summary
-    document.getElementById('payAmountDisplay').textContent = `${order.payAmount} ${order.paymentCoin}`;
-    document.getElementById('payAddressHint').textContent =
-        isBtcPay ? 'Click the payment page link below' : `to the ${order.paymentCoin} address below`;
-    document.getElementById('timeReceiveDisplay').textContent =
+    document.getElementById('sendAmountDisplay').textContent =
+        `${order.payAmount} ${order.paymentCoin}`;
+    document.getElementById('sendAmountHint').textContent =
+        isBtcPay ? 'via the secure payment link below' : `to the ${order.paymentCoin} address below`;
+
+    document.getElementById('osReceive').textContent =
         `${Number(order.timeAmountDisplay).toLocaleString()} TIME`;
-    document.getElementById('timeAddrDisplay').textContent =
-        order.timeAddress ? order.timeAddress.substring(0, 20) + '…' : '—';
+    document.getElementById('osAddr').textContent =
+        order.timeAddress ? order.timeAddress.substring(0, 22) + '…' : '—';
+    document.getElementById('osOrderId').textContent = order.orderId || '—';
 
     if (isBtcPay) {
         document.getElementById('addressBlock').style.display = 'none';
         document.getElementById('checkoutBlock').style.display = 'block';
         document.getElementById('checkoutLink').href = order.payAddress;
     } else {
-        document.getElementById('payAddressText').textContent = order.payAddress;
+        document.getElementById('depositAddrText').textContent = order.payAddress;
+        generateQR(order.payAddress);
     }
 
-    // Countdown
     startCountdown(new Date(order.expiresAt));
-
-    // Poll status
     startPolling(order.orderId);
 }
 
+// ── QR Code ──
+function generateQR(address) {
+    const container = document.getElementById('qrCanvas');
+    container.innerHTML = '';
+    if (typeof QRCode === 'undefined') return;
+    new QRCode(container, {
+        text: address,
+        width: 160,
+        height: 160,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M,
+    });
+}
+
+// ── Countdown ──
 function startCountdown(expiresAt) {
     if (countdownInterval) clearInterval(countdownInterval);
-    const el = document.getElementById('countdown');
 
     function tick() {
         const remaining = Math.max(0, Math.floor((expiresAt - Date.now()) / 1000));
         if (remaining === 0) {
-            el.textContent = 'Order expired';
+            document.getElementById('countdownVal').textContent = 'Expired';
             clearInterval(countdownInterval);
             return;
         }
         const m = Math.floor(remaining / 60);
         const s = remaining % 60;
-        el.innerHTML = `Expires in <span>${m}:${s.toString().padStart(2,'0')}</span>`;
+        document.getElementById('countdownVal').textContent = `${m}:${s.toString().padStart(2, '0')}`;
     }
-
     tick();
     countdownInterval = setInterval(tick, 1000);
 }
 
+// ── Polling ──
 function startPolling(orderId) {
     if (pollInterval) clearInterval(pollInterval);
-    pollInterval = setInterval(() => checkOrderStatus(orderId), 8000);
+    pollInterval = setInterval(() => checkStatus(orderId), 8000);
 }
 
-async function checkOrderStatus(orderId) {
+async function checkStatus(orderId) {
     try {
         const res = await fetch(`${API}/orders/${orderId}`);
         if (!res.ok) return;
         const order = await res.json();
-
-        updateStatusBadge(order.status);
-
+        updateProgress(order.status);
         if (order.status === 'completed') {
             clearInterval(pollInterval);
             clearInterval(countdownInterval);
@@ -908,96 +1417,159 @@ async function checkOrderStatus(orderId) {
         } else if (order.status === 'failed' || order.status === 'expired') {
             clearInterval(pollInterval);
             clearInterval(countdownInterval);
-            showError('error2', `Order ${order.status}. Please start a new order.`);
+            showError('paymentError', `Order ${order.status}. Please start a new order.`);
         }
     } catch {}
 }
 
-function updateStatusBadge(status) {
-    const badge = document.getElementById('statusBadge');
-    const labels = {
-        awaiting_payment: 'Awaiting Payment',
-        payment_confirmed: 'Payment Confirmed',
-        time_sending: 'Sending TIME…',
-        completed: 'Completed',
-        failed: 'Failed',
-        expired: 'Expired',
+function updateProgress(status) {
+    const map = {
+        awaiting_payment: 2,
+        payment_confirmed: 3,
+        time_sending: 3,
+        completed: 4,
     };
-    const classes = {
-        awaiting_payment: 'awaiting',
-        payment_confirmed: 'confirmed',
-        time_sending: 'confirmed',
-        completed: 'completed',
-        failed: 'failed',
-        expired: 'failed',
-    };
-    badge.className = `status-badge ${classes[status] || 'awaiting'}`;
-    badge.innerHTML = `<span class="pulse"></span>${labels[status] || status}`;
+    const step = map[status] || 2;
+    setProgressStep(step);
+}
+
+function setProgressStep(active) {
+    const labels = ['Order', 'Payment', 'Confirmed', 'Delivered'];
+    for (let i = 1; i <= 4; i++) {
+        const circle = document.getElementById(`ps${i}`);
+        const label  = document.getElementById(`ps${i}l`);
+        if (i < active) {
+            circle.className = 'pstep-circle done';
+            circle.textContent = '✓';
+        } else if (i === active) {
+            circle.className = 'pstep-circle active';
+            circle.textContent = i;
+        } else {
+            circle.className = 'pstep-circle';
+            circle.textContent = i;
+        }
+        label.className = 'pstep-label' + (i === active ? ' active' : '');
+    }
+    for (let i = 1; i <= 3; i++) {
+        const line = document.getElementById(`pl${i}`);
+        if (i < active - 1) line.className = 'pstep-line done';
+        else if (i === active - 1) line.className = 'pstep-line active';
+        else line.className = 'pstep-line';
+    }
 }
 
 function showCompleted() {
-    document.getElementById('addressBlock').style.display = 'none';
-    document.getElementById('checkoutBlock').style.display = 'none';
-    document.getElementById('countdown').style.display = 'none';
-    document.getElementById('completedMsg').style.display = 'block';
-    setDot(3);
+    document.getElementById('paymentContent').style.display = 'none';
+    document.getElementById('completedState').classList.add('show');
+    setProgressStep(4);
 }
 
+// ── Start over ──
 function startOver() {
     if (pollInterval) clearInterval(pollInterval);
     if (countdownInterval) clearInterval(countdownInterval);
     currentOrder = null;
 
-    document.getElementById('step1').style.display = 'block';
-    document.getElementById('step2').classList.remove('visible');
-    document.getElementById('preview').classList.remove('visible');
+    document.getElementById('swapForm').style.display = 'block';
+    document.getElementById('paymentPanel').classList.remove('show');
+    document.getElementById('completedState').classList.remove('show');
+    document.getElementById('paymentContent').style.display = 'block';
+    document.getElementById('payInput').value = '';
+    document.getElementById('receiveInput').value = '';
     document.getElementById('timeAddress').value = '';
-    document.getElementById('timeAmount').value = '';
-    document.getElementById('coinSelect').value = '';
-    document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('selected'));
-    document.getElementById('completedMsg').style.display = 'none';
-    clearError('error1');
-    clearError('error2');
-    setDot(1);
+    document.getElementById('timeAddress').className = 'addr-field';
+    document.getElementById('addrHint').textContent = '';
+    document.getElementById('rateStrip').style.display = 'none';
+    document.getElementById('qrCanvas').innerHTML = '';
+    hideError('formError');
+    hideError('paymentError');
+    setProgressStep(1);
 }
 
+// ── Copy address ──
 function copyAddress() {
-    const addr = document.getElementById('payAddressText').textContent;
+    const addr = document.getElementById('depositAddrText').textContent;
     navigator.clipboard.writeText(addr).then(() => {
-        const btn = event.target;
-        btn.textContent = '✅ Copied!';
-        setTimeout(() => { btn.innerHTML = '📋 Copy Address'; }, 2000);
+        const btn = event.currentTarget;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
     });
 }
 
-function showError(id, msg) {
-    const el = document.getElementById(id);
-    el.textContent = msg;
-    el.classList.add('visible');
-}
+// ── Order lookup ──
+async function lookupOrder() {
+    const input = document.getElementById('lookupInput').value.trim();
+    const result = document.getElementById('lookupResult');
 
-function clearError(id) {
-    const el = document.getElementById(id);
-    el.textContent = '';
-    el.classList.remove('visible');
-}
+    if (!input) return;
 
-function setDot(active) {
-    for (let i = 1; i <= 3; i++) {
-        const d = document.getElementById(`dot${i}`);
-        d.className = 'step-dot' + (i < active ? ' done' : i === active ? ' active' : '');
+    result.className = 'lookup-result';
+    result.innerHTML = '<div style="padding:12px;text-align:center;font-size:0.82rem;color:var(--text-secondary)">Looking up…</div>';
+    result.classList.add('show');
+
+    try {
+        const res = await fetch(`${API}/orders/${encodeURIComponent(input)}`);
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || 'Order not found');
+
+        const statusLabels = {
+            awaiting_payment: 'Awaiting Payment',
+            payment_confirmed: 'Payment Confirmed',
+            time_sending: 'Sending TIME…',
+            completed: 'Completed',
+            failed: 'Failed',
+            expired: 'Expired',
+        };
+        const statusClasses = {
+            awaiting_payment: 's-awaiting',
+            payment_confirmed: 's-confirmed',
+            time_sending: 's-confirmed',
+            completed: 's-completed',
+            failed: 's-failed',
+            expired: 's-failed',
+        };
+
+        const cls = statusClasses[data.status] || 's-awaiting';
+        const lbl = statusLabels[data.status] || data.status;
+
+        result.className = `lookup-result show ${cls}`;
+        result.innerHTML = `
+            <div class="lr-head">
+                <span>${lbl}</span>
+                <span style="font-size:0.72rem;opacity:0.7">${data.orderId || input}</span>
+            </div>
+            <div class="lr-body">
+                <div class="lr-row"><span class="lk">Pay</span><span class="lv">${data.payAmount} ${data.paymentCoin}</span></div>
+                <div class="lr-row"><span class="lk">Receive</span><span class="lv">${Number(data.timeAmountDisplay || 0).toLocaleString()} TIME</span></div>
+                ${data.timeAddress ? `<div class="lr-row"><span class="lk">Address</span><span class="lv" style="font-family:monospace;font-size:0.76rem">${data.timeAddress.substring(0,18)}…</span></div>` : ''}
+            </div>`;
+    } catch (e) {
+        result.className = 'lookup-result show s-failed';
+        result.innerHTML = `
+            <div class="lr-head"><span>Error</span></div>
+            <div class="lr-body" style="color:var(--text-secondary);font-size:0.82rem">${e.message}</div>`;
     }
 }
 
-// Wire up live preview
-document.addEventListener('DOMContentLoaded', () => {
-    loadRates();
-    document.getElementById('coinSelect').addEventListener('change', updatePreview);
-    document.getElementById('timeAmount').addEventListener('input', () => {
-        document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('selected'));
-        updatePreview();
-    });
+document.getElementById('lookupInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') lookupOrder();
 });
+
+// ── Helpers ──
+function showError(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.classList.add('show');
+}
+function hideError(id) {
+    const el = document.getElementById(id);
+    el.textContent = '';
+    el.classList.remove('show');
+}
+
+// ── Init ──
+loadRates();
 </script>
 
 </body>
