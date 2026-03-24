@@ -830,6 +830,7 @@
                            <button class="btn-approve" onclick="setStatus('${s.id}', 'approved')">Approve</button>
                            <button class="btn-reject"  onclick="setStatus('${s.id}', 'rejected')">Reject</button>
                            <button class="btn-note"    onclick="openNoteModal('${s.id}', \`${(s.notes||'').replace(/`/g,"'")}\`)">Note</button>
+                           <button class="btn-reject"  onclick="deleteSubmission('${s.id}', '${s.ip}', '${s.network}', '${s.status}')">Delete</button>
                        </div>`
                     : `<div class="action-btns">
                            <button class="btn-note" onclick="openNoteModal('${s.id}', \`${(s.notes||'').replace(/`/g,"'")}\`)">Note</button>
@@ -837,6 +838,7 @@
                                onclick="setStatus('${s.id}', '${s.status === 'approved' ? 'rejected' : 'approved'}')">
                                ${s.status === 'approved' ? 'Revoke' : 'Approve'}
                            </button>
+                           <button class="btn-reject" onclick="deleteSubmission('${s.id}', '${s.ip}', '${s.network}', '${s.status}')">Delete</button>
                        </div>`;
 
                 return `<tr>
@@ -915,6 +917,30 @@
             currentPage = 1;
             renderTable();
         });
+
+        window.deleteSubmission = async function(id, ip, network, status) {
+            if (!confirm(`Permanently delete this masternode (${ip})? This cannot be undone.`)) return;
+            try {
+                await deleteDoc(doc(db, 'masternode_submissions', id));
+                allSubmissions = allSubmissions.filter(s => s.id !== id);
+                updateStats();
+                renderTable();
+
+                // Remove from peers table if it was approved
+                if (status === 'approved') {
+                    const idToken = await auth.currentUser?.getIdToken();
+                    if (idToken) {
+                        fetch('/api/v1/nodes/sync', {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
+                            body: JSON.stringify({ ip, network }),
+                        }).catch(() => {});
+                    }
+                }
+            } catch (err) {
+                alert('Failed to delete: ' + err.message);
+            }
+        };
 
         window.setStatus = async function(id, status) {
             try {
