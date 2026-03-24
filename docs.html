@@ -935,6 +935,14 @@ time-cli masternode genkey
 nano /root/.timecoin/time.conf
 nano /root/.timecoin/masternode.conf</code></pre>
 
+            <h3>TUI Dashboard</h3>
+            <p>TIME Coin includes a built-in terminal dashboard that shows real-time node status — blockchain info, peers, masternode status, mempool, recent blocks, and governance — all in one view.</p>
+            <pre><code># Build and launch
+cd ~/time-masternode
+bash scripts/dashboard.sh</code></pre>
+            <p>The dashboard auto-detects which network (mainnet/testnet) is running and reads RPC credentials from <code>time.conf</code> automatically.</p>
+            <p><strong>Tabs:</strong> Overview &bull; Masternode &bull; Mempool &bull; Blocks &bull; Governance — switch with <code>1</code>–<code>5</code> or arrow keys. Press <code>q</code> to quit, <code>↑</code>/<code>↓</code> to scroll, <code>Enter</code> to expand details.</p>
+
             <h2 id="masternode-rewards">Masternode Rewards</h2>
 
             <h3>Block Reward Distribution</h3>
