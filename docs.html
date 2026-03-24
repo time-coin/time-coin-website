@@ -616,13 +616,14 @@ cd time-coin
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 # Build
-cargo build --release
+cargo build --release --bin timed --bin time-cli
 
 # Run tests
 cargo test
 
 # Install
-cargo install --path .</code></pre>
+sudo cp target/release/timed /usr/local/bin/
+sudo cp target/release/time-cli /usr/local/bin/</code></pre>
 
             <h2 id="architecture">Architecture Overview</h2>
             <p>TIME coin uses a unique architecture that separates transaction finality from block production:</p>
@@ -836,6 +837,8 @@ sudo bash scripts/install-masternode.sh mainnet
 
 # Testnet
 sudo bash scripts/install-masternode.sh testnet</code></pre>
+
+            <p><strong>Running both networks:</strong> You can run mainnet and testnet side by side on the same server — ports and data directories don't overlap. Just run the installer twice, once for each network.</p>
 
             <p>The script will:</p>
             <ul>
@@ -1287,10 +1290,20 @@ rpcpassword=&lt;auto-generated&gt;</code></pre>
 mn1 abc123...def456 0
 mn2 def456...abc789 1</code></pre>
 
-            <h3>Upgrading</h3>
-            <pre><code>cd time-masternode
-git pull origin main
-sudo ./scripts/install-masternode.sh mainnet   # detects existing install</code></pre>
+            <h3>Upgrading Your Node</h3>
+            <pre><code>cd ~/time-masternode
+
+# Update both networks (default)
+sudo bash scripts/update.sh
+
+# Update testnet only
+sudo bash scripts/update.sh testnet
+
+# Update mainnet only
+sudo bash scripts/update.sh mainnet</code></pre>
+            <p>The <code>update.sh</code> script pulls the latest code, rebuilds the binaries, and restarts the appropriate systemd service(s). If you only run one network, pass the network name to skip the other.</p>
+            <p>Alternatively, re-run the install script to upgrade in place (existing config files are preserved):</p>
+            <pre><code>sudo ./scripts/install-masternode.sh mainnet   # or testnet</code></pre>
 
             <h3>Deregistering a Masternode</h3>
             <p>Set <code>masternode=0</code> in <code>time.conf</code> and restart. The collateral UTXO is automatically unlocked and becomes spendable.</p>
