@@ -807,9 +807,17 @@ Distribution per block:
                 The <code>install-masternode.sh</code> script handles everything: dependencies, Rust toolchain, building from source, config generation, systemd service setup, and firewall rules. Run it as <code>root</code> on an Ubuntu/Debian server.
             </div>
 
+            <div class="info-box">
+                <strong>🖥️ Recommended Server</strong><br>
+                We recommend running your masternode on a dedicated VPS from a reputable provider such as
+                <strong>Liquid Web</strong>, <strong>DigitalOcean</strong>, or <strong>Vultr</strong>.
+                Choose <strong>Ubuntu LTS</strong> (Long Term Support) as your operating system — currently Ubuntu 24.04 LTS or 22.04 LTS.
+                A dedicated VPS ensures your node stays online 24/7 with a stable public IP address.
+            </div>
+
             <h3>Prerequisites</h3>
             <ul>
-                <li>Ubuntu 20.04+ or Debian 11+ server with a public IP</li>
+                <li>Ubuntu LTS 22.04 or 24.04 VPS with a public IP (Liquid Web, DigitalOcean, Vultr, or similar)</li>
                 <li>4 GB RAM, 2 vCPU, 50 GB storage (minimum)</li>
                 <li>Port 24000 open for P2P (mainnet) or 24100 (testnet)</li>
                 <li>Collateral: 1,000 TIME (Bronze), 10,000 TIME (Silver), or 100,000 TIME (Gold) — or 0 for Free tier</li>
