@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference — TIME Coin</title>
+    <meta name="description" content="Complete REST API reference for TIME Coin. Supply data, exchange rates, and aggregator endpoints compatible with CoinGecko and CoinMarketCap.">
+    <meta name="keywords" content="TIME coin API, CoinGecko API, CoinMarketCap API, TIMC aggregator, crypto exchange API">
+    <meta property="og:title" content="TIME Coin API Reference">
+    <meta property="og:description" content="Public REST API for TIME Coin — supply, rates, and aggregator-compatible market data.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <link rel="canonical" href="https://timecoin.io/api.html">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="js/includes.js" defer></script>
+    <style>
+        :root {
+            --primary-purple: #667eea;
+            --secondary-purple: #764ba2;
+            --dark-bg: #0f0c29;
+            --dark-bg-2: #13102f;
+            --sidebar-bg: #0c0a24;
+            --text-primary: #f0eeff;
+            --text-secondary: #b8b8d4;
+            --border-color: rgba(255,255,255,0.07);
+            --card-bg: rgba(255,255,255,0.04);
+            --green: #4ade80;
+            --orange: #fb923c;
+            --pink: #f472b6;
+            --blue: #60a5fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.65;
+            padding-top: 70px;
+        }
+
+        /* ── Layout ── */
+        .api-layout {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 260px;
+            flex-shrink: 0;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            position: sticky;
+            top: 70px;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+            padding: 28px 0 40px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(102,126,234,0.2) transparent;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(102,126,234,0.2); border-radius: 2px; }
+
+        .sidebar-brand {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-brand-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary-purple);
+        }
+
+        .sidebar-brand-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 4px;
+        }
+
+        .nav-group { margin-bottom: 6px; }
+
+        .nav-group-label {
+            padding: 8px 20px 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: rgba(102,126,234,0.6);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 20px;
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-left: 2px solid transparent;
+            transition: all 0.15s;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            color: var(--text-primary);
+            background: rgba(102,126,234,0.08);
+            border-left-color: rgba(102,126,234,0.4);
+        }
+
+        .nav-item.active {
+            color: var(--text-primary);
+            background: rgba(102,126,234,0.12);
+            border-left-color: var(--primary-purple);
+        }
+
+        .nav-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            font-weight: 600;
+            padding: 1px 5px;
+            border-radius: 3px;
+            background: rgba(74,222,128,0.15);
+            color: var(--green);
+            flex-shrink: 0;
+        }
+
+        /* ── Main content ── */
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 48px 52px 80px;
+            max-width: 860px;
+        }
+
+        .main h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 10px;
+        }
+
+        .main h1 span {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .main > p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 32px;
+        }
+
+        .section-divider {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 48px 0 36px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin-bottom: 10px;
+            scroll-margin-top: 90px;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* ── Base URL banner ── */
+        .base-url {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+        }
+
+        .base-url-label {
+            padding: 12px 16px;
+            background: rgba(102,126,234,0.15);
+            color: var(--primary-purple);
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .base-url-value {
+            padding: 12px 16px;
+            color: var(--green);
+        }
+
+        /* ── Info / warn boxes ── */
+        .info-box {
+            background: rgba(102,126,234,0.08);
+            border: 1px solid rgba(102,126,234,0.25);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            margin: 16px 0;
+        }
+
+        .info-box strong { color: var(--primary-purple); }
+
+        .warn-box {
+            background: rgba(251,146,60,0.08);
+            border: 1px solid rgba(251,146,60,0.25);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            margin: 16px 0;
+        }
+
+        .warn-box strong { color: var(--orange); }
+
+        /* ── Endpoint card ── */
+        .endpoint {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 28px;
+            background: var(--card-bg);
+        }
+
+        .endpoint-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            background: rgba(0,0,0,0.2);
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .method {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 9px;
+            border-radius: 5px;
+            background: rgba(74,222,128,0.15);
+            color: var(--green);
+            border: 1px solid rgba(74,222,128,0.2);
+            flex-shrink: 0;
+        }
+
+        .endpoint-path {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .endpoint-tag {
+            margin-left: auto;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .endpoint-body { padding: 18px; }
+
+        .endpoint-body > p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+        }
+
+        /* ── Params table ── */
+        .params-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin: 16px 0 8px;
+        }
+
+        table.params {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        table.params th {
+            text-align: left;
+            padding: 7px 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: rgba(184,184,212,0.6);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table.params td {
+            padding: 9px 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            vertical-align: top;
+        }
+
+        table.params td:first-child {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--pink);
+        }
+
+        table.params td:nth-child(2) {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--blue);
+        }
+
+        table.params td:last-child { color: var(--text-secondary); }
+
+        .opt {
+            font-size: 10px;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.06);
+            padding: 1px 5px;
+            border-radius: 3px;
+            margin-left: 4px;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        /* ── Code block ── */
+        .code-wrap {
+            background: #080618;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .code-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 7px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .code-lang {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(102,126,234,0.7);
+        }
+
+        .copy-btn {
+            background: none;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-family: 'DM Sans', sans-serif;
+            padding: 3px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .copy-btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
+
+        pre {
+            margin: 0;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            line-height: 1.7;
+            overflow-x: auto;
+            color: #c9d1d9;
+        }
+
+        .k { color: #f472b6; }   /* key */
+        .s { color: #86efac; }   /* string value */
+        .n { color: #fb923c; }   /* number */
+        .b { color: #67e8f9; }   /* boolean */
+        .nl { color: #94a3b8; }  /* null */
+        .c { color: #6b7280; }   /* comment */
+
+        /* ── Try It ── */
+        .try-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .try-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .try-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+        }
+
+        .try-inputs { display: flex; gap: 8px; flex-wrap: wrap; flex: 1; }
+
+        .try-input {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-primary);
+            padding: 6px 10px;
+            border-radius: 6px;
+            min-width: 180px;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        .try-input:focus { border-color: var(--primary-purple); }
+
+        .try-btn {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            border: none;
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 7px 18px;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: opacity 0.15s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .try-btn:hover { opacity: 0.85; }
+        .try-btn:disabled { opacity: 0.5; cursor: wait; }
+
+        .try-response {
+            display: none;
+            background: #060412;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .try-response.show { display: block; }
+
+        .try-res-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 12px;
+        }
+
+        .status-ok { color: var(--green); font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 11px; }
+        .status-err { color: #f87171; font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 11px; }
+        .res-url { color: var(--text-secondary); font-family: 'JetBrains Mono', monospace; font-size: 11px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .res-time { color: var(--text-secondary); font-size: 11px; margin-left: auto; white-space: nowrap; }
+
+        .try-response pre { max-height: 300px; overflow-y: auto; font-size: 12px; }
+
+        /* ── Mobile toggle ── */
+        .mob-toggle {
+            display: none;
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 500;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 18px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102,126,234,0.4);
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 498;
+        }
+
+        @media (max-width: 860px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -280px;
+                height: 100vh;
+                z-index: 499;
+                transition: left 0.25s ease;
+                padding-top: 80px;
+            }
+
+            .sidebar.open { left: 0; }
+            .sidebar-overlay.open { display: block; }
+            .mob-toggle { display: block; }
+            .main { padding: 32px 20px 60px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="api-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-label">TIME Coin</div>
+            <div class="sidebar-brand-title">API Reference</div>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-label">Overview</div>
+            <a href="#introduction" class="nav-item active">Introduction</a>
+            <a href="#base-url" class="nav-item">Base URL</a>
+            <a href="#rate-limits" class="nav-item">Rate Limits</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-label">Public</div>
+            <a href="#supply" class="nav-item"><span class="nav-badge">GET</span> Supply</a>
+            <a href="#circulating" class="nav-item"><span class="nav-badge">GET</span> Circulating Supply</a>
+            <a href="#rates" class="nav-item"><span class="nav-badge">GET</span> Exchange Rates</a>
+            <a href="#health" class="nav-item"><span class="nav-badge">GET</span> Health Check</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-label">Aggregator</div>
+            <a href="#tickers" class="nav-item"><span class="nav-badge">GET</span> Tickers</a>
+            <a href="#summary" class="nav-item"><span class="nav-badge">GET</span> Summary</a>
+            <a href="#assets" class="nav-item"><span class="nav-badge">GET</span> Assets</a>
+            <a href="#orderbook" class="nav-item"><span class="nav-badge">GET</span> Order Book</a>
+            <a href="#trades" class="nav-item"><span class="nav-badge">GET</span> Trades</a>
+        </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Main -->
+    <main class="main">
+
+        <h1 id="introduction">TIME Coin <span>API Reference</span></h1>
+        <p>Public REST API for TIME Coin — supply data, live exchange rates, and aggregator-compatible market endpoints for CoinGecko and CoinMarketCap listings.</p>
+
+        <!-- Base URL -->
+        <hr class="section-divider" style="margin-top:0">
+        <h2 class="section-title" id="base-url">Base URL</h2>
+        <div class="base-url">
+            <span class="base-url-label">Production</span>
+            <span class="base-url-value">https://timecoin.io/api/v1</span>
+        </div>
+        <p class="section-desc">All endpoints below are relative to this base. Responses are <code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--pink)">application/json</code> unless noted. No authentication required for public endpoints.</p>
+
+        <!-- Rate Limits -->
+        <hr class="section-divider">
+        <h2 class="section-title" id="rate-limits">Rate Limits</h2>
+        <div class="warn-box">
+            <strong>100 requests / minute</strong> per IP address. Exceeding this limit returns <code style="font-family:'JetBrains Mono',monospace;font-size:12px">429 Too Many Requests</code>.
+        </div>
+
+        <!-- ═══ SUPPLY ══════════════════════════════════════════ -->
+        <hr class="section-divider">
+        <h2 class="section-title" id="supply">Total Supply</h2>
+        <p class="section-desc">Returns the total number of TIME coins ever emitted — block height × 100 coins per block.</p>
+
+        <div class="endpoint">
+            <div class="endpoint-head">
+                <span class="method">GET</span>
+                <span class="endpoint-path">/api/v1/supply</span>
+                <span class="endpoint-tag">text/plain</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns a plain-text integer. No parameters required.</p>
+                <div class="code-wrap">
+                    <div class="code-head"><span class="code-lang">Response</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre>143580000</pre>
+                </div>
+                <div class="try-section">
+                    <div class="try-row">
+                        <span class="try-label">Try it</span>
+                        <button class="try-btn" onclick="runRequest(this,'/api/v1/supply',{},'r-supply')">Send</button>
+                    </div>
+                    <div class="try-response" id="r-supply"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ CIRCULATING ══════════════════════════════════════ -->
+        <hr class="section-divider">
+        <h2 class="section-title" id="circulating">Circulating Supply</h2>
+        <p class="section-desc">Total supply minus TIME locked in active masternodes (Bronze 1K, Silver 10K, Gold 100K collateral).</p>
+
+        <div class="endpoint">
+            <div class="endpoint-head">
+                <span class="method">GET</span>
+                <span class="endpoint-path">/api/v1/circulating</span>
+                <span class="endpoint-tag">text/plain</span>
+            </div>
+            <div class="endpoint-body">
+                <div class="code-wrap">
+                    <div class="code-head"><span class="code-lang">Response</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre>141230000</pre>
+                </div>
+                <div class="try-section">
+                    <div class="try-row">
+                        <span class="try-label">Try it</span>
+                        <button class="try-btn" onclick="runRequest(this,'/api/v1/circulating',{},'r-circ')">Send</button>
+                    </div>
+                    <div class="try-response" id="r-circ"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ RATES ════════════════════════════════════════════ -->
+        <hr class="section-divider">
+        <h2 class="section-title" id="rates">Exchange Rates</h2>
+        <p class="section-desc">Active exchange rates for all supported payment coins. Auto-updated every 10 minutes from CoinGecko. <strong>1 TIMC = $1 USD</strong> is the current peg.</p>
+
+        <div class="endpoint">
+            <div class="endpoint-head">
+                <span class="method">GET</span>
+                <span class="endpoint-path">/api/v1/rates</span>
+                <span class="endpoint-tag">JSON array</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns all active rates. Supported payment coins: BTC, ETH, USDT, USDC, SOL, BNB.</p>
+
+                <div class="params-label">Response Fields</div>
+                <table class="params">
+                    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+                    <tr><td>payment_coin</td><td>string</td><td>Payment currency symbol</td></tr>
+                    <tr><td>time_per_coin</td><td>string</td><td>TIMC you receive per 1 unit of payment coin</td></tr>
+                    <tr><td>min_pay_amount</td><td>string</td><td>Minimum order in payment coin</td></tr>
+                    <tr><td>max_pay_amount</td><td>string</td><td>Maximum order in payment coin</td></tr>
+                    <tr><td>created_at</td><td>string</td><td>ISO-8601 timestamp rate was set</td></tr>
+                </table>
+
+                <div class="code-wrap">
+                    <div class="code-head"><span class="code-lang">Response · JSON</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre>[
+  {
+    <span class="k">"payment_coin"</span>:   <span class="s">"BTC"</span>,
+    <span class="k">"time_per_coin"</span>:  <span class="s">"84321.00000000"</span>,
+    <span class="k">"min_pay_amount"</span>: <span class="s">"0.00011860"</span>,
+    <span class="k">"max_pay_amount"</span>: <span class="s">"0.11860000"</span>,
+    <span class="k">"created_at"</span>:     <span class="s">"2026-03-25T10:00:00.000Z"</span>
+  },
+  {
+    <span class="k">"payment_coin"</span>:   <span class="s">"USDT"</span>,
+    <span class="k">"time_per_coin"</span>:  <span class="s">"1.00000000"</span>,
+    <span class="k">"min_pay_amount"</span>: <span class="s">"10.00"</span>,
+    <span class="k">"max_pay_amount"</span>: <span class="s">"10000.00"</span>,
+    <span class="k">"created_at"</span>:     <span class="s">"2026-03-25T10:00:00.000Z"</span>
+  }
+]</pre>
+                </div>
+                <div class="try-section">
+                    <div class="try-row">
+                        <span class="try-label">Try it</span>
+                        <button class="try-btn" onclick="runRequest(this,'/api/v1/rates',{},'r-rates')">Send</button>
+                    </div>
+                    <div class="try-response" id="r-rates"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ HEALTH ════════════════════════════════════════════ -->
+        <hr class="section-divider">
+        <h2 class="section-title" id="health">Health Check</h2>
+        <p class="section-desc">Returns service status and network identifier. Useful for uptime monitoring.</p>
+
+        <div class="endpoint">
+            <div class="endpoint-head">
+                <span class="method">GET</span>
+                <span class="endpoint-path">/api/health</span>
+                <span class="endpoint-tag">JSON</span>
+            </div>
+            <div class="endpoint-body">
+                <div class="code-wrap">
+                    <div class="code-head"><span class="code-lang">Response · JSON</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre>{
+  <span class="k">"ok"</span>:      <span class="b">true</span>,
+  <span class="k">"service"</span>: <span class="s">"time-exchange-api"</span>,
+  <span class="k">"network"</span>: <span class="s">"mainnet"</span>,
+  <span class="k">"ts"</span>:      <span class="n">1742898000000</span>
+}</pre>
+                </div>
+                <div class="try-section">
+                    <div class="try-row">
+                        <span class="try-label">Try it</span>
+                        <button class="try-btn" onclick="runRequest(this,'/api/health',{},'r-health')">Send</button>
+                    </div>
+                    <div class="try-response" id="r-health"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ TICKERS ═══════════════════════════════════════════ -->
+        <hr class="section-divider">
+        <h2 class="section-title" id="tickers">Aggregator — Tickers</h2>
+        <p class="section-desc">CoinGecko-compatible ticker data for all TIMC trading pairs. Returns 24-hour price and volume for each pair.</p>
+
+        <div class="info-box">
+            <strong>CoinGecko integration:</strong> Submit <code style="font-family:'JetBrains Mono',monospace;font-size:12px">/api/v1/aggregator/tickers</code> as your exchange's tickers endpoint in the CoinGecko listing form.
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-head">
+                <span class="method">GET</span>
+                <span class="endpoint-path">/api/v1/aggregator/tickers</span>
+                <span class="endpoint-tag">CoinGecko format</span>
+            </div>
+            <div class="endpoint-body">
+                <div class="params-label">Response Fields</div>
+                <table class="params">
+                    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+                    <tr><td>ticker_id</td><td>string</td><td>Pair identifier e.g. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">TIMC_USDT</code></td></tr>
+                    <tr><td>base_currency</td><td>string</td><td>Always <code style="font-family:'JetBrains Mono',monospace;font-size:11px">TIMC</code></td></tr>
+                    <tr><td>target_currency</td><td>string</td><td>Quote currency (BTC, ETH, USDT, USDC, SOL, BNB)</td></tr>
+                    <tr><td>last_price</td><td>string</td><td>Price of 1 TIMC in quote currency (last trade)</td></tr>
+                    <tr><td>base_volume</td><td>string</td><td>TIMC volume traded in last 24h</td></tr>
+                    <tr><td>target_volume</td><td>string</td><td>Quote currency volume in last 24h</td></tr>
+                    <tr><td>bid / ask</td><td>string</td><td>Current price (fixed exchange — bid equals ask)</td></tr>
+                    <tr><td>high / low</td><td>string</td><td>24h price range in quote currency</td></tr>
+                </table>
+
+                <div class="code-wrap">
+                    <div class="code-head"><span class="code-lang">Response · JSON</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre>[
+  {
+    <span class="k">"ticker_id"</span>:       <span class="s">"TIMC_USDT"</span>,
+    <span class="k">"base_currency"</span>:   <span class="s">"TIMC"</span>,
+    <span class="k">"target_currency"</span>: <span class="s">"USDT"</span>,
+    <span class="k">"last_price"</span>:      <span class="s">"1.00"</span>,
+    <span class="k">"base_volume"</span>:     <span class="s">"15842.00000000"</span>,
+    <span class="k">"target_volume"</span>:   <span class="s">"15842.00"</span>,
+    <span class="k">"bid"</span>:             <span class="s">"1.00"</span>,
+    <span class="k">"ask"</span>:             <span class="s">"1.00"</span>,
+    <span class="k">"high"</span>:            <span class="s">"1.00"</span>,
+    <span class="k">"low"</span>:             <span class="s">"1.00"</span>
+  }
+]</pre>
+                </div>
+                <div class="try-section">
+                    <div class="try-row">
+                        <span class="try-label">Try it</span>
+                        <button class="try-btn" onclick="runRequest(this,'/api/v1/aggregator/tickers',{},'r-tickers')">Send</button>
+                    </div>
+                    <div class="try-response" id="r-tickers"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ SUMMARY ═══════════════════════════════════════════ -->
+        <hr class="section-divider">
+        <h2 class="section-title" id="summary">Aggregator — Summary</h2>
+        <p class="section-desc">CoinMarketCap-compatible 24h market summary, keyed by ticker ID.</p>
+
+        <div class="info-box">
+            <strong>CoinMarketCap integration:</strong> Submit <code style="font-family:'JetBrains Mono',monospace;font-size:12px">/api/v1/aggregator/summary</code> as your exchange's summary endpoint in the CMC listing form.
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-head">
+                <span class="method">GET</span>
+                <span class="endpoint-path">/api/v1/aggregator/summary</span>
+                <span class="endpoint-tag">CMC format</span>
+            </div>
+            <div class="endpoint-body">
+                <div class="code-wrap">
+                    <div class="code-head"><span class="code-lang">Response · JSON</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre>{
+  <span class="k">"TIMC_USDT"</span>: {
+    <span class="k">"trading_pairs"</span>:             <span class="s">"TIMC_USDT"</span>,
+    <span class="k">"base_currency"</span>:             <span class="s">"TIMC"</span>,
+    <span class="k">"quote_currency"</span>:            <span class="s">"USDT"</span>,
+    <span class="k">"last_price"</span>:               <span class="n">1.0</span>,
+    <span class="k">"lowest_ask"</span>:               <span class="n">1.0</span>,
+    <span class="k">"highest_bid"</span>:              <span class="n">1.0</span>,
+    <span class="k">"base_volume"</span>:              <span class="n">15842.0</span>,
+    <span class="k">"quote_volume"</span>:             <span class="n">15842.0</span>,
+    <span class="k">"price_change_percent_24h"</span>: <span class="n">0</span>,
+    <span class="k">"highest_price_24h"</span>:        <span class="n">1.0</span>,
+    <span class="k">"lowest_price_24h"</span>:         <span class="n">1.0</span>
+  }
+}</pre>
+                </div>
+                <div class="try-section">
+                    <div class="try-row">
+                        <span class="try-label">Try it</span>
+                        <button class="try-btn" onclick="runRequest(this,'/api/v1/aggregator/summary',{},'r-summary')">Send</button>
+                    </div>
+                    <div class="try-response" id="r-summary"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ ASSETS ════════════════════════════════════════════ -->
+        <hr class="section-divider">
+        <h2 class="section-title" id="assets">Aggregator — Assets</h2>
+        <p class="section-desc">Static asset metadata for TIMC, used by CMC exchange listing validation.</p>
+
+        <div class="endpoint">
+            <div class="endpoint-head">
+                <span class="method">GET</span>
+                <span class="endpoint-path">/api/v1/aggregator/assets</span>
+                <span class="endpoint-tag">CMC asset format</span>
+            </div>
+            <div class="endpoint-body">
+                <div class="code-wrap">
+                    <div class="code-head"><span class="code-lang">Response · JSON</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre>{
+  <span class="k">"TIMC"</span>: {
+    <span class="k">"name"</span>:                    <span class="s">"TIMC"</span>,
+    <span class="k">"unified_cryptoasset_id"</span>: <span class="nl">null</span>,
+    <span class="k">"can_withdraw"</span>:           <span class="b">false</span>,
+    <span class="k">"can_deposit"</span>:            <span class="b">true</span>,
+    <span class="k">"min_withdraw"</span>:           <span class="s">"0"</span>,
+    <span class="k">"max_withdraw"</span>:           <span class="s">"0"</span>,
+    <span class="k">"maker_fee"</span>:              <span class="s">"0"</span>,
+    <span class="k">"taker_fee"</span>:              <span class="s">"0"</span>
+  }
+}</pre>
+                </div>
+                <div class="try-section">
+                    <div class="try-row">
+                        <span class="try-label">Try it</span>
+                        <button class="try-btn" onclick="runRequest(this,'/api/v1/aggregator/assets',{},'r-assets')">Send</button>
+                    </div>
+                    <div class="try-response" id="r-assets"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ ORDERBOOK ══════════════════════════════════════════ -->
+        <hr class="section-divider">
+        <h2 class="section-title" id="orderbook">Aggregator — Order Book</h2>
+        <p class="section-desc">Single fixed-price level backed by the hot wallet's available balance. Bid equals ask on a fixed-price exchange.</p>
+
+        <div class="endpoint">
+            <div class="endpoint-head">
+                <span class="method">GET</span>
+                <span class="endpoint-path">/api/v1/aggregator/orderbook</span>
+                <span class="endpoint-tag">bids &amp; asks</span>
+            </div>
+            <div class="endpoint-body">
+                <div class="params-label">Query Parameters</div>
+                <table class="params">
+                    <tr><th>Param</th><th>Type</th><th>Description</th></tr>
+                    <tr><td>ticker_id<span class="opt">optional</span></td><td>string</td><td>Default: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">TIMC_USDT</code>. Supported: TIMC_BTC, TIMC_ETH, TIMC_USDT, TIMC_USDC, TIMC_SOL, TIMC_BNB</td></tr>
+                    <tr><td>depth<span class="opt">optional</span></td><td>integer</td><td>Max levels to return (default 10, max 100). Always returns 1 level on a fixed-price exchange.</td></tr>
+                </table>
+
+                <div class="code-wrap">
+                    <div class="code-head"><span class="code-lang">Response · JSON</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre>{
+  <span class="k">"ticker_id"</span>:  <span class="s">"TIMC_USDT"</span>,
+  <span class="k">"timestamp"</span>:  <span class="n">1742898000000</span>,
+  <span class="k">"bids"</span>: [
+    [<span class="s">"1.00"</span>, <span class="s">"48320.00000000"</span>]
+  ],
+  <span class="k">"asks"</span>: [
+    [<span class="s">"1.00"</span>, <span class="s">"48320.00000000"</span>]
+  ]
+}</pre>
+                </div>
+                <div class="try-section">
+                    <div class="try-row">
+                        <span class="try-label">Try it</span>
+                        <div class="try-inputs">
+                            <input class="try-input" id="ob-ticker" value="TIMC_USDT" placeholder="ticker_id">
+                        </div>
+                        <button class="try-btn" onclick="runRequestParam(this,'/api/v1/aggregator/orderbook','r-ob',{ticker_id:'ob-ticker'})">Send</button>
+                    </div>
+                    <div class="try-response" id="r-ob"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ TRADES ════════════════════════════════════════════ -->
+        <hr class="section-divider">
+        <h2 class="section-title" id="trades">Aggregator — Trades</h2>
+        <p class="section-desc">Recent completed trades for a pair. Each entry is a completed exchange order. All trades are <code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green)">"buy"</code> — users purchase TIMC using crypto.</p>
+
+        <div class="endpoint">
+            <div class="endpoint-head">
+                <span class="method">GET</span>
+                <span class="endpoint-path">/api/v1/aggregator/trades</span>
+                <span class="endpoint-tag">historical trades</span>
+            </div>
+            <div class="endpoint-body">
+                <div class="params-label">Query Parameters</div>
+                <table class="params">
+                    <tr><th>Param</th><th>Type</th><th>Description</th></tr>
+                    <tr><td>ticker_id<span class="opt">optional</span></td><td>string</td><td>Default: <code style="font-family:'JetBrains Mono',monospace;font-size:11px">TIMC_USDT</code></td></tr>
+                    <tr><td>limit<span class="opt">optional</span></td><td>integer</td><td>Number of trades (default 50, max 200)</td></tr>
+                    <tr><td>start_time<span class="opt">optional</span></td><td>integer</td><td>Unix timestamp ms — filter trades after this time</td></tr>
+                    <tr><td>end_time<span class="opt">optional</span></td><td>integer</td><td>Unix timestamp ms — filter trades before this time</td></tr>
+                </table>
+
+                <div class="params-label">Response Fields</div>
+                <table class="params">
+                    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+                    <tr><td>trade_id</td><td>string</td><td>Unique order UUID</td></tr>
+                    <tr><td>price</td><td>string</td><td>Price of 1 TIMC in quote currency at time of trade</td></tr>
+                    <tr><td>base_volume</td><td>string</td><td>TIMC amount purchased</td></tr>
+                    <tr><td>target_volume</td><td>string</td><td>Quote currency amount paid</td></tr>
+                    <tr><td>trade_timestamp</td><td>integer</td><td>Unix timestamp in milliseconds</td></tr>
+                    <tr><td>type</td><td>string</td><td>Always <code style="font-family:'JetBrains Mono',monospace;font-size:11px">"buy"</code></td></tr>
+                </table>
+
+                <div class="code-wrap">
+                    <div class="code-head"><span class="code-lang">Response · JSON</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                    <pre>[
+  {
+    <span class="k">"trade_id"</span>:        <span class="s">"550e8400-e29b-41d4-a716-446655440000"</span>,
+    <span class="k">"price"</span>:           <span class="s">"1.00"</span>,
+    <span class="k">"base_volume"</span>:     <span class="s">"500.00000000"</span>,
+    <span class="k">"target_volume"</span>:   <span class="s">"500.00"</span>,
+    <span class="k">"trade_timestamp"</span>: <span class="n">1742898000000</span>,
+    <span class="k">"type"</span>:            <span class="s">"buy"</span>
+  }
+]</pre>
+                </div>
+                <div class="try-section">
+                    <div class="try-row">
+                        <span class="try-label">Try it</span>
+                        <div class="try-inputs">
+                            <input class="try-input" id="tr-ticker" value="TIMC_USDT" placeholder="ticker_id">
+                            <input class="try-input" id="tr-limit" value="10" placeholder="limit" style="max-width:80px">
+                        </div>
+                        <button class="try-btn" onclick="runRequestParam(this,'/api/v1/aggregator/trades','r-trades',{ticker_id:'tr-ticker',limit:'tr-limit'})">Send</button>
+                    </div>
+                    <div class="try-response" id="r-trades"></div>
+                </div>
+            </div>
+        </div>
+
+        <div style="height:60px"></div>
+
+    </main>
+</div>
+
+<!-- Mobile toggle -->
+<button class="mob-toggle" onclick="toggleSidebar()">☰ Navigation</button>
+
+<script>
+// ── Sidebar ───────────────────────────────────────────────
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+// ── Active nav on scroll ──────────────────────────────────
+const sections = document.querySelectorAll('[id]');
+const navItems = document.querySelectorAll('.nav-item');
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            navItems.forEach(n => n.classList.remove('active'));
+            const match = document.querySelector(`.nav-item[href="#${e.target.id}"]`);
+            if (match) match.classList.add('active');
+        }
+    });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+
+// Close sidebar on nav click (mobile)
+navItems.forEach(n => n.addEventListener('click', closeSidebar));
+
+// ── Copy code ─────────────────────────────────────────────
+function copyCode(btn) {
+    const text = btn.closest('.code-wrap').querySelector('pre').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 1600);
+    });
+}
+
+// ── Try it ────────────────────────────────────────────────
+async function runRequest(btn, path, params, responseId) {
+    const qs = new URLSearchParams(params).toString();
+    await fetchAndShow(btn, qs ? `${path}?${qs}` : path, responseId);
+}
+
+async function runRequestParam(btn, path, responseId, paramMap) {
+    const params = {};
+    for (const [key, inputId] of Object.entries(paramMap)) {
+        const val = document.getElementById(inputId)?.value?.trim();
+        if (val) params[key] = val;
+    }
+    const qs = new URLSearchParams(params).toString();
+    await fetchAndShow(btn, qs ? `${path}?${qs}` : path, responseId);
+}
+
+async function fetchAndShow(btn, url, responseId) {
+    const el = document.getElementById(responseId);
+    btn.disabled = true;
+    btn.textContent = 'Loading…';
+    const t0 = Date.now();
+    try {
+        const res = await fetch(url);
+        const ms = Date.now() - t0;
+        const ct = res.headers.get('content-type') || '';
+        const body = ct.includes('json')
+            ? JSON.stringify(await res.json(), null, 2)
+            : await res.text();
+
+        el.innerHTML = `
+            <div class="try-res-head">
+                <span class="${res.ok ? 'status-ok' : 'status-err'}">${res.status} ${res.statusText}</span>
+                <span class="res-url">${url}</span>
+                <span class="res-time">${ms}ms</span>
+            </div>
+            <pre>${esc(body)}</pre>`;
+        el.classList.add('show');
+    } catch(err) {
+        el.innerHTML = `<div class="try-res-head"><span class="status-err">Network Error</span></div><pre>${esc(String(err))}</pre>`;
+        el.classList.add('show');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send';
+    }
+}
+
+function esc(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
