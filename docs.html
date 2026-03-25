@@ -496,6 +496,7 @@
                     <div class="nav-title">Wallet & Usage</div>
                     <a href="#wallet-setup" class="nav-link">Wallet Setup</a>
                     <a href="#buying-time" class="nav-link">Token Distribution</a>
+                    <a href="#wallet-troubleshooting" class="nav-link">Troubleshooting</a>
                     <a href="#sending" class="nav-link">Sending TIME</a>
                 </div>
 
@@ -1028,6 +1029,31 @@ copy %APPDATA%\time-coin\mainnet\wallet.dat C:\backup\wallet.dat</code></pre>
                 <li>Enter your 12 or 24 word BIP39 seed phrase</li>
                 <li>Set an encryption password and click <strong>Import</strong></li>
             </ol>
+
+            <h3 id="wallet-troubleshooting">Troubleshooting — Wallet Won't Connect to Peers</h3>
+
+            <p>If your wallet opens but shows <strong>0 connections</strong> or is unable to sync, it may not be finding peers automatically. You can manually add known network nodes via your <code>time.conf</code> file.</p>
+
+            <ol>
+                <li>Go to the <a href="explorer.html">Block Explorer</a></li>
+                <li>Click the <strong>+ Add Nodes</strong> button in the top-right corner — it will copy the list to your clipboard</li>
+                <li>Open (or create) your <code>time.conf</code> file:
+                    <pre><code># Linux / macOS
+~/.local/share/time-coin/testnet/time.conf
+
+# Windows
+%APPDATA%\time-coin\testnet\time.conf</code></pre>
+                </li>
+                <li>Paste the copied lines into the file. Each line looks like:
+                    <pre><code>addnode=123.45.67.89:22345
+addnode=98.76.54.32:22345</code></pre>
+                </li>
+                <li>Save the file and restart the wallet</li>
+            </ol>
+
+            <div class="info-box">
+                <strong>Note:</strong> The addnode list is pulled live from the network — click the button again any time to get the latest peers.
+            </div>
 
             <h2 id="buying-time">Token Distribution</h2>
 
