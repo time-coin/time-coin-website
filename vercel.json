@@ -7,6 +7,10 @@
     {
       "source": "/api/explorer/:path*",
       "destination": "http://69.167.168.176/api/explorer/:path*"
+    },
+    {
+      "source": "/api/health",
+      "destination": "http://69.167.168.176/api/health"
     }
   ],
   "headers": [
