@@ -787,7 +787,7 @@
                                         <div class="time-coin-display">
                                             <span class="coin-icon sm"
                                                   style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff">T</span>
-                                            TIME
+                                            TIMC
                                         </div>
                                     </div>
                                     <div class="swap-sub" id="receiveSubInfo">&nbsp;</div>
@@ -817,7 +817,7 @@
                             <!-- TIME wallet address -->
                             <div style="margin-top:20px">
                                 <label style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-secondary);margin-bottom:8px">
-                                    Your TIME Wallet Address
+                                    Your TIMC Wallet Address
                                 </label>
                                 <input type="text" class="addr-field" id="timeAddress"
                                        placeholder="TIME1…" autocomplete="off" spellcheck="false"
@@ -906,7 +906,7 @@
                             <div class="completed-state" id="completedState">
                                 <div class="completed-icon">✅</div>
                                 <h3>Payment Complete!</h3>
-                                <p>Your TIME coins are on their way to your wallet.</p>
+                                <p>Your TIMC coins are on their way to your wallet.</p>
                             </div>
 
                             <button class="btn-ghost" onclick="startOver()">← New Order</button>
@@ -922,7 +922,7 @@
                     <div class="panel">
                         <div class="panel-head">
                             <h2>Available Pairs</h2>
-                            <span style="font-size:0.75rem;color:var(--text-secondary)">TIME base</span>
+                            <span style="font-size:0.75rem;color:var(--text-secondary)">TIMC base</span>
                         </div>
                         <div class="panel-body" style="padding-top:16px">
                             <div id="ratesTableWrap">
@@ -1056,7 +1056,7 @@ function updateAvailabilityBadge() {
     if (availableTimeUnits === null) { badge.textContent = ''; return; }
     const display = Number(availableTimeUnits) / 1e8;
     const formatted = display.toLocaleString(undefined, { maximumFractionDigits: 0 });
-    badge.innerHTML = `<span style="color:var(--success-green)">●</span> ${formatted} TIME available`;
+    badge.innerHTML = `<span style="color:var(--success-green)">●</span> ${formatted} TIMC available`;
 }
 
 // ── Ticker ──
@@ -1066,8 +1066,8 @@ function buildTicker(data) {
     const items = data.map(r =>
         `<div class="ticker-item">
             ${coinIconHTML(r.payment_coin, 'sm')}
-            <strong>TIME/${r.payment_coin}</strong>
-            <span class="t-rate">${Number(r.time_per_coin).toLocaleString()} TIME</span>
+            <strong>TIMC/${r.payment_coin}</strong>
+            <span class="t-rate">${Number(r.time_per_coin).toLocaleString()} TIMC</span>
             <span style="color:rgba(255,255,255,0.2)">per ${r.payment_coin}</span>
          </div>`
     ).join('');
@@ -1101,7 +1101,7 @@ function buildRatesTable(data) {
             <thead>
                 <tr>
                     <th>Pair</th>
-                    <th style="text-align:right">TIME per coin</th>
+                    <th style="text-align:right">TIMC per coin</th>
                     <th></th>
                 </tr>
             </thead>
@@ -1123,7 +1123,7 @@ function buildCoinMenu(data) {
                 <div style="font-weight:700;font-size:0.9rem">${r.payment_coin}</div>
                 <div style="font-size:0.75rem;color:var(--text-secondary)">${coinLabel(r.payment_coin)}</div>
             </div>
-            <div class="opt-rate">${Number(r.time_per_coin).toLocaleString()} TIME</div>
+            <div class="opt-rate">${Number(r.time_per_coin).toLocaleString()} TIMC</div>
         </div>`).join('');
 }
 
@@ -1155,7 +1155,7 @@ function selectCoin(sym) {
     // update rate strip
     if (rate) {
         document.getElementById('rateDisplay').textContent =
-            `1 ${sym} = ${Number(rate.time_per_coin).toLocaleString()} TIME`;
+            `1 ${sym} = ${Number(rate.time_per_coin).toLocaleString()} TIMC`;
     }
 
     recalc();
@@ -1218,10 +1218,10 @@ function showRateStrip(payAmt, timeAmt, coin, timePerCoin) {
     const fee = timeAmt * f.mul;
 
     document.getElementById('rateDisplay').textContent =
-        `1 ${coin} = ${Number(timePerCoin).toLocaleString()} TIME`;
+        `1 ${coin} = ${Number(timePerCoin).toLocaleString()} TIMC`;
     document.getElementById('feeLabel').textContent = `Network fee (${f.pct})`;
     document.getElementById('feeDisplay').textContent =
-        `${fee.toLocaleString(undefined, { maximumFractionDigits: 4 })} TIME`;
+        `${fee.toLocaleString(undefined, { maximumFractionDigits: 4 })} TIMC`;
     document.getElementById('totalPayDisplay').textContent =
         `${payAmt.toFixed(8).replace(/\.?0+$/, '')} ${coin}`;
 
@@ -1230,10 +1230,10 @@ function showRateStrip(payAmt, timeAmt, coin, timePerCoin) {
 
     // Availability warning
     const timeUnitsRequested = BigInt(Math.floor(timeAmt * 1e8));
-    let receiveSubHtml = `Fee: <span>${fee.toLocaleString(undefined, {maximumFractionDigits: 4})} TIME</span>`;
+    let receiveSubHtml = `Fee: <span>${fee.toLocaleString(undefined, {maximumFractionDigits: 4})} TIMC</span>`;
     if (availableTimeUnits !== null && timeUnitsRequested > availableTimeUnits) {
         const maxTime = Number(availableTimeUnits) / 1e8;
-        receiveSubHtml = `<span style="color:var(--danger-red)">⚠ Exceeds available supply (${maxTime.toLocaleString(undefined,{maximumFractionDigits:0})} TIME max)</span>`;
+        receiveSubHtml = `<span style="color:var(--danger-red)">⚠ Exceeds available supply (${maxTime.toLocaleString(undefined,{maximumFractionDigits:0})} TIMC max)</span>`;
     }
     document.getElementById('receiveSubInfo').innerHTML = receiveSubHtml;
 
@@ -1309,7 +1309,7 @@ function onAddressInput() {
         } else {
             field.classList.add('valid');
             hint.className = 'addr-hint ok';
-            hint.textContent = '✓ Valid TIME address';
+            hint.textContent = '✓ Valid TIMC address';
         }
     }, 400);
 }
@@ -1321,7 +1321,7 @@ async function submitOrder() {
     const timeAddress = document.getElementById('timeAddress').value.trim();
     const payAmt = parseFloat(document.getElementById('payInput').value);
 
-    if (!timeAddress) return showError('formError', 'Please enter your TIME wallet address.');
+    if (!timeAddress) return showError('formError', 'Please enter your TIMC wallet address.');
     const addrErr = await validateTimeAddress(timeAddress);
     if (addrErr) return showError('formError', addrErr);
     if (!selectedCoin) return showError('formError', 'Please select a payment coin.');
@@ -1333,7 +1333,7 @@ async function submitOrder() {
         const requested = BigInt(Math.floor(timeAmt * 1e8));
         if (requested > availableTimeUnits) {
             const max = Number(availableTimeUnits) / 1e8;
-            return showError('formError', `Insufficient liquidity. Maximum available: ${max.toLocaleString(undefined, { maximumFractionDigits: 0 })} TIME.`);
+            return showError('formError', `Insufficient liquidity. Maximum available: ${max.toLocaleString(undefined, { maximumFractionDigits: 0 })} TIMC.`);
         }
     }
 
@@ -1371,7 +1371,7 @@ function showPaymentPanel(order) {
         `to the ${order.paymentCoin} address below`;
 
     document.getElementById('osReceive').textContent =
-        `${Number(order.timeAmountDisplay).toLocaleString()} TIME`;
+        `${Number(order.timeAmountDisplay).toLocaleString()} TIMC`;
     document.getElementById('osAddr').textContent =
         order.timeAddress ? order.timeAddress.substring(0, 22) + '…' : '—';
     document.getElementById('osOrderId').textContent = order.orderId || '—';
@@ -1535,7 +1535,7 @@ async function lookupOrder() {
         const statusLabels = {
             awaiting_payment: 'Awaiting Payment',
             payment_confirmed: 'Payment Confirmed',
-            time_sending: 'Sending TIME…',
+            time_sending: 'Sending TIMC…',
             completed: 'Completed',
             failed: 'Failed',
             expired: 'Expired',
@@ -1560,7 +1560,7 @@ async function lookupOrder() {
             </div>
             <div class="lr-body">
                 <div class="lr-row"><span class="lk">Pay</span><span class="lv">${data.payAmount} ${data.paymentCoin}</span></div>
-                <div class="lr-row"><span class="lk">Receive</span><span class="lv">${Number(data.timeAmountDisplay || 0).toLocaleString()} TIME</span></div>
+                <div class="lr-row"><span class="lk">Receive</span><span class="lv">${Number(data.timeAmountDisplay || 0).toLocaleString()} TIMC</span></div>
                 ${data.timeAddress ? `<div class="lr-row"><span class="lk">Address</span><span class="lv" style="font-family:monospace;font-size:0.76rem">${data.timeAddress.substring(0,18)}…</span></div>` : ''}
             </div>`;
     } catch (e) {

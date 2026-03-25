@@ -331,8 +331,24 @@
                 <div class="stat-card"><div class="stat-value" id="statHeight">—</div><div class="stat-label">Block Height</div></div>
                 <div class="stat-card"><div class="stat-value" id="statTxs">—</div><div class="stat-label">Mempool TXs</div></div>
                 <div class="stat-card"><div class="stat-value" id="statPeers">—</div><div class="stat-label">Peers</div></div>
-                <div class="stat-card"><div class="stat-value" id="statDiff">—</div><div class="stat-label">Difficulty</div></div>
+                <div class="stat-card"><div class="stat-value" id="statGold" style="color:#f59e0b">—</div><div class="stat-label">Gold Masternodes</div></div>
+                <div class="stat-card"><div class="stat-value" id="statSilver" style="color:#94a3b8">—</div><div class="stat-label">Silver Masternodes</div></div>
+                <div class="stat-card"><div class="stat-value" id="statBronze" style="color:#b45309">—</div><div class="stat-label">Bronze Masternodes</div></div>
                 <div class="stat-card"><div class="stat-value" id="statNetwork">—</div><div class="stat-label">Network</div></div>
+            </div>
+
+            <!-- Add Nodes -->
+            <div class="panel" id="addnodesPanel" style="margin-bottom:24px;display:none">
+                <div class="panel-header">
+                    <span class="panel-title">Add Nodes — <code style="font-size:0.85rem;color:var(--text-secondary)">time.conf</code></span>
+                    <button onclick="copyAddnodes()" style="background:linear-gradient(135deg,var(--primary-purple),var(--secondary-purple));border:none;border-radius:8px;color:#fff;font-size:0.8rem;font-weight:600;padding:6px 14px;cursor:pointer;">Copy All</button>
+                </div>
+                <div style="padding:16px 24px">
+                    <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:12px">
+                        Add these lines to your <code>time.conf</code> file to connect to known masternodes on the network.
+                    </p>
+                    <pre id="addnodesText" style="background:rgba(0,0,0,0.3);border:1px solid var(--border-color);border-radius:10px;padding:16px;font-family:monospace;font-size:0.82rem;color:#98c379;overflow-x:auto;margin:0;white-space:pre-wrap;word-break:break-all;">Loading peers…</pre>
+                </div>
             </div>
 
             <!-- List view -->
@@ -384,9 +400,7 @@ async function loadChainStats() {
             (tipHeight === Infinity ? '—' : tipHeight).toLocaleString();
         document.getElementById('statTxs').textContent =
             (data.mempoolInfo?.size ?? '—').toLocaleString();
-        document.getElementById('statPeers').textContent = '—'; // needs network endpoint
-        document.getElementById('statDiff').textContent =
-            data.chainInfo?.difficulty ? Number(data.chainInfo.difficulty).toExponential(2) : '—';
+        document.getElementById('statPeers').textContent = '—';
         document.getElementById('statNetwork').textContent =
             data.chainInfo?.chain ?? '—';
 
@@ -398,6 +412,50 @@ async function loadChainStats() {
     } catch (e) {
         console.error('Chain stats failed:', e);
     }
+}
+
+// ── Masternode tier counts + addnodes ─────────────────────────────────────────
+async function loadMasternodes() {
+    try {
+        const network = 'mainnet'; // adjust if testnet explorer needed
+        const res = await fetch(`/api/v1/nodes/peers/${network}/full`);
+        if (!res.ok) return;
+        const peers = await res.json(); // [{ip, port, tier}]
+
+        const counts = { gold: 0, silver: 0, bronze: 0 };
+        const addnodeLines = [];
+
+        for (const p of peers) {
+            const t = (p.tier || '').toLowerCase();
+            if (t === 'gold')   counts.gold++;
+            else if (t === 'silver') counts.silver++;
+            else if (t === 'bronze') counts.bronze++;
+            if (p.ip && p.port) {
+                addnodeLines.push(`addnode=${p.ip}:${p.port}`);
+            }
+        }
+
+        document.getElementById('statGold').textContent   = counts.gold;
+        document.getElementById('statSilver').textContent = counts.silver;
+        document.getElementById('statBronze').textContent = counts.bronze;
+
+        if (addnodeLines.length > 0) {
+            document.getElementById('addnodesText').textContent = addnodeLines.join('\n');
+            document.getElementById('addnodesPanel').style.display = '';
+        }
+    } catch (e) {
+        console.error('Masternode load failed:', e);
+    }
+}
+
+function copyAddnodes() {
+    const text = document.getElementById('addnodesText').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('#addnodesPanel button');
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = orig, 1600);
+    });
 }
 
 // ── Blocks ───────────────────────────────────────────────────────────────────
@@ -663,6 +721,7 @@ function handleUrlParams() {
 document.addEventListener('DOMContentLoaded', () => {
     loadChainStats();
     loadBlocks();
+    loadMasternodes();
     handleUrlParams();
 
     // Auto-refresh stats every 30s
