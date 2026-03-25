@@ -314,9 +314,15 @@
         <div class="container">
 
             <!-- Hero + Search -->
-            <div class="explorer-hero">
+            <div class="explorer-hero" style="position:relative">
                 <h1><span class="gradient-text">TIME</span> Block Explorer</h1>
                 <p style="color:var(--text-secondary)">Search by block height, transaction ID, or TIME address</p>
+                <button id="addnodesBtn" onclick="copyAddnodes()"
+                        style="display:none;position:absolute;top:0;right:0;background:rgba(102,126,234,0.12);border:1px solid rgba(102,126,234,0.3);color:#667eea;font-size:0.78rem;font-weight:600;padding:6px 12px;border-radius:8px;cursor:pointer;transition:all 0.2s;"
+                        onmouseover="this.style.background='rgba(102,126,234,0.22)'"
+                        onmouseout="this.style.background='rgba(102,126,234,0.12)'">
+                    + Add Nodes
+                </button>
             </div>
 
             <div class="search-wrap">
@@ -351,19 +357,6 @@
                 <div class="stat-card"><div class="stat-value" id="statNetwork">—</div><div class="stat-label">Network</div></div>
             </div>
 
-            <!-- Add Nodes -->
-            <div class="panel" id="addnodesPanel" style="margin-bottom:24px;display:none">
-                <div class="panel-header">
-                    <span class="panel-title">Add Nodes — <code style="font-size:0.85rem;color:var(--text-secondary)">time.conf</code></span>
-                    <button onclick="copyAddnodes()" style="background:linear-gradient(135deg,var(--primary-purple),var(--secondary-purple));border:none;border-radius:8px;color:#fff;font-size:0.8rem;font-weight:600;padding:6px 14px;cursor:pointer;">Copy All</button>
-                </div>
-                <div style="padding:16px 24px">
-                    <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:12px">
-                        Add these lines to your <code>time.conf</code> file to connect to known masternodes on the network.
-                    </p>
-                    <pre id="addnodesText" style="background:rgba(0,0,0,0.3);border:1px solid var(--border-color);border-radius:10px;padding:16px;font-family:monospace;font-size:0.82rem;color:#98c379;overflow-x:auto;margin:0;white-space:pre-wrap;word-break:break-all;">Loading peers…</pre>
-                </div>
-            </div>
 
             <!-- List view -->
             <div class="list-view" id="listView">
@@ -429,6 +422,8 @@ async function loadChainStats() {
 }
 
 // ── Masternode tier counts + addnodes ─────────────────────────────────────────
+let addnodesText = '';
+
 async function loadMasternodes() {
     try {
         // Tier counts from RPC (on-chain data)
@@ -444,12 +439,12 @@ async function loadMasternodes() {
         const peersRes = await fetch('/api/v1/nodes/peers/testnet/full');
         if (peersRes.ok) {
             const peers = await peersRes.json();
-            const addnodeLines = peers
+            const lines = peers
                 .filter(p => p.ip && p.port)
                 .map(p => `addnode=${p.ip}:${p.port}`);
-            if (addnodeLines.length > 0) {
-                document.getElementById('addnodesText').textContent = addnodeLines.join('\n');
-                document.getElementById('addnodesPanel').style.display = '';
+            if (lines.length > 0) {
+                addnodesText = lines.join('\n');
+                document.getElementById('addnodesBtn').style.display = '';
             }
         }
     } catch (e) {
@@ -458,12 +453,19 @@ async function loadMasternodes() {
 }
 
 function copyAddnodes() {
-    const text = document.getElementById('addnodesText').textContent;
-    navigator.clipboard.writeText(text).then(() => {
-        const btn = document.querySelector('#addnodesPanel button');
-        const orig = btn.textContent;
-        btn.textContent = 'Copied!';
-        setTimeout(() => btn.textContent = orig, 1600);
+    if (!addnodesText) return;
+    navigator.clipboard.writeText(addnodesText).then(() => {
+        const btn = document.getElementById('addnodesBtn');
+        btn.textContent = '✓ Copied!';
+        btn.style.color = '#4ade80';
+        btn.style.borderColor = 'rgba(74,222,128,0.4)';
+        btn.style.background = 'rgba(74,222,128,0.1)';
+        setTimeout(() => {
+            btn.textContent = '+ Add Nodes';
+            btn.style.color = '#667eea';
+            btn.style.borderColor = 'rgba(102,126,234,0.3)';
+            btn.style.background = 'rgba(102,126,234,0.12)';
+        }, 2000);
     });
 }
 
