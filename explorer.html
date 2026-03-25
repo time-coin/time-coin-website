@@ -431,31 +431,26 @@ async function loadChainStats() {
 // ── Masternode tier counts + addnodes ─────────────────────────────────────────
 async function loadMasternodes() {
     try {
-        const network = 'mainnet'; // adjust if testnet explorer needed
-        const res = await fetch(`/api/v1/nodes/peers/${network}/full`);
-        if (!res.ok) return;
-        const peers = await res.json(); // [{ip, port, tier}]
-
-        const counts = { gold: 0, silver: 0, bronze: 0 };
-        const addnodeLines = [];
-
-        for (const p of peers) {
-            const t = (p.tier || '').toLowerCase();
-            if (t === 'gold')   counts.gold++;
-            else if (t === 'silver') counts.silver++;
-            else if (t === 'bronze') counts.bronze++;
-            if (p.ip && p.port) {
-                addnodeLines.push(`addnode=${p.ip}:${p.port}`);
-            }
+        // Tier counts from RPC (on-chain data)
+        const mnRes = await fetch('/api/v1/supply/masternodes');
+        if (mnRes.ok) {
+            const counts = await mnRes.json();
+            document.getElementById('statGold').textContent   = counts.gold   ?? 0;
+            document.getElementById('statSilver').textContent = counts.silver ?? 0;
+            document.getElementById('statBronze').textContent = counts.bronze ?? 0;
         }
 
-        document.getElementById('statGold').textContent   = counts.gold;
-        document.getElementById('statSilver').textContent = counts.silver;
-        document.getElementById('statBronze').textContent = counts.bronze;
-
-        if (addnodeLines.length > 0) {
-            document.getElementById('addnodesText').textContent = addnodeLines.join('\n');
-            document.getElementById('addnodesPanel').style.display = '';
+        // Addnodes from peer registry (testnet)
+        const peersRes = await fetch('/api/v1/nodes/peers/testnet/full');
+        if (peersRes.ok) {
+            const peers = await peersRes.json();
+            const addnodeLines = peers
+                .filter(p => p.ip && p.port)
+                .map(p => `addnode=${p.ip}:${p.port}`);
+            if (addnodeLines.length > 0) {
+                document.getElementById('addnodesText').textContent = addnodeLines.join('\n');
+                document.getElementById('addnodesPanel').style.display = '';
+            }
         }
     } catch (e) {
         console.error('Masternode load failed:', e);
