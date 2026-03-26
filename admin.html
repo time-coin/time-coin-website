@@ -1077,6 +1077,12 @@
             await loadSubmissions();
             await loadPressReleases();
             await loadCampaigns();
+            const hash = location.hash.replace('#', '');
+            const validTabs = ['masternodes', 'press', 'campaigns', 'newsletter', 'proposals', 'analytics'];
+            if (hash && validTabs.includes(hash)) {
+                const btn = document.querySelector(`.tab-btn[onclick*="'${hash}'"]`);
+                if (btn) switchTab(hash, btn);
+            }
         });
 
         document.getElementById('signOutBtn').addEventListener('click', async () => {
@@ -1251,6 +1257,7 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('tab-' + tab).classList.add('active');
             btn.classList.add('active');
+            location.hash = tab;
             if (tab === 'newsletter') nlLoadArticles();
             if (tab === 'proposals') prLoadProposals();
             if (tab === 'analytics') anLoad();
