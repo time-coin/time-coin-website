@@ -1926,7 +1926,7 @@
             document.getElementById('tkBody').innerHTML = '<tr><td colspan="7" class="empty-state">Loading…</td></tr>';
             try {
                 const [tickRes, uqRes] = await Promise.all([
-                    fetch('/api/v1/tickets/', { headers: { 'Authorization': `Bearer ${key}` } }),
+                    fetch('/api/v1/tickets/list', { headers: { 'Authorization': `Bearer ${key}` } }),
                     fetch('/api/v1/tickets/unanswered', { headers: { 'Authorization': `Bearer ${key}` } }),
                 ]);
                 tkAllTickets = await tickRes.json();
