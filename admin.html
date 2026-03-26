@@ -475,6 +475,21 @@
         .an-bar-fill  { height:100%; border-radius:3px; background:linear-gradient(90deg,#667eea,#764ba2); transition:width 0.5s ease; }
         .an-bar-count { flex:0 0 48px; text-align:right; color:var(--text-secondary); }
 
+        /* % change badge */
+        .an-change      { font-size:11px; font-weight:600; padding:2px 7px; border-radius:20px; margin-left:8px; vertical-align:middle; }
+        .an-change-up   { background:rgba(52,211,153,0.15);  color:#34d399; border:1px solid rgba(52,211,153,0.25); }
+        .an-change-down { background:rgba(248,113,113,0.15); color:#f87171; border:1px solid rgba(248,113,113,0.25); }
+
+        /* Live now */
+        .an-live-badge     { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:7px; font-size:13px; color:var(--text-secondary); }
+        .an-live-dot       { width:7px; height:7px; border-radius:50%; background:#34d399; box-shadow:0 0 6px #34d399; animation:livePulse 1.5s ease-in-out infinite; flex-shrink:0; }
+        .an-live-dot-off   { background:rgba(255,255,255,0.2); box-shadow:none; animation:none; }
+        @keyframes livePulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+        /* Device pills */
+        .an-device-pill { display:inline-flex; align-items:center; gap:6px; padding:5px 13px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:7px; font-size:13px; color:var(--text-secondary); }
+        .an-device-pill strong { color:#fff; }
+
         /* Markdown preview box — mirrors newsletter.html article-detail-content */
         .nl-preview-box {
             margin-top: 8px;
@@ -975,6 +990,7 @@
                         <p class="dash-subtitle" style="margin:4px 0 0">Real visitor traffic across all pages.</p>
                     </div>
                     <div style="display:flex;gap:8px;align-items:center;">
+                        <div id="anLive"></div>
                         <select id="anRange" onchange="anLoad()" style="padding:7px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;cursor:pointer;">
                             <option value="30">Last 30 days</option>
                             <option value="7">Last 7 days</option>
@@ -992,6 +1008,9 @@
                     <div class="stat-card-placeholder"></div>
                 </div>
 
+                <!-- Device breakdown -->
+                <div id="anDevices" style="margin-bottom:20px;display:none;"></div>
+
                 <!-- Traffic chart -->
                 <div class="section" style="margin-bottom:24px;">
                     <div class="section-header"><span class="section-title">Traffic Over Time</span></div>
@@ -1000,8 +1019,8 @@
                     </div>
                 </div>
 
-                <!-- Bottom grid: top pages + referrers -->
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                <!-- Bottom grid: top pages + referrers + countries -->
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;">
                     <div class="section">
                         <div class="section-header"><span class="section-title">Top Pages</span></div>
                         <div id="anPages"><p style="color:var(--text-secondary);font-size:13px;">Loading…</p></div>
@@ -1009,6 +1028,10 @@
                     <div class="section">
                         <div class="section-header"><span class="section-title">Top Referrers</span></div>
                         <div id="anRefs"><p style="color:var(--text-secondary);font-size:13px;">Loading…</p></div>
+                    </div>
+                    <div class="section">
+                        <div class="section-header"><span class="section-title">Top Countries</span></div>
+                        <div id="anCountries"><p style="color:var(--text-secondary);font-size:13px;">Loading…</p></div>
                     </div>
                 </div>
             </div>
@@ -1620,6 +1643,7 @@
 
         // ── Analytics ──────────────────────────────────────────────────────────
         let anChartInstance = null;
+        let anLiveInterval  = null;
 
         async function getAnKey() {
             const user = auth.currentUser;
@@ -1634,47 +1658,99 @@
             // Show skeletons
             document.getElementById('anCards').innerHTML =
                 Array(4).fill('<div class="stat-card-placeholder"></div>').join('');
-            document.getElementById('anPages').innerHTML = '<p style="color:var(--text-secondary);font-size:13px;">Loading…</p>';
-            document.getElementById('anRefs').innerHTML  = '<p style="color:var(--text-secondary);font-size:13px;">Loading…</p>';
+            document.getElementById('anPages').innerHTML     = '<p style="color:var(--text-secondary);font-size:13px;">Loading…</p>';
+            document.getElementById('anRefs').innerHTML      = '<p style="color:var(--text-secondary);font-size:13px;">Loading…</p>';
+            document.getElementById('anCountries').innerHTML = '<p style="color:var(--text-secondary);font-size:13px;">Loading…</p>';
 
             try {
                 const res  = await fetch('/api/v1/analytics/dashboard', { headers: { 'Authorization': `Bearer ${key}` } });
                 if (!res.ok) throw new Error('Failed to load analytics');
                 const data = await res.json();
                 const range = parseInt(document.getElementById('anRange').value, 10);
-                anRenderCards(data.summary, range);
+                anRenderCards(data.summary, data.prev, range);
+                anRenderLive(Number(data.summary.live_now));
                 anRenderChart(data.daily, data.realtime, range);
                 anRenderBars('anPages', data.topPages, 'path');
                 anRenderBars('anRefs',  data.topReferrers, 'referrer');
+                anRenderBars('anCountries', data.topCountries, 'country');
+                anRenderDevices(data.devices);
+
+                // Poll live count every 30s while tab is active
+                if (anLiveInterval) clearInterval(anLiveInterval);
+                anLiveInterval = setInterval(async () => {
+                    if (!document.getElementById('tab-analytics').classList.contains('active')) {
+                        clearInterval(anLiveInterval); anLiveInterval = null; return;
+                    }
+                    const k = await getAnKey();
+                    if (!k) return;
+                    try {
+                        const r = await fetch('/api/v1/analytics/live', { headers: { 'Authorization': `Bearer ${k}` } });
+                        if (r.ok) { const d = await r.json(); anRenderLive(d.count); }
+                    } catch {}
+                }, 30000);
             } catch (err) {
                 document.getElementById('anCards').innerHTML =
                     `<p style="color:#f87171;font-size:13px;grid-column:1/-1;">Error: ${err.message}</p>`;
             }
         };
 
-        function anRenderCards(s, range) {
+        function anChangeBadge(curr, prev) {
+            curr = Number(curr); prev = Number(prev);
+            if (prev === 0) return curr > 0 ? '<span class="an-change an-change-up">new</span>' : '';
+            const pct = Math.round((curr - prev) / prev * 100);
+            if (pct === 0) return '';
+            return pct > 0
+                ? `<span class="an-change an-change-up">↑${pct}%</span>`
+                : `<span class="an-change an-change-down">↓${Math.abs(pct)}%</span>`;
+        }
+
+        function anRenderLive(count) {
+            const el = document.getElementById('anLive');
+            if (!el) return;
+            const dot = count > 0 ? 'an-live-dot' : 'an-live-dot an-live-dot-off';
+            el.innerHTML = `<span class="an-live-badge"><span class="${dot}"></span>${count} live now</span>`;
+        }
+
+        function anRenderDevices(d) {
+            const el = document.getElementById('anDevices');
+            if (!el || !d) return;
+            const total = Number(d.desktop) + Number(d.mobile) + Number(d.tablet);
+            if (total === 0) return;
+            const pct = n => Math.round(Number(n) / total * 100);
+            el.style.display = '';
+            el.innerHTML = `<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                <span class="an-device-pill">🖥 Desktop <strong>${pct(d.desktop)}%</strong></span>
+                <span class="an-device-pill">📱 Mobile <strong>${pct(d.mobile)}%</strong></span>
+                ${Number(d.tablet) > 0 ? `<span class="an-device-pill">⊞ Tablet <strong>${pct(d.tablet)}%</strong></span>` : ''}
+                <span style="font-size:12px;color:var(--text-secondary);">Last 30 days · ${total.toLocaleString()} views</span>
+            </div>`;
+        }
+
+        function anRenderCards(s, prev, range) {
             const views    = range === 1 ? s.views_today  : range === 7 ? s.views_7d  : s.views_30d;
             const unique   = range === 1 ? s.unique_today : range === 7 ? s.unique_7d : s.unique_30d;
+            const pvPrev   = range === 1 ? prev?.views_prev_today  : range === 7 ? prev?.views_prev_7d  : prev?.views_prev_30d;
+            const unPrev   = range === 1 ? prev?.unique_prev_today : range === 7 ? prev?.unique_prev_7d : prev?.unique_prev_30d;
             const label    = range === 1 ? 'Today' : `Last ${range} days`;
             document.getElementById('anCards').innerHTML = `
                 <div class="an-stat-card">
                     <div class="an-stat-label">Page Views</div>
-                    <div class="an-stat-value">${Number(views).toLocaleString()}</div>
+                    <div class="an-stat-value">${Number(views).toLocaleString()}${anChangeBadge(views, pvPrev)}</div>
                     <div class="an-stat-sub">${label}</div>
                 </div>
                 <div class="an-stat-card">
                     <div class="an-stat-label">Unique Visitors</div>
-                    <div class="an-stat-value">${Number(unique).toLocaleString()}</div>
+                    <div class="an-stat-value">${Number(unique).toLocaleString()}${anChangeBadge(unique, unPrev)}</div>
                     <div class="an-stat-sub">${label}</div>
                 </div>
                 <div class="an-stat-card">
                     <div class="an-stat-label">Views Today</div>
-                    <div class="an-stat-value">${Number(s.views_today).toLocaleString()}</div>
+                    <div class="an-stat-value">${Number(s.views_today).toLocaleString()}${anChangeBadge(s.views_today, prev?.views_prev_today)}</div>
                     <div class="an-stat-sub">Unique: ${Number(s.unique_today).toLocaleString()}</div>
                 </div>
                 <div class="an-stat-card">
                     <div class="an-stat-label">30-Day Total</div>
-                    <div class="an-stat-value">${Number(s.views_30d).toLocaleString()}</div>
+                    <div class="an-stat-value">${Number(s.views_30d).toLocaleString()}${anChangeBadge(s.views_30d, prev?.views_prev_30d)}</div>
                     <div class="an-stat-sub">Unique: ${Number(s.unique_30d).toLocaleString()}</div>
                 </div>`;
         }
