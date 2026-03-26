@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIME Newsletter - Updates &amp; Announcements | TIME Coin</title>
+    <meta name="description" content="Stay up to date with the latest TIME Coin updates, announcements, development milestones, and insights from the TIME team.">
+    <meta name="keywords" content="TIME Coin newsletter, TIME crypto updates, blockchain announcements, TIME team blog, TIME Coin news">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="TIME Newsletter - Updates &amp; Announcements | TIME Coin">
+    <meta property="og:description" content="Stay up to date with the latest TIME Coin updates, announcements, development milestones, and insights from the TIME team.">
+    <meta property="og:url" content="https://timecoin.io/newsletter.html">
+    <meta property="og:site_name" content="TIME Coin">
+    <meta property="og:image" content="https://timecoin.io/images/og-newsletter.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TIME Newsletter - Updates &amp; Announcements | TIME Coin">
+    <meta name="twitter:description" content="Stay up to date with the latest TIME Coin updates, announcements, development milestones, and insights from the TIME team.">
+    <meta name="twitter:image" content="https://timecoin.io/images/og-newsletter.png">
+    <meta name="twitter:site" content="@TIMEcoin">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://timecoin.io/newsletter.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+
+    <!-- Google Fonts: editorial serif for article body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- Site-wide config -->
+    <script src="js/config.js"></script>
+    <!-- Header/Footer Includes -->
+    <script src="js/includes.js" defer></script>
+
+    <style>
+        /* ================================
+           Newsletter Page Styles
+           ================================ */
+
+        /* Hero */
+        .newsletter-hero {
+            padding: 80px 0 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .newsletter-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(ellipse at center, rgba(102, 126, 234, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .newsletter-hero h1 {
+            font-size: 52px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .newsletter-hero p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* ================================
+           Article List View
+           ================================ */
+        .articles-section {
+            padding: 20px 0 80px;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        /* Skeleton loading */
+        .skeleton-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .skeleton-img {
+            height: 200px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        .skeleton-body {
+            padding: 24px;
+        }
+
+        .skeleton-line {
+            height: 12px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            margin-bottom: 12px;
+        }
+
+        .skeleton-line.short { width: 40%; }
+        .skeleton-line.medium { width: 65%; }
+        .skeleton-line.long { width: 90%; }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Article card */
+        .article-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .article-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(102, 126, 234, 0.45);
+            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(102, 126, 234, 0.15);
+        }
+
+        .article-card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .article-card-image-placeholder {
+            height: 200px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.25) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .article-card-image-placeholder svg {
+            opacity: 0.35;
+        }
+
+        .article-card-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .article-category-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--primary-purple);
+            background: rgba(102, 126, 234, 0.12);
+            border: 1px solid rgba(102, 126, 234, 0.25);
+            border-radius: 20px;
+            padding: 3px 10px;
+            margin-bottom: 12px;
+            width: fit-content;
+        }
+
+        .article-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .article-card-excerpt {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 0;
+            flex: 1;
+        }
+
+        .article-card-footer {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .article-card-meta {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .article-card-meta span {
+            opacity: 0.6;
+            margin: 0 4px;
+        }
+
+        .article-read-more {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-purple);
+            white-space: nowrap;
+            transition: color 0.2s ease, gap 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .article-card:hover .article-read-more {
+            color: #8fa8f0;
+            gap: 7px;
+        }
+
+        /* Empty state */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            opacity: 0.4;
+        }
+
+        .empty-state h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+            margin: 0;
+        }
+
+        /* ================================
+           Article Detail View
+           ================================ */
+        .article-detail-view {
+            display: none;
+            padding: 40px 0 80px;
+        }
+
+        .article-detail-view.active {
+            display: block;
+        }
+
+        .articles-list-view {
+            display: block;
+        }
+
+        .articles-list-view.hidden {
+            display: none;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 40px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            color: var(--text-primary);
+            border-color: rgba(102, 126, 234, 0.4);
+            background: rgba(102, 126, 234, 0.08);
+        }
+
+        .article-detail-cover {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            display: block;
+        }
+
+        .article-detail-inner {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .article-detail-category {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--primary-purple);
+            background: rgba(102, 126, 234, 0.12);
+            border: 1px solid rgba(102, 126, 234, 0.25);
+            border-radius: 20px;
+            padding: 3px 10px;
+            margin-bottom: 20px;
+        }
+
+        .article-detail-title {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .article-detail-meta {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .article-detail-meta span {
+            opacity: 0.55;
+            margin: 0 6px;
+        }
+
+        /* Article body typography */
+        .article-detail-content {
+            font-family: 'Lora', Georgia, 'Times New Roman', serif;
+            font-size: 17px;
+            line-height: 1.85;
+            color: #d0d0e8;
+        }
+
+        .article-detail-content p {
+            margin-bottom: 1.5em;
+        }
+
+        .article-detail-content h2 {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 2em 0 0.75em;
+            line-height: 1.3;
+        }
+
+        .article-detail-content h3 {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 1.75em 0 0.6em;
+            line-height: 1.35;
+        }
+
+        .article-detail-content h4 {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 1.5em 0 0.5em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .article-detail-content ul,
+        .article-detail-content ol {
+            padding-left: 1.75em;
+            margin-bottom: 1.5em;
+        }
+
+        .article-detail-content li {
+            margin-bottom: 0.5em;
+        }
+
+        .article-detail-content a {
+            color: var(--primary-purple);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .article-detail-content a:hover {
+            color: #8fa8f0;
+        }
+
+        .article-detail-content blockquote {
+            border-left: 3px solid var(--primary-purple);
+            margin: 2em 0;
+            padding: 16px 24px;
+            background: rgba(102, 126, 234, 0.07);
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        .article-detail-content code {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #a5b4fc;
+        }
+
+        .article-detail-content pre {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            margin-bottom: 1.5em;
+        }
+
+        .article-detail-content pre code {
+            background: none;
+            padding: 0;
+            font-size: 14px;
+            color: #c4b5fd;
+        }
+
+        .article-detail-content img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin: 1.5em 0;
+        }
+
+        .article-detail-content hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2.5em 0;
+        }
+
+        /* Detail loading / error */
+        .article-detail-loading {
+            text-align: center;
+            padding: 80px 0;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(102, 126, 234, 0.2);
+            border-top-color: var(--primary-purple);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .article-detail-error {
+            text-align: center;
+            padding: 80px 0;
+            color: var(--text-secondary);
+        }
+
+        .article-detail-error h3 {
+            color: var(--danger-red);
+            margin-bottom: 12px;
+        }
+
+        /* ================================
+           Responsive
+           ================================ */
+        @media (max-width: 1024px) {
+            .articles-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .newsletter-hero {
+                padding: 60px 0 40px;
+            }
+
+            .newsletter-hero h1 {
+                font-size: 36px;
+            }
+
+            .newsletter-hero p {
+                font-size: 16px;
+            }
+
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .article-detail-title {
+                font-size: 30px;
+            }
+
+            .article-detail-content {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .newsletter-hero h1 {
+                font-size: 28px;
+            }
+
+            .article-detail-title {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body class="newsletter-page">
+    <main>
+
+        <!-- =====================
+             LIST VIEW
+             ===================== -->
+        <div id="listView" class="articles-list-view">
+            <!-- Hero -->
+            <section class="newsletter-hero">
+                <div class="container">
+                    <h1>TIME Newsletter</h1>
+                    <p>Updates, announcements, and insights from the TIME team.</p>
+                </div>
+            </section>
+
+            <!-- Articles Grid -->
+            <section class="articles-section">
+                <div class="container">
+                    <div class="articles-grid" id="articlesGrid">
+                        <!-- Skeleton cards shown while loading -->
+                        <div class="skeleton-card" aria-hidden="true">
+                            <div class="skeleton-img"></div>
+                            <div class="skeleton-body">
+                                <div class="skeleton-line short"></div>
+                                <div class="skeleton-line long"></div>
+                                <div class="skeleton-line medium"></div>
+                                <div class="skeleton-line long"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-card" aria-hidden="true">
+                            <div class="skeleton-img"></div>
+                            <div class="skeleton-body">
+                                <div class="skeleton-line short"></div>
+                                <div class="skeleton-line medium"></div>
+                                <div class="skeleton-line long"></div>
+                                <div class="skeleton-line medium"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-card" aria-hidden="true">
+                            <div class="skeleton-img"></div>
+                            <div class="skeleton-body">
+                                <div class="skeleton-line short"></div>
+                                <div class="skeleton-line long"></div>
+                                <div class="skeleton-line short"></div>
+                                <div class="skeleton-line long"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- =====================
+             DETAIL VIEW
+             ===================== -->
+        <div id="detailView" class="article-detail-view">
+            <div class="container">
+                <button class="back-button" id="backButton" aria-label="Return to article list">
+                    ← All Articles
+                </button>
+                <div id="detailContent">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <div class="page-spacer" aria-hidden="true" style="height: 40px;"></div>
+    </main>
+
+    <script>
+        /* ================================================
+           Newsletter — list + detail single-page logic
+           ================================================ */
+
+        const API_BASE = '/api/v1/newsletter/articles';
+
+        // ---- DOM refs ----
+        const listView   = document.getElementById('listView');
+        const detailView = document.getElementById('detailView');
+        const grid       = document.getElementById('articlesGrid');
+        const backButton = document.getElementById('backButton');
+        const detailContent = document.getElementById('detailContent');
+
+        // ---- State ----
+        let articlesCache = null;
+
+        // ---- Utilities ----
+
+        function formatDate(isoString) {
+            if (!isoString) return '';
+            const d = new Date(isoString);
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        // ---- Views ----
+
+        function showListView() {
+            listView.classList.remove('hidden');
+            detailView.classList.remove('active');
+            // Update URL without reload
+            history.pushState(null, '', 'newsletter.html');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showDetailView() {
+            listView.classList.add('hidden');
+            detailView.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        // ---- Article list ----
+
+        function renderArticleCard(article) {
+            const dateStr  = formatDate(article.published_at);
+            const author   = escapeHtml(article.author || 'TIME Team');
+            const title    = escapeHtml(article.title || '');
+            const excerpt  = escapeHtml(article.excerpt || '');
+            const slug     = escapeHtml(article.slug || '');
+
+            const imageHtml = article.cover_image
+                ? `<img class="article-card-image" src="${escapeHtml(article.cover_image)}" alt="${title}" loading="lazy">`
+                : `<div class="article-card-image-placeholder">
+                       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" color="#667eea">
+                           <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+                           <polyline points="21 15 16 10 5 21"/>
+                       </svg>
+                   </div>`;
+
+            return `
+                <article class="article-card" data-slug="${slug}" role="button" tabindex="0" aria-label="Read article: ${title}">
+                    ${imageHtml}
+                    <div class="article-card-body">
+                        <div class="article-category-badge">Update</div>
+                        <h2 class="article-card-title">${title}</h2>
+                        <p class="article-card-excerpt">${excerpt}</p>
+                        <div class="article-card-footer">
+                            <div class="article-card-meta">${author}<span>·</span>${dateStr}</div>
+                            <div class="article-read-more" aria-hidden="true">Read More →</div>
+                        </div>
+                    </div>
+                </article>`;
+        }
+
+        function renderEmptyState() {
+            return `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <h3>No articles yet</h3>
+                    <p>No articles published yet. Check back soon.</p>
+                </div>`;
+        }
+
+        async function loadArticles() {
+            // Use cache if available
+            if (articlesCache) {
+                renderArticleList(articlesCache);
+                return;
+            }
+
+            try {
+                const res = await fetch(API_BASE);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const articles = await res.json();
+                articlesCache = Array.isArray(articles) ? articles : [];
+                renderArticleList(articlesCache);
+            } catch (err) {
+                console.error('Failed to load articles:', err);
+                grid.innerHTML = renderEmptyState();
+            }
+        }
+
+        function renderArticleList(articles) {
+            if (!articles || articles.length === 0) {
+                grid.innerHTML = renderEmptyState();
+                return;
+            }
+            grid.innerHTML = articles.map(renderArticleCard).join('');
+
+            // Attach click handlers
+            grid.querySelectorAll('.article-card').forEach(card => {
+                card.addEventListener('click', () => openArticle(card.dataset.slug));
+                card.addEventListener('keydown', e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openArticle(card.dataset.slug);
+                    }
+                });
+            });
+        }
+
+        // ---- Article detail ----
+
+        async function openArticle(slug) {
+            if (!slug) return;
+
+            showDetailView();
+            history.pushState({ slug }, '', `newsletter.html#${slug}`);
+
+            // Show loading spinner
+            detailContent.innerHTML = `
+                <div class="article-detail-loading">
+                    <div class="spinner"></div>
+                    <p>Loading article…</p>
+                </div>`;
+
+            try {
+                const res = await fetch(`${API_BASE}/${slug}`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const article = await res.json();
+                renderArticleDetail(article);
+            } catch (err) {
+                console.error('Failed to load article:', err);
+                detailContent.innerHTML = `
+                    <div class="article-detail-error">
+                        <h3>Unable to load article</h3>
+                        <p>Something went wrong. Please try again or go back to the article list.</p>
+                    </div>`;
+            }
+        }
+
+        function renderArticleDetail(article) {
+            const title   = escapeHtml(article.title || '');
+            const author  = escapeHtml(article.author || 'TIME Team');
+            const dateStr = formatDate(article.published_at);
+
+            const coverHtml = article.cover_image
+                ? `<img class="article-detail-cover" src="${escapeHtml(article.cover_image)}" alt="${title}">`
+                : '';
+
+            // Content is stored as HTML — render with innerHTML (server-controlled)
+            const content = article.content || '';
+
+            detailContent.innerHTML = `
+                ${coverHtml}
+                <div class="article-detail-inner">
+                    <div class="article-detail-category">Update</div>
+                    <h1 class="article-detail-title">${title}</h1>
+                    <div class="article-detail-meta">${author}<span>·</span>${dateStr}</div>
+                    <div class="article-detail-content" id="articleBody"></div>
+                </div>`;
+
+            // Use innerHTML for HTML content
+            document.getElementById('articleBody').innerHTML = content;
+
+            // Update page title for SEO / bookmarking
+            document.title = `${article.title} — TIME Newsletter`;
+        }
+
+        // ---- Navigation ----
+
+        backButton.addEventListener('click', () => {
+            showListView();
+        });
+
+        window.addEventListener('popstate', (e) => {
+            if (e.state && e.state.slug) {
+                openArticle(e.state.slug);
+            } else {
+                showListView();
+            }
+        });
+
+        // ---- Init ----
+
+        (function init() {
+            // Check if deep-linked to a specific article via hash
+            const hash = window.location.hash.slice(1);
+            if (hash) {
+                // Load list in background for back navigation, then open article
+                loadArticles();
+                openArticle(hash);
+            } else {
+                loadArticles();
+            }
+        })();
+    </script>
+</body>
+</html>

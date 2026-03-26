@@ -472,6 +472,7 @@
                 <button class="tab-btn active" onclick="switchTab('masternodes', this)">Masternodes</button>
                 <button class="tab-btn" onclick="switchTab('press', this)">Press Releases</button>
                 <button class="tab-btn" onclick="switchTab('campaigns', this)">Email Campaigns</button>
+                <button class="tab-btn" onclick="switchTab('newsletter', this)">Newsletter</button>
             </nav>
 
             <!-- Masternodes tab -->
@@ -670,6 +671,70 @@
                         <button onclick="loadCampaigns()" style="padding:6px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:12px;cursor:pointer;">↻ Refresh</button>
                     </div>
                     <div id="campaignHistory"><p style="color:var(--text-secondary);font-size:14px;">No campaigns sent yet.</p></div>
+                </div>
+            </div>
+
+            <!-- Newsletter tab -->
+            <div id="tab-newsletter" class="tab-panel">
+                <h1 class="dash-title">Newsletter</h1>
+                <p class="dash-subtitle">Create and manage newsletter articles published on the public newsletter page.</p>
+
+                <!-- Compose / Edit form -->
+                <div class="section" id="nlFormSection">
+                    <div class="section-header">
+                        <span class="section-title" id="nlFormTitle">New Article</span>
+                        <button onclick="nlResetForm()" style="padding:6px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:12px;cursor:pointer;">✕ Clear</button>
+                    </div>
+                    <div style="display:grid;gap:12px;">
+                        <input type="hidden" id="nlEditId">
+                        <div>
+                            <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Title *</label>
+                            <input id="nlTitle" type="text" placeholder="Article title…"
+                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;box-sizing:border-box;">
+                        </div>
+                        <div>
+                            <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Excerpt (shown on listing page)</label>
+                            <textarea id="nlExcerpt" rows="2" placeholder="Short summary…"
+                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;line-height:1.6;resize:vertical;box-sizing:border-box;"></textarea>
+                        </div>
+                        <div>
+                            <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Content (HTML supported)</label>
+                            <textarea id="nlContent" rows="16" placeholder="Article body — HTML is supported. Use &lt;p&gt;, &lt;h2&gt;, &lt;ul&gt;, &lt;strong&gt;, etc."
+                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;line-height:1.6;resize:vertical;box-sizing:border-box;font-family:monospace;"></textarea>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                            <div>
+                                <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Cover Image URL (optional)</label>
+                                <input id="nlCover" type="url" placeholder="https://…"
+                                    style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Author</label>
+                                <input id="nlAuthor" type="text" value="TIME Team"
+                                    style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+                            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--text-secondary);">
+                                <input type="checkbox" id="nlPublish" style="width:16px;height:16px;cursor:pointer;">
+                                Publish immediately
+                            </label>
+                            <button onclick="nlSave()" id="nlSaveBtn"
+                                style="padding:10px 24px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:7px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">
+                                Save Article
+                            </button>
+                            <span id="nlMsg" style="font-size:13px;color:var(--text-secondary);"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Articles list -->
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-title">All Articles</span>
+                        <button onclick="nlLoadArticles()" style="padding:6px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:12px;cursor:pointer;">↻ Refresh</button>
+                    </div>
+                    <div id="nlArticleList"><p style="color:var(--text-secondary);font-size:14px;">No articles yet.</p></div>
                 </div>
             </div>
 
@@ -911,6 +976,121 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('tab-' + tab).classList.add('active');
             btn.classList.add('active');
+            if (tab === 'newsletter') nlLoadArticles();
+        };
+
+        // ── Newsletter ────────────────────────────────────────────────────────
+        let nlAdminKey = null;
+
+        async function getNlKey() {
+            if (nlAdminKey) return nlAdminKey;
+            const user = auth.currentUser;
+            if (!user) return null;
+            nlAdminKey = await user.getIdToken();
+            return nlAdminKey;
+        }
+
+        window.nlLoadArticles = async function() {
+            const key = await getNlKey();
+            if (!key) return;
+            const el = document.getElementById('nlArticleList');
+            el.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;">Loading…</p>';
+            try {
+                const res = await fetch('/api/v1/newsletter/admin/articles', {
+                    headers: { 'Authorization': `Bearer ${key}` }
+                });
+                const articles = await res.json();
+                if (!articles.length) { el.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;">No articles yet.</p>'; return; }
+                el.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:13px;">'
+                    + '<thead><tr style="border-bottom:1px solid rgba(255,255,255,0.1);">'
+                    + '<th style="text-align:left;padding:8px 12px;color:#667eea;">Title</th>'
+                    + '<th style="text-align:left;padding:8px 12px;color:#667eea;">Status</th>'
+                    + '<th style="text-align:left;padding:8px 12px;color:#667eea;">Date</th>'
+                    + '<th style="padding:8px 12px;"></th>'
+                    + '</tr></thead><tbody>'
+                    + articles.map(a => `<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                        <td style="padding:10px 12px;color:#fff;">${a.title}</td>
+                        <td style="padding:10px 12px;">
+                            <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;${a.is_published ? 'background:rgba(52,211,153,0.15);color:#34d399;border:1px solid rgba(52,211,153,0.3)' : 'background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)'}">
+                                ${a.is_published ? 'Published' : 'Draft'}
+                            </span>
+                        </td>
+                        <td style="padding:10px 12px;color:var(--text-secondary);">${a.published_at ? new Date(a.published_at).toLocaleDateString() : '—'}</td>
+                        <td style="padding:10px 12px;display:flex;gap:8px;justify-content:flex-end;">
+                            <button onclick="nlEdit(${JSON.stringify(a).replace(/"/g,'&quot;')})" style="padding:5px 12px;background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.25);border-radius:6px;color:#667eea;font-size:12px;cursor:pointer;">Edit</button>
+                            <button onclick="nlDelete('${a.id}')" style="padding:5px 12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:6px;color:#ef4444;font-size:12px;cursor:pointer;">Delete</button>
+                        </td>
+                    </tr>`).join('')
+                    + '</tbody></table>';
+            } catch (err) {
+                el.innerHTML = `<p style="color:#ef4444;font-size:14px;">Error: ${err.message}</p>`;
+            }
+        };
+
+        window.nlSave = async function() {
+            const key = await getNlKey();
+            if (!key) return;
+            const id = document.getElementById('nlEditId').value;
+            const body = {
+                title:       document.getElementById('nlTitle').value.trim(),
+                excerpt:     document.getElementById('nlExcerpt').value.trim(),
+                content:     document.getElementById('nlContent').value.trim(),
+                cover_image: document.getElementById('nlCover').value.trim() || null,
+                author:      document.getElementById('nlAuthor').value.trim() || 'TIME Team',
+                is_published: document.getElementById('nlPublish').checked,
+            };
+            if (!body.title) { document.getElementById('nlMsg').textContent = 'Title is required.'; return; }
+            if (!body.content) { document.getElementById('nlMsg').textContent = 'Content is required.'; return; }
+            const btn = document.getElementById('nlSaveBtn');
+            btn.disabled = true; btn.textContent = 'Saving…';
+            document.getElementById('nlMsg').textContent = '';
+            try {
+                const url = id ? `/api/v1/newsletter/admin/articles/${id}` : '/api/v1/newsletter/admin/articles';
+                const method = id ? 'PUT' : 'POST';
+                const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` }, body: JSON.stringify(body) });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Save failed');
+                document.getElementById('nlMsg').style.color = '#34d399';
+                document.getElementById('nlMsg').textContent = id ? 'Updated!' : 'Article created!';
+                nlResetForm();
+                nlLoadArticles();
+            } catch (err) {
+                document.getElementById('nlMsg').style.color = '#ef4444';
+                document.getElementById('nlMsg').textContent = err.message;
+            } finally {
+                btn.disabled = false; btn.textContent = 'Save Article';
+            }
+        };
+
+        window.nlEdit = function(a) {
+            document.getElementById('nlEditId').value = a.id;
+            document.getElementById('nlTitle').value = a.title;
+            document.getElementById('nlExcerpt').value = a.excerpt || '';
+            document.getElementById('nlContent').value = a.content || '';
+            document.getElementById('nlCover').value = a.cover_image || '';
+            document.getElementById('nlAuthor').value = a.author || 'TIME Team';
+            document.getElementById('nlPublish').checked = a.is_published;
+            document.getElementById('nlFormTitle').textContent = 'Edit Article';
+            document.getElementById('nlFormSection').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.nlDelete = async function(id) {
+            if (!confirm('Delete this article? This cannot be undone.')) return;
+            const key = await getNlKey();
+            if (!key) return;
+            try {
+                const res = await fetch(`/api/v1/newsletter/admin/articles/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${key}` } });
+                if (!res.ok) throw new Error('Delete failed');
+                nlLoadArticles();
+            } catch (err) { alert(err.message); }
+        };
+
+        window.nlResetForm = function() {
+            ['nlEditId','nlTitle','nlExcerpt','nlContent','nlCover'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('nlAuthor').value = 'TIME Team';
+            document.getElementById('nlPublish').checked = false;
+            document.getElementById('nlFormTitle').textContent = 'New Article';
+            document.getElementById('nlMsg').textContent = '';
         };
 
         document.getElementById('searchInput').addEventListener('input', function() {
