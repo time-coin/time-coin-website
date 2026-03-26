@@ -59,8 +59,22 @@ async function loadChat() {
     } catch {}
 }
 
+// Analytics beacon — fire once per page load, skip admin pages
+function trackPageView() {
+    const path = location.pathname + (location.pathname.endsWith('/') ? '' : '');
+    const skip = /\/(admin|login)\.html$/i.test(path);
+    if (skip) return;
+    fetch('/api/v1/analytics/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: path || '/', referrer: document.referrer || undefined }),
+        keepalive: true,
+    }).catch(() => {});
+}
+
 // Load both header and footer when DOM is ready
 document.addEventListener('DOMContentLoaded', async function() {
+    trackPageView();
     await loadHeader();
     await loadFooter();
     loadChat();
