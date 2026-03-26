@@ -2016,7 +2016,7 @@
                             <div style="font-size:13px;color:var(--text-secondary);">${ticket.category} · ${new Date(ticket.created_at).toLocaleString()}</div>
                         </div>
                         <div style="display:flex;gap:8px;align-items:center;">
-                            <select id="tkStatusSel" onchange="tkSetStatus('${ticket.id}',this.value)" style="padding:6px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:#fff;font-size:13px;cursor:pointer;">
+                            <select id="tkStatusSel" onchange="tkSetStatus('${ticket.id}',this.value)" style="padding:6px 10px;background:#1a1737;border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:#fff;font-size:13px;cursor:pointer;">
                                 ${statusOptions}
                             </select>
                             <button onclick="closeTkModal()" style="padding:6px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:13px;cursor:pointer;">✕</button>
