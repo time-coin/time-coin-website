@@ -474,6 +474,7 @@
                 <button class="tab-btn" onclick="switchTab('press', this)">Press Releases</button>
                 <button class="tab-btn" onclick="switchTab('campaigns', this)">Email Campaigns</button>
                 <button class="tab-btn" onclick="switchTab('newsletter', this)">Newsletter</button>
+                <button class="tab-btn" onclick="switchTab('proposals', this)">Proposals</button>
             </nav>
 
             <!-- Masternodes tab -->
@@ -747,6 +748,73 @@
                 </div>
             </div>
 
+            <!-- Proposals tab -->
+            <div id="tab-proposals" class="tab-panel">
+                <h1 class="dash-title">Governance Proposals</h1>
+                <p class="dash-subtitle">Review submitted proposals, set status, dates, and admin notes.</p>
+
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-title">All Proposals</span>
+                        <div style="display:flex;gap:8px;">
+                            <select id="prFilterStatus" onchange="prLoadProposals()" style="padding:6px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:#fff;font-size:12px;cursor:pointer;">
+                                <option value="">All statuses</option>
+                                <option value="pending">Pending</option>
+                                <option value="voting">Voting</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                                <option value="funded">Funded</option>
+                            </select>
+                            <button onclick="prLoadProposals()" style="padding:6px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:12px;cursor:pointer;">↻ Refresh</button>
+                        </div>
+                    </div>
+                    <div id="prList"><p style="color:var(--text-secondary);font-size:14px;">Loading…</p></div>
+                </div>
+
+                <!-- Edit panel -->
+                <div class="section" id="prEditSection" style="display:none;">
+                    <div class="section-header">
+                        <span class="section-title" id="prEditTitle">Edit Proposal</span>
+                        <button onclick="prCancelEdit()" style="padding:6px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:12px;cursor:pointer;">✕ Cancel</button>
+                    </div>
+                    <div style="display:grid;gap:12px;">
+                        <input type="hidden" id="prEditId">
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+                            <div>
+                                <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Status</label>
+                                <select id="prEditStatus" style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;">
+                                    <option value="pending">Pending</option>
+                                    <option value="voting">Voting</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
+                                    <option value="funded">Funded</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Voting Start Date</label>
+                                <input type="date" id="prEditStart" style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Voting End Date</label>
+                                <input type="date" id="prEditEnd" style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div>
+                            <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Admin Notes (shown publicly on proposal)</label>
+                            <textarea id="prEditNotes" rows="3" placeholder="Optional notes for the community about this proposal's review status…"
+                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;line-height:1.6;resize:vertical;box-sizing:border-box;"></textarea>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:14px;">
+                            <button onclick="prSave()" id="prSaveBtn"
+                                style="padding:10px 24px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:7px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">
+                                Save Changes
+                            </button>
+                            <span id="prMsg" style="font-size:13px;color:var(--text-secondary);"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -986,6 +1054,7 @@
             document.getElementById('tab-' + tab).classList.add('active');
             btn.classList.add('active');
             if (tab === 'newsletter') nlLoadArticles();
+            if (tab === 'proposals') prLoadProposals();
         };
 
         // ── Newsletter ────────────────────────────────────────────────────────
@@ -1113,6 +1182,136 @@
                 btn.textContent = '👁 Preview';
             }
         };
+
+        // ── Proposals ─────────────────────────────────────────────────────────
+        async function getPrKey() {
+            const user = auth.currentUser;
+            if (!user) return null;
+            return user.getIdToken();
+        }
+
+        window.prLoadProposals = async function() {
+            const key = await getPrKey();
+            if (!key) return;
+            const el = document.getElementById('prList');
+            el.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;">Loading…</p>';
+            const status = document.getElementById('prFilterStatus')?.value;
+            try {
+                const res = await fetch('/api/v1/proposals/admin', {
+                    headers: { 'Authorization': `Bearer ${key}` }
+                });
+                if (!res.ok) throw new Error('Fetch failed');
+                let proposals = await res.json();
+                if (status) proposals = proposals.filter(p => p.status === status);
+                if (!proposals.length) {
+                    el.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;">No proposals found.</p>';
+                    return;
+                }
+
+                const statusColors = {
+                    pending:  'background:rgba(156,163,175,0.15);color:#9ca3af;border:1px solid rgba(156,163,175,0.3)',
+                    voting:   'background:rgba(102,126,234,0.15);color:#667eea;border:1px solid rgba(102,126,234,0.4)',
+                    approved: 'background:rgba(52,211,153,0.15);color:#34d399;border:1px solid rgba(52,211,153,0.3)',
+                    rejected: 'background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3)',
+                    funded:   'background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)',
+                };
+
+                el.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:13px;">'
+                    + '<thead><tr style="border-bottom:1px solid rgba(255,255,255,0.1);">'
+                    + '<th style="text-align:left;padding:8px 12px;color:#667eea;">Title</th>'
+                    + '<th style="text-align:left;padding:8px 12px;color:#667eea;">Author</th>'
+                    + '<th style="text-align:right;padding:8px 12px;color:#667eea;">Amount</th>'
+                    + '<th style="text-align:left;padding:8px 12px;color:#667eea;">Status</th>'
+                    + '<th style="text-align:center;padding:8px 12px;color:#667eea;">Votes</th>'
+                    + '<th style="text-align:left;padding:8px 12px;color:#667eea;">Submitted</th>'
+                    + '<th style="padding:8px 12px;"></th>'
+                    + '</tr></thead><tbody>'
+                    + proposals.map(p => {
+                        const sc = statusColors[p.status] || '';
+                        const enc = JSON.stringify(p).replace(/"/g,'&quot;');
+                        return `<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                            <td style="padding:10px 12px;color:#fff;max-width:220px;word-break:break-word;">${escAdminHtml(p.title)}</td>
+                            <td style="padding:10px 12px;color:var(--text-secondary);">${escAdminHtml(p.author_name || 'Anonymous')}${p.author_email ? `<br><span style="font-size:11px;color:#667eea;">${escAdminHtml(p.author_email)}</span>` : ''}</td>
+                            <td style="padding:10px 12px;color:#a5b4fc;text-align:right;font-weight:600;">${Number(p.requested_amount).toLocaleString()}</td>
+                            <td style="padding:10px 12px;"><span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;${sc}">${p.status}</span></td>
+                            <td style="padding:10px 12px;text-align:center;color:var(--text-secondary);font-size:12px;"><span style="color:#34d399">✓${p.votes_yes||0}</span> / <span style="color:#f87171">✗${p.votes_no||0}</span></td>
+                            <td style="padding:10px 12px;color:var(--text-secondary);">${new Date(p.created_at).toLocaleDateString()}</td>
+                            <td style="padding:10px 12px;display:flex;gap:8px;justify-content:flex-end;">
+                                <button onclick="prEdit(${enc})" style="padding:5px 12px;background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.25);border-radius:6px;color:#667eea;font-size:12px;cursor:pointer;">Edit</button>
+                                <button onclick="prDelete('${p.id}')" style="padding:5px 12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:6px;color:#ef4444;font-size:12px;cursor:pointer;">Delete</button>
+                            </td>
+                        </tr>`;
+                    }).join('')
+                    + '</tbody></table>';
+            } catch (err) {
+                el.innerHTML = `<p style="color:#ef4444;font-size:14px;">Error: ${err.message}</p>`;
+            }
+        };
+
+        window.prEdit = function(p) {
+            document.getElementById('prEditId').value = p.id;
+            document.getElementById('prEditStatus').value = p.status;
+            document.getElementById('prEditStart').value = p.start_date ? p.start_date.substring(0,10) : '';
+            document.getElementById('prEditEnd').value = p.end_date ? p.end_date.substring(0,10) : '';
+            document.getElementById('prEditNotes').value = p.admin_notes || '';
+            document.getElementById('prEditTitle').textContent = `Edit: ${p.title}`;
+            document.getElementById('prMsg').textContent = '';
+            const section = document.getElementById('prEditSection');
+            section.style.display = 'block';
+            section.scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.prCancelEdit = function() {
+            document.getElementById('prEditSection').style.display = 'none';
+        };
+
+        window.prSave = async function() {
+            const key = await getPrKey();
+            if (!key) return;
+            const id = document.getElementById('prEditId').value;
+            const body = {
+                status:      document.getElementById('prEditStatus').value,
+                start_date:  document.getElementById('prEditStart').value || null,
+                end_date:    document.getElementById('prEditEnd').value || null,
+                admin_notes: document.getElementById('prEditNotes').value.trim() || null,
+            };
+            const btn = document.getElementById('prSaveBtn');
+            btn.disabled = true; btn.textContent = 'Saving…';
+            document.getElementById('prMsg').textContent = '';
+            try {
+                const res = await fetch(`/api/v1/proposals/admin/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+                    body: JSON.stringify(body),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Save failed');
+                document.getElementById('prMsg').style.color = '#34d399';
+                document.getElementById('prMsg').textContent = 'Saved!';
+                document.getElementById('prEditSection').style.display = 'none';
+                prLoadProposals();
+            } catch (err) {
+                document.getElementById('prMsg').style.color = '#ef4444';
+                document.getElementById('prMsg').textContent = err.message;
+            } finally {
+                btn.disabled = false; btn.textContent = 'Save Changes';
+            }
+        };
+
+        window.prDelete = async function(id) {
+            if (!confirm('Permanently delete this proposal and all its votes and comments? This cannot be undone.')) return;
+            const key = await getPrKey();
+            if (!key) return;
+            try {
+                const res = await fetch(`/api/v1/proposals/admin/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${key}` } });
+                if (!res.ok) throw new Error('Delete failed');
+                prLoadProposals();
+            } catch (err) { alert(err.message); }
+        };
+
+        function escAdminHtml(str) {
+            return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
 
         window.nlResetForm = function() {
             ['nlEditId','nlTitle','nlExcerpt','nlContent','nlCover'].forEach(id => document.getElementById(id).value = '');

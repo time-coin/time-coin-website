@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Governance Proposals - TIME Coin</title>
+    <meta name="description" content="Community governance proposals for TIME Coin. Apply for treasury funding, vote on projects, and participate in shaping the future of the TIME ecosystem.">
+    <meta name="keywords" content="TIME Coin governance, proposals, treasury funding, community voting, decentralized governance">
+
+    <!-- OG -->
+    <meta property="og:title" content="Governance Proposals - TIME Coin">
+    <meta property="og:description" content="Apply for treasury funding and vote on community proposals for the TIME Coin ecosystem.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://timecoin.io/proposals.html">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Governance Proposals - TIME Coin">
+    <meta name="twitter:description" content="Apply for treasury funding and vote on community proposals for the TIME Coin ecosystem.">
+
+    <link rel="canonical" href="https://timecoin.io/proposals.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- Site-wide config -->
+    <script src="js/config.js"></script>
+    <!-- Header/Footer Includes -->
+    <script src="js/includes.js" defer></script>
+
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        /* ── Page Layout ─────────────────────────────────────────────────────── */
+        .proposals-page {
+            min-height: 100vh;
+        }
+
+        .proposals-hero {
+            background: linear-gradient(135deg, rgba(102,126,234,0.15) 0%, rgba(118,75,162,0.10) 100%);
+            border-bottom: 1px solid var(--border-color);
+            padding: 60px 0 40px;
+        }
+
+        .proposals-hero h1 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+
+        .proposals-hero p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 620px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        /* ── Tabs / Filter ───────────────────────────────────────────────────── */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding: 24px 0 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 32px;
+        }
+
+        .filter-btn {
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: rgba(102,126,234,0.15);
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        /* ── Status Badges ───────────────────────────────────────────────────── */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending  { background: rgba(156,163,175,0.15); color: #9ca3af; border: 1px solid rgba(156,163,175,0.3); }
+        .status-voting   { background: rgba(102,126,234,0.15); color: #667eea; border: 1px solid rgba(102,126,234,0.4); }
+        .status-approved { background: rgba(52,211,153,0.15);  color: #34d399; border: 1px solid rgba(52,211,153,0.3); }
+        .status-rejected { background: rgba(239,68,68,0.15);   color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+        .status-funded   { background: rgba(251,191,36,0.15);  color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+
+        /* ── Proposal Cards ──────────────────────────────────────────────────── */
+        .proposals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
+        .proposal-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .proposal-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(102,126,234,0.5);
+            box-shadow: 0 8px 24px rgba(102,126,234,0.12);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+
+        .card-excerpt {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .card-amount {
+            font-size: 15px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .card-author {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .vote-bar-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .vote-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.08);
+            overflow: hidden;
+        }
+
+        .vote-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #34d399, #10b981);
+            transition: width 0.5s ease;
+        }
+
+        .vote-counts {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .vote-counts .yes { color: #34d399; }
+        .vote-counts .no  { color: #f87171; }
+
+        /* ── Skeleton ────────────────────────────────────────────────────────── */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.05) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes shimmer {
+            0%   { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .skeleton-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sk-line { height: 16px; }
+        .sk-title { width: 70%; height: 20px; }
+        .sk-short { width: 40%; }
+        .sk-para1 { width: 100%; }
+        .sk-para2 { width: 85%; }
+        .sk-para3 { width: 60%; }
+
+        /* ── Empty State ─────────────────────────────────────────────────────── */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-secondary);
+            grid-column: 1 / -1;
+        }
+
+        .empty-state .empty-icon { font-size: 3rem; margin-bottom: 16px; }
+        .empty-state h3 { color: #fff; margin-bottom: 8px; }
+
+        /* ── Proposal Detail Modal ───────────────────────────────────────────── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .modal {
+            background: #1a1535;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            max-width: 760px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 36px;
+            position: relative;
+            animation: modalIn 0.25s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 28px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover { color: #fff; }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 16px;
+            padding-right: 36px;
+        }
+
+        .modal-meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .modal-meta-row strong { color: #fff; }
+
+        .proposal-body {
+            color: #d1d5db;
+            line-height: 1.75;
+            font-size: 15px;
+        }
+
+        .proposal-body h1, .proposal-body h2, .proposal-body h3 {
+            color: #fff;
+            margin-top: 24px;
+            margin-bottom: 8px;
+        }
+
+        .proposal-body p { margin-bottom: 12px; }
+        .proposal-body ul, .proposal-body ol { margin-left: 20px; margin-bottom: 12px; }
+        .proposal-body code {
+            background: rgba(102,126,234,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        .proposal-body pre {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+        }
+
+        /* ── Admin Notes box ─────────────────────────────────────────────────── */
+        .admin-notes-box {
+            background: rgba(251,191,36,0.08);
+            border: 1px solid rgba(251,191,36,0.25);
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #fbbf24;
+        }
+
+        .admin-notes-box strong { display: block; margin-bottom: 4px; }
+
+        /* ── Date Pill ───────────────────────────────────────────────────────── */
+        .date-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(102,126,234,0.1);
+            border: 1px solid rgba(102,126,234,0.25);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 13px;
+            color: #a5b4fc;
+        }
+
+        /* ── Voting Panel ────────────────────────────────────────────────────── */
+        .voting-panel {
+            background: rgba(102,126,234,0.07);
+            border: 1px solid rgba(102,126,234,0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .voting-panel h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .vote-detail-bar {
+            height: 10px;
+            border-radius: 5px;
+            background: rgba(239,68,68,0.25);
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .vote-detail-bar-fill {
+            height: 100%;
+            border-radius: 5px;
+            background: linear-gradient(90deg, #34d399, #10b981);
+            transition: width 0.6s ease;
+        }
+
+        .vote-detail-counts {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .vote-detail-counts .yes-c { color: #34d399; font-weight: 600; }
+        .vote-detail-counts .no-c  { color: #f87171; font-weight: 600; }
+
+        .vote-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .vote-btn {
+            flex: 1;
+            padding: 10px 0;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .vote-btn-yes {
+            background: rgba(52,211,153,0.15);
+            color: #34d399;
+            border: 1px solid rgba(52,211,153,0.4);
+        }
+
+        .vote-btn-yes:hover { background: rgba(52,211,153,0.25); }
+
+        .vote-btn-no {
+            background: rgba(239,68,68,0.12);
+            color: #f87171;
+            border: 1px solid rgba(239,68,68,0.3);
+        }
+
+        .vote-btn-no:hover { background: rgba(239,68,68,0.22); }
+
+        .vote-feedback {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            text-align: center;
+            min-height: 20px;
+        }
+
+        /* ── Comments ────────────────────────────────────────────────────────── */
+        .comments-section {
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .comments-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        .comment-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .comment-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .comment-body {
+            flex: 1;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+        .comment-author {
+            font-size: 13px;
+            font-weight: 600;
+            color: #a5b4fc;
+            margin-bottom: 4px;
+        }
+
+        .comment-date {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-left: 8px;
+            font-weight: 400;
+        }
+
+        .comment-text {
+            font-size: 14px;
+            color: #d1d5db;
+            line-height: 1.6;
+        }
+
+        /* Comment form */
+        .comment-form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .comment-form input,
+        .comment-form textarea {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+            resize: vertical;
+        }
+
+        .comment-form input:focus,
+        .comment-form textarea:focus {
+            border-color: #667eea;
+        }
+
+        .comment-form textarea {
+            min-height: 80px;
+        }
+
+        /* ── Submit Proposal Modal ───────────────────────────────────────────── */
+        .submit-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-group label span.req {
+            color: #f87171;
+            margin-left: 2px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #667eea;
+        }
+
+        .form-group textarea { min-height: 200px; }
+
+        .form-hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .form-error {
+            font-size: 13px;
+            color: #f87171;
+            min-height: 18px;
+        }
+
+        /* ── Section padding ─────────────────────────────────────────────────── */
+        .proposals-content {
+            padding: 40px 0 80px;
+        }
+
+        /* ── Responsive ──────────────────────────────────────────────────────── */
+        @media (max-width: 768px) {
+            .proposals-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal {
+                padding: 24px 18px;
+                margin: 0;
+                border-radius: 12px 12px 0 0;
+            }
+
+            .modal-overlay.open {
+                align-items: flex-end;
+            }
+
+            .vote-buttons { flex-direction: column; }
+
+            .hero-actions { flex-direction: column; }
+        }
+    </style>
+</head>
+<body class="proposals-page">
+    <main>
+        <!-- Hero -->
+        <section class="proposals-hero">
+            <div class="container">
+                <h1>Governance Proposals</h1>
+                <p>Community members can apply for treasury funding, vote on active proposals, and track project outcomes. Governance is open to all Bronze-tier and above masternode operators.</p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary" onclick="openSubmitModal()">Submit a Proposal</button>
+                    <a href="docs.html#masternode-overview" class="btn btn-secondary" style="padding:10px 20px;border:1px solid rgba(102,126,234,0.4);border-radius:8px;color:#667eea;font-weight:500;">Learn About Governance</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Proposals List -->
+        <section class="proposals-content">
+            <div class="container">
+                <!-- Filter bar -->
+                <div class="filter-bar">
+                    <button class="filter-btn active" data-status="all" onclick="setFilter('all', this)">All</button>
+                    <button class="filter-btn" data-status="voting" onclick="setFilter('voting', this)">Voting</button>
+                    <button class="filter-btn" data-status="approved" onclick="setFilter('approved', this)">Approved</button>
+                    <button class="filter-btn" data-status="funded" onclick="setFilter('funded', this)">Funded</button>
+                    <button class="filter-btn" data-status="rejected" onclick="setFilter('rejected', this)">Rejected</button>
+                </div>
+
+                <!-- Grid -->
+                <div class="proposals-grid" id="proposalsGrid">
+                    <!-- Skeletons while loading -->
+                    <div class="skeleton-card" id="sk1">
+                        <div class="skeleton sk-line sk-title"></div>
+                        <div class="skeleton sk-line sk-para1"></div>
+                        <div class="skeleton sk-line sk-para2"></div>
+                        <div class="skeleton sk-line sk-para3"></div>
+                    </div>
+                    <div class="skeleton-card" id="sk2">
+                        <div class="skeleton sk-line sk-title" style="width:55%"></div>
+                        <div class="skeleton sk-line sk-para1"></div>
+                        <div class="skeleton sk-line sk-para2"></div>
+                        <div class="skeleton sk-line sk-para3" style="width:45%"></div>
+                    </div>
+                    <div class="skeleton-card" id="sk3">
+                        <div class="skeleton sk-line sk-title" style="width:65%"></div>
+                        <div class="skeleton sk-line sk-para1"></div>
+                        <div class="skeleton sk-line sk-para2"></div>
+                        <div class="skeleton sk-line sk-para3"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ── Proposal Detail Modal ───────────────────────────────────────────── -->
+    <div class="modal-overlay" id="detailOverlay" onclick="closeDetailIfBg(event)">
+        <div class="modal" id="detailModal">
+            <button class="modal-close" onclick="closeDetail()">&times;</button>
+            <div id="detailContent"><!-- filled by JS --></div>
+        </div>
+    </div>
+
+    <!-- ── Submit Proposal Modal ──────────────────────────────────────────── -->
+    <div class="modal-overlay" id="submitOverlay" onclick="closeSubmitIfBg(event)">
+        <div class="modal" id="submitModal">
+            <button class="modal-close" onclick="closeSubmit()">&times;</button>
+            <h2 class="modal-title">Submit a Proposal</h2>
+            <p style="color:var(--text-secondary);font-size:14px;margin-bottom:20px;">
+                Describe your project and the amount of TIME you are requesting from the treasury.
+                Your proposal will be reviewed by the team before becoming publicly visible.
+            </p>
+            <form class="submit-form" id="submitForm" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label>Project Title <span class="req">*</span></label>
+                    <input type="text" id="sfTitle" placeholder="e.g. TIME Mobile Wallet for Android" maxlength="120">
+                </div>
+                <div class="form-group">
+                    <label>Description <span class="req">*</span> <span class="form-hint">(Markdown supported)</span></label>
+                    <textarea id="sfDesc" placeholder="Describe what you want to build, why it benefits the ecosystem, and your delivery plan..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Requested Amount (TIME) <span class="req">*</span></label>
+                    <input type="number" id="sfAmount" placeholder="e.g. 10000" min="0" step="any">
+                </div>
+                <div class="form-group">
+                    <label>Payout Wallet Address <span class="req">*</span></label>
+                    <input type="text" id="sfWallet" placeholder="Your TIME wallet address">
+                </div>
+                <div class="form-group">
+                    <label>Your Name</label>
+                    <input type="text" id="sfName" placeholder="Anonymous">
+                </div>
+                <div class="form-group">
+                    <label>Email <span class="form-hint">(optional, not shown publicly)</span></label>
+                    <input type="email" id="sfEmail" placeholder="contact@example.com">
+                </div>
+                <div class="form-error" id="submitError"></div>
+                <button type="submit" class="btn btn-primary" id="sfBtn">Submit Proposal</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="page-spacer" aria-hidden="true"></div>
+
+    <script>
+        const API_BASE = '/api/v1/proposals';
+        let allProposals = [];
+        let currentFilter = 'all';
+
+        // ── Fetch Proposals ──────────────────────────────────────────────────
+        async function loadProposals() {
+            try {
+                const res = await fetch(API_BASE);
+                if (!res.ok) throw new Error('Failed to fetch');
+                allProposals = await res.json();
+                renderProposals();
+            } catch (e) {
+                document.getElementById('proposalsGrid').innerHTML =
+                    `<div class="empty-state" style="grid-column:1/-1">
+                        <div class="empty-icon">⚠️</div>
+                        <h3>Could not load proposals</h3>
+                        <p>Please try again later.</p>
+                    </div>`;
+            }
+        }
+
+        // ── Render ───────────────────────────────────────────────────────────
+        function renderProposals() {
+            const filtered = currentFilter === 'all'
+                ? allProposals
+                : allProposals.filter(p => p.status === currentFilter);
+
+            const grid = document.getElementById('proposalsGrid');
+            if (!filtered.length) {
+                grid.innerHTML = `<div class="empty-state">
+                    <div class="empty-icon">🗳️</div>
+                    <h3>No proposals ${currentFilter === 'all' ? 'yet' : `with status "${currentFilter}"`}</h3>
+                    <p>Be the first to <button onclick="openSubmitModal()" style="background:none;border:none;color:#667eea;cursor:pointer;font-size:inherit;text-decoration:underline;">submit a proposal</button>.</p>
+                </div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(p => {
+                const total = (p.votes_yes || 0) + (p.votes_no || 0);
+                const yesPct = total > 0 ? Math.round(p.votes_yes / total * 100) : 0;
+                const excerpt = (p.description || '').substring(0, 220).replace(/[#*`_]/g, '');
+                const dots = p.description && p.description.length > 220 ? '...' : '';
+                const dateRange = p.start_date && p.end_date
+                    ? `<span class="date-pill">📅 ${fmtDate(p.start_date)} – ${fmtDate(p.end_date)}</span>`
+                    : '';
+
+                return `<div class="proposal-card" onclick="openDetail('${p.id}')">
+                    <div class="card-header">
+                        <div class="card-title">${escHtml(p.title)}</div>
+                        <span class="status-badge status-${p.status}">${statusLabel(p.status)}</span>
+                    </div>
+                    <div class="card-excerpt">${escHtml(excerpt)}${dots}</div>
+                    ${p.status === 'voting' || p.status === 'approved' || p.status === 'funded' ? `
+                    <div class="vote-bar-wrap">
+                        <div class="vote-bar"><div class="vote-bar-fill" style="width:${yesPct}%"></div></div>
+                        <div class="vote-counts">
+                            <span class="yes">✓ ${p.votes_yes || 0} yes</span>
+                            <span class="no">✗ ${p.votes_no || 0} no</span>
+                        </div>
+                    </div>` : ''}
+                    <div class="card-meta">
+                        <span class="card-amount">${Number(p.requested_amount).toLocaleString()} TIME</span>
+                        <span class="card-author">by ${escHtml(p.author_name || 'Anonymous')}</span>
+                        ${dateRange}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // ── Filter ───────────────────────────────────────────────────────────
+        function setFilter(status, btn) {
+            currentFilter = status;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderProposals();
+        }
+
+        // ── Detail Modal ─────────────────────────────────────────────────────
+        async function openDetail(id) {
+            const overlay = document.getElementById('detailOverlay');
+            const content = document.getElementById('detailContent');
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            content.innerHTML = `<div style="text-align:center;padding:40px"><div class="skeleton sk-line sk-title" style="margin:0 auto 12px;width:60%;height:24px"></div><div class="skeleton sk-line" style="width:100%;margin-bottom:8px"></div><div class="skeleton sk-line" style="width:85%;margin-bottom:8px"></div></div>`;
+
+            // Check if we already have it in allProposals (avoid extra fetch for basic fields)
+            let p = allProposals.find(x => x.id === id);
+            if (!p || !p.comments) {
+                try {
+                    const res = await fetch(`${API_BASE}/${id}`);
+                    if (!res.ok) throw new Error();
+                    p = await res.json();
+                    // Update cache
+                    const idx = allProposals.findIndex(x => x.id === id);
+                    if (idx >= 0) allProposals[idx] = p; else allProposals.push(p);
+                } catch {
+                    content.innerHTML = `<p style="color:#f87171">Failed to load proposal.</p>`;
+                    return;
+                }
+            }
+
+            renderDetail(p, content);
+        }
+
+        function renderDetail(p, container) {
+            const total = (p.votes_yes || 0) + (p.votes_no || 0);
+            const yesPct = total > 0 ? Math.round(p.votes_yes / total * 100) : 0;
+            const comments = p.comments || [];
+            const isVoting = p.status === 'voting';
+
+            const adminNotesHtml = p.admin_notes
+                ? `<div class="admin-notes-box"><strong>Admin Notes</strong>${escHtml(p.admin_notes)}</div>`
+                : '';
+
+            const dateRangeHtml = p.start_date && p.end_date
+                ? `<span class="date-pill">📅 ${fmtDate(p.start_date)} – ${fmtDate(p.end_date)}</span>`
+                : '';
+
+            const votingHtml = isVoting ? `
+                <div class="voting-panel">
+                    <h3>Cast Your Vote</h3>
+                    <div class="vote-detail-bar">
+                        <div class="vote-detail-bar-fill" id="dmYesFill" style="width:${yesPct}%"></div>
+                    </div>
+                    <div class="vote-detail-counts">
+                        <span class="yes-c" id="dmYesC">${p.votes_yes || 0} Yes</span>
+                        <span>${total} total votes</span>
+                        <span class="no-c" id="dmNoC">${p.votes_no || 0} No</span>
+                    </div>
+                    <div class="vote-buttons">
+                        <button class="vote-btn vote-btn-yes" onclick="castVote('${p.id}', true)">✓ Vote Yes</button>
+                        <button class="vote-btn vote-btn-no" onclick="castVote('${p.id}', false)">✗ Vote No</button>
+                    </div>
+                    <div class="vote-feedback" id="voteFeedback"></div>
+                </div>` : (total > 0 ? `
+                <div class="voting-panel" style="background:rgba(255,255,255,0.03)">
+                    <h3>Final Vote Tally</h3>
+                    <div class="vote-detail-bar">
+                        <div class="vote-detail-bar-fill" style="width:${yesPct}%"></div>
+                    </div>
+                    <div class="vote-detail-counts">
+                        <span class="yes-c">${p.votes_yes || 0} Yes</span>
+                        <span>${total} total votes</span>
+                        <span class="no-c">${p.votes_no || 0} No</span>
+                    </div>
+                </div>` : '');
+
+            const commentsHtml = comments.map(c => {
+                const initial = (c.author_name || 'A')[0].toUpperCase();
+                return `<div class="comment-item">
+                    <div class="comment-avatar">${escHtml(initial)}</div>
+                    <div class="comment-body">
+                        <div class="comment-author">${escHtml(c.author_name || 'Anonymous')} <span class="comment-date">${timeAgo(c.created_at)}</span></div>
+                        <div class="comment-text">${escHtml(c.content)}</div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            let descHtml = '';
+            if (typeof marked !== 'undefined') {
+                descHtml = marked.parse(p.description || '');
+            } else {
+                descHtml = escHtml(p.description || '').replace(/\n/g, '<br>');
+            }
+
+            container.innerHTML = `
+                <div style="margin-bottom:8px">
+                    <span class="status-badge status-${p.status}" style="font-size:11px">${statusLabel(p.status)}</span>
+                </div>
+                <h2 class="modal-title">${escHtml(p.title)}</h2>
+                <div class="modal-meta-row">
+                    <span>💰 <strong>${Number(p.requested_amount).toLocaleString()} TIME</strong> requested</span>
+                    <span>👤 <strong>${escHtml(p.author_name || 'Anonymous')}</strong></span>
+                    ${dateRangeHtml}
+                    <span style="color:var(--text-secondary);font-size:12px">Submitted ${timeAgo(p.created_at)}</span>
+                </div>
+                ${adminNotesHtml}
+                <div class="proposal-body">${descHtml}</div>
+                ${votingHtml}
+                <div class="comments-section">
+                    <h3>Comments (${comments.length})</h3>
+                    <div id="commentsList">${commentsHtml || '<p style="color:var(--text-secondary);font-size:14px">No comments yet. Be the first to comment!</p>'}</div>
+                    <div class="comment-form">
+                        <input type="text" id="cmtName" placeholder="Your name (optional)">
+                        <textarea id="cmtText" placeholder="Add a comment..."></textarea>
+                        <div class="form-error" id="cmtError"></div>
+                        <button class="btn btn-primary" onclick="submitComment('${p.id}')" style="align-self:flex-start;padding:8px 20px;font-size:14px">Post Comment</button>
+                    </div>
+                </div>`;
+        }
+
+        function closeDetail() {
+            document.getElementById('detailOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function closeDetailIfBg(e) {
+            if (e.target === document.getElementById('detailOverlay')) closeDetail();
+        }
+
+        // ── Vote ─────────────────────────────────────────────────────────────
+        async function castVote(id, vote) {
+            const fb = document.getElementById('voteFeedback');
+            if (fb) fb.textContent = 'Submitting…';
+            try {
+                const res = await fetch(`${API_BASE}/${id}/vote`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ vote }),
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    if (fb) fb.textContent = data.error || 'Vote failed.';
+                    return;
+                }
+                if (data.already_voted) {
+                    if (fb) fb.textContent = `You already voted ${data.previous_vote ? 'Yes' : 'No'} on this proposal.`;
+                } else {
+                    if (fb) fb.textContent = `Vote recorded! Thank you.`;
+                }
+                // Update counters in modal
+                const total = data.votes_yes + data.votes_no;
+                const yesPct = total > 0 ? Math.round(data.votes_yes / total * 100) : 0;
+                const fill = document.getElementById('dmYesFill');
+                const yesC = document.getElementById('dmYesC');
+                const noC = document.getElementById('dmNoC');
+                if (fill) fill.style.width = yesPct + '%';
+                if (yesC) yesC.textContent = `${data.votes_yes} Yes`;
+                if (noC) noC.textContent = `${data.votes_no} No`;
+
+                // Update in list cache
+                const p = allProposals.find(x => x.id === id);
+                if (p) { p.votes_yes = data.votes_yes; p.votes_no = data.votes_no; }
+                renderProposals();
+            } catch {
+                if (fb) fb.textContent = 'Network error. Try again.';
+            }
+        }
+
+        // ── Comments ─────────────────────────────────────────────────────────
+        async function submitComment(proposalId) {
+            const name = document.getElementById('cmtName')?.value.trim();
+            const text = document.getElementById('cmtText')?.value.trim();
+            const errEl = document.getElementById('cmtError');
+
+            if (!text) { if (errEl) errEl.textContent = 'Comment cannot be empty.'; return; }
+            if (errEl) errEl.textContent = '';
+
+            try {
+                const res = await fetch(`${API_BASE}/${proposalId}/comments`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ author_name: name || 'Anonymous', content: text }),
+                });
+                const data = await res.json();
+                if (!res.ok) { if (errEl) errEl.textContent = data.error || 'Failed to post.'; return; }
+
+                const initial = (data.author_name || 'A')[0].toUpperCase();
+                const newComment = `<div class="comment-item">
+                    <div class="comment-avatar">${escHtml(initial)}</div>
+                    <div class="comment-body">
+                        <div class="comment-author">${escHtml(data.author_name)} <span class="comment-date">just now</span></div>
+                        <div class="comment-text">${escHtml(data.content)}</div>
+                    </div>
+                </div>`;
+
+                const list = document.getElementById('commentsList');
+                if (list) {
+                    if (list.querySelector('p')) list.innerHTML = '';
+                    list.insertAdjacentHTML('beforeend', newComment);
+                }
+                if (document.getElementById('cmtText')) document.getElementById('cmtText').value = '';
+                if (document.getElementById('cmtName')) document.getElementById('cmtName').value = '';
+            } catch {
+                if (errEl) errEl.textContent = 'Network error. Try again.';
+            }
+        }
+
+        // ── Submit Proposal ──────────────────────────────────────────────────
+        function openSubmitModal() {
+            document.getElementById('submitOverlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSubmit() {
+            document.getElementById('submitOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function closeSubmitIfBg(e) {
+            if (e.target === document.getElementById('submitOverlay')) closeSubmit();
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+            const errEl = document.getElementById('submitError');
+            const btn = document.getElementById('sfBtn');
+            errEl.textContent = '';
+
+            const title = document.getElementById('sfTitle').value.trim();
+            const desc = document.getElementById('sfDesc').value.trim();
+            const amount = parseFloat(document.getElementById('sfAmount').value);
+            const wallet = document.getElementById('sfWallet').value.trim();
+            const name = document.getElementById('sfName').value.trim();
+            const email = document.getElementById('sfEmail').value.trim();
+
+            if (!title) { errEl.textContent = 'Title is required.'; return; }
+            if (!desc)  { errEl.textContent = 'Description is required.'; return; }
+            if (!wallet) { errEl.textContent = 'Wallet address is required.'; return; }
+            if (isNaN(amount) || amount < 0) { errEl.textContent = 'Enter a valid amount.'; return; }
+
+            btn.disabled = true;
+            btn.textContent = 'Submitting…';
+
+            try {
+                const res = await fetch(API_BASE, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title,
+                        description: desc,
+                        requested_amount: amount,
+                        wallet_address: wallet,
+                        author_name: name || 'Anonymous',
+                        author_email: email || undefined,
+                    }),
+                });
+                const data = await res.json();
+                if (!res.ok) { errEl.textContent = data.error || 'Submission failed.'; btn.disabled = false; btn.textContent = 'Submit Proposal'; return; }
+
+                closeSubmit();
+                document.getElementById('submitForm').reset();
+
+                // Show success notice
+                const notice = document.createElement('div');
+                notice.style.cssText = 'position:fixed;top:90px;left:50%;transform:translateX(-50%);background:#1a3a2a;border:1px solid #34d399;border-radius:10px;padding:14px 24px;color:#34d399;font-size:14px;z-index:9999;';
+                notice.textContent = '✓ Proposal submitted! It will appear once reviewed by the team.';
+                document.body.appendChild(notice);
+                setTimeout(() => notice.remove(), 5000);
+            } catch {
+                errEl.textContent = 'Network error. Try again.';
+                btn.disabled = false;
+                btn.textContent = 'Submit Proposal';
+            }
+        }
+
+        // ── Helpers ──────────────────────────────────────────────────────────
+        function escHtml(str) {
+            return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function statusLabel(s) {
+            return { pending:'Pending', voting:'Voting', approved:'Approved', rejected:'Rejected', funded:'Funded' }[s] || s;
+        }
+
+        function fmtDate(d) {
+            if (!d) return '';
+            const dt = new Date(d);
+            return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+        }
+
+        function timeAgo(iso) {
+            const diff = Date.now() - new Date(iso).getTime();
+            const m = Math.floor(diff / 60000);
+            if (m < 1)  return 'just now';
+            if (m < 60) return `${m}m ago`;
+            const h = Math.floor(m / 60);
+            if (h < 24) return `${h}h ago`;
+            const d = Math.floor(h / 24);
+            if (d < 30) return `${d}d ago`;
+            return fmtDate(iso);
+        }
+
+        // Keyboard close
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') { closeDetail(); closeSubmit(); }
+        });
+
+        // ── Deep link: proposals.html#<id> ───────────────────────────────────
+        async function checkDeepLink() {
+            const hash = location.hash.slice(1);
+            if (hash && hash.length > 10) {
+                await loadProposals();
+                openDetail(hash);
+            } else {
+                loadProposals();
+            }
+        }
+
+        checkDeepLink();
+    </script>
+</body>
+</html>
