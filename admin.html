@@ -530,7 +530,7 @@
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@4/marked.min.js"></script>
 </head>
 <body>
 
@@ -1247,6 +1247,16 @@
             } catch (err) { alert(err.message); }
         };
 
+        function nlRenderMd(md) {
+            const m = window.marked;
+            if (!m) return md.replace(/\n/g, '<br>');
+            // marked v4: marked(src) or marked.parse(src)
+            // marked v9+: marked.parse(src)
+            if (typeof m.parse === 'function') return m.parse(md);
+            if (typeof m === 'function') return m(md);
+            return md.replace(/\n/g, '<br>');
+        }
+
         window.nlUpdatePreview = function() {
             const preview = document.getElementById('nlPreview');
             if (preview.style.display === 'none') return;
@@ -1254,12 +1264,11 @@
             const title  = document.getElementById('nlTitle').value.trim();
             const author = document.getElementById('nlAuthor').value.trim() || 'TIME Team';
             const md     = document.getElementById('nlContent').value;
-            const body   = window.marked ? window.marked.parse(md) : md.replace(/\n/g,'<br>');
             preview.innerHTML =
                 (cover ? `<img src="${cover}" alt="Cover image" style="width:100%;max-height:320px;object-fit:cover;border-radius:8px;margin-bottom:20px;">` : '')
                 + (title  ? `<h1 style="font-size:1.5em;color:#fff;margin:0 0 6px;">${title}</h1>` : '')
                 + `<p style="font-size:12px;color:#667eea;margin:0 0 20px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.1);">by ${author}</p>`
-                + body;
+                + nlRenderMd(md);
         };
 
         window.nlTogglePreview = function() {
