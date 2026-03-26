@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support — TIME Coin</title>
+    <meta name="description" content="Get help with TIME Coin. Ask our AI assistant or submit a support ticket.">
+    <meta name="keywords" content="TIME Coin support, help, contact, ticket">
+    <meta property="og:title" content="Support — TIME Coin">
+    <meta property="og:description" content="Get help with TIME Coin. Ask our AI assistant or submit a support ticket.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <link rel="canonical" href="https://timecoin.io/support.html">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="css/main.css">
+    <!-- Cloudflare Turnstile — replace site key with your real key from dash.cloudflare.com -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <style>
+        .support-hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+        .support-hero h1 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+        .support-hero p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .support-container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 20px 80px;
+        }
+
+        /* Chat */
+        .chat-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+        .chat-header {
+            padding: 16px 20px;
+            background: rgba(102,126,234,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chat-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg,#667eea,#764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .chat-header-text { flex: 1; }
+        .chat-header-name  { font-weight: 600; color: #fff; font-size: 14px; }
+        .chat-header-status { font-size: 12px; color: #34d399; }
+
+        .chat-messages {
+            padding: 20px;
+            min-height: 200px;
+            max-height: 420px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .chat-msg {
+            display: flex;
+            gap: 10px;
+            max-width: 90%;
+        }
+        .chat-msg.user  { align-self: flex-end; flex-direction: row-reverse; }
+        .chat-msg.bot   { align-self: flex-start; }
+        .chat-bubble {
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .chat-msg.user .chat-bubble  { background: rgba(102,126,234,0.25); color: #fff; border-bottom-right-radius: 4px; }
+        .chat-msg.bot  .chat-bubble  { background: rgba(255,255,255,0.07); color: #d4d4e8; border-bottom-left-radius: 4px; }
+        .chat-msg-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+            align-self: flex-end;
+        }
+        .chat-msg.bot .chat-msg-avatar { background: linear-gradient(135deg,#667eea,#764ba2); }
+        .chat-typing { display: flex; gap: 4px; align-items: center; padding: 10px 14px; }
+        .chat-typing span {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--text-secondary);
+            animation: typingBounce 1.2s ease-in-out infinite;
+        }
+        .chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+        .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+
+        .chat-input-row {
+            display: flex;
+            gap: 8px;
+            padding: 14px 16px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.02);
+        }
+        .chat-input {
+            flex: 1;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            padding: 10px 14px;
+            resize: none;
+            font-family: inherit;
+            line-height: 1.5;
+            max-height: 120px;
+        }
+        .chat-input:focus { outline: none; border-color: rgba(102,126,234,0.5); }
+        .chat-send {
+            padding: 10px 18px;
+            background: linear-gradient(135deg,#667eea,#764ba2);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            align-self: flex-end;
+        }
+        .chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Escalate button */
+        .escalate-row {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .escalate-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        .escalate-divider::before, .escalate-divider::after {
+            content: ''; flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+        }
+        .btn-escalate {
+            padding: 12px 28px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-escalate:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.3); }
+
+        /* Ticket form */
+        .ticket-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 32px;
+            display: none;
+        }
+        .ticket-card.visible { display: block; }
+        .ticket-card h2 { margin: 0 0 6px; color: #fff; font-size: 1.3rem; }
+        .ticket-card p  { color: var(--text-secondary); font-size: 14px; margin: 0 0 24px; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500; }
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            box-sizing: border-box;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            padding: 10px 14px;
+            font-family: inherit;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: rgba(102,126,234,0.5);
+        }
+        .form-select option { background: #1a1535; }
+        .form-textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+        /* Honeypot */
+        .hp-field { position: absolute; left: -9999px; opacity: 0; pointer-events: none; }
+
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg,#667eea,#764ba2);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .form-error { color: #f87171; font-size: 13px; margin-top: 12px; display: none; }
+        .form-error.visible { display: block; }
+
+        /* Success */
+        .ticket-success {
+            text-align: center;
+            padding: 40px 20px;
+            display: none;
+        }
+        .ticket-success.visible { display: block; }
+        .success-icon { font-size: 48px; margin-bottom: 16px; }
+        .ticket-success h2 { color: #34d399; margin: 0 0 10px; }
+        .ticket-success p  { color: var(--text-secondary); max-width: 380px; margin: 0 auto; line-height: 1.7; }
+        .ticket-ref { display: inline-block; margin-top: 16px; background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); border-radius: 8px; padding: 8px 20px; color: #34d399; font-weight: 600; }
+
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+            .ticket-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <div class="support-hero">
+            <h1>How can we help?</h1>
+            <p>Ask our assistant for instant answers, or submit a ticket if you need personal support.</p>
+        </div>
+
+        <div class="support-container">
+
+            <!-- AI Chat -->
+            <div class="chat-card">
+                <div class="chat-header">
+                    <div class="chat-avatar">⏰</div>
+                    <div class="chat-header-text">
+                        <div class="chat-header-name">TIME Support Assistant</div>
+                        <div class="chat-header-status">● Online</div>
+                    </div>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-msg bot">
+                        <div class="chat-msg-avatar">⏰</div>
+                        <div class="chat-bubble">Hi! I can help with wallet setup, masternodes, exchange questions, and more. What can I help you with?</div>
+                    </div>
+                </div>
+                <div class="chat-input-row">
+                    <textarea class="chat-input" id="chatInput" placeholder="Ask a question…" rows="1"></textarea>
+                    <button class="chat-send" id="chatSend" onclick="sendChat()">Send</button>
+                </div>
+            </div>
+
+            <!-- Escalate -->
+            <div class="escalate-row" id="escalateRow">
+                <div class="escalate-divider">Still need help?</div>
+                <button class="btn-escalate" onclick="showTicketForm()">Submit a Support Ticket</button>
+            </div>
+
+            <!-- Ticket form -->
+            <div class="ticket-card" id="ticketCard">
+                <h2>Submit a Ticket</h2>
+                <p>Describe your issue and we'll get back to you within 24–48 hours.</p>
+
+                <form id="ticketForm" onsubmit="submitTicket(event)">
+                    <!-- Honeypot (bots fill this, humans don't) -->
+                    <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Name *</label>
+                            <input type="text" class="form-input" id="tkName" required maxlength="100" placeholder="Your name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email *</label>
+                            <input type="email" class="form-input" id="tkEmail" required maxlength="200" placeholder="you@example.com">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" id="tkCategory">
+                                <option value="general">General Question</option>
+                                <option value="technical">Technical Support</option>
+                                <option value="masternode">Masternode Issue</option>
+                                <option value="exchange">Exchange / Payment</option>
+                                <option value="wallet">Wallet Issue</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subject *</label>
+                            <input type="text" class="form-input" id="tkSubject" required maxlength="200" placeholder="Brief description">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Message *</label>
+                        <textarea class="form-textarea" id="tkMessage" required maxlength="5000" placeholder="Describe your issue in detail…"></textarea>
+                    </div>
+
+                    <!-- Cloudflare Turnstile — replace 1x00000000000000000000AA with your real site key -->
+                    <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="dark" style="margin-bottom:16px;"></div>
+
+                    <div class="form-error" id="tkError"></div>
+                    <button type="submit" class="btn-submit" id="tkSubmit">Submit Ticket</button>
+                </form>
+
+                <div class="ticket-success" id="ticketSuccess">
+                    <div class="success-icon">✓</div>
+                    <h2>Ticket Submitted</h2>
+                    <p>We've received your request and sent a confirmation to your email. We'll reply within 24–48 hours.</p>
+                    <div class="ticket-ref" id="ticketRef"></div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="js/config.js"></script>
+    <script src="js/includes.js" defer></script>
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput    = document.getElementById('chatInput');
+        const chatSend     = document.getElementById('chatSend');
+        let chatHistory    = [];
+        let chatHasReplied = false;
+
+        // Auto-grow textarea
+        chatInput.addEventListener('input', () => {
+            chatInput.style.height = 'auto';
+            chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+        });
+        chatInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+        });
+
+        function appendMsg(role, text) {
+            const div = document.createElement('div');
+            div.className = `chat-msg ${role}`;
+            const icon = role === 'bot' ? '<div class="chat-msg-avatar">⏰</div>' : '<div class="chat-msg-avatar">👤</div>';
+            div.innerHTML = `${role === 'bot' ? icon : ''}<div class="chat-bubble">${escHtml(text)}</div>${role === 'user' ? icon : ''}`;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTyping() {
+            const div = document.createElement('div');
+            div.className = 'chat-msg bot';
+            div.id = 'typingIndicator';
+            div.innerHTML = '<div class="chat-msg-avatar">⏰</div><div class="chat-bubble"><div class="chat-typing"><span></span><span></span><span></span></div></div>';
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTyping() {
+            const t = document.getElementById('typingIndicator');
+            if (t) t.remove();
+        }
+
+        function escHtml(s) {
+            return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+        }
+
+        async function sendChat() {
+            const msg = chatInput.value.trim();
+            if (!msg) return;
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+            chatSend.disabled = true;
+
+            appendMsg('user', msg);
+            showTyping();
+
+            try {
+                const res = await fetch('/api/v1/support/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg, history: chatHistory }),
+                });
+                const data = await res.json();
+                hideTyping();
+
+                const reply = data.response || "I'm sorry, I couldn't process that. Please try again or submit a ticket.";
+                appendMsg('bot', reply);
+
+                chatHistory.push({ role: 'user', content: msg });
+                chatHistory.push({ role: 'assistant', content: reply });
+
+                // Show escalate after first reply
+                if (!chatHasReplied) {
+                    chatHasReplied = true;
+                    document.getElementById('escalateRow').style.opacity = '1';
+                }
+
+                // Offer ticket form if assistant couldn't answer
+                if (data.canAnswer === false) {
+                    setTimeout(() => {
+                        const hint = document.createElement('div');
+                        hint.className = 'chat-msg bot';
+                        hint.innerHTML = `<div class="chat-msg-avatar">⏰</div><div class="chat-bubble" style="background:rgba(102,126,234,0.15);border:1px solid rgba(102,126,234,0.3);">
+                            I've logged this question for our team. Would you like to <button onclick="showTicketForm()" style="background:none;border:none;color:#a78bfa;font-weight:600;cursor:pointer;padding:0;text-decoration:underline;">submit a support ticket</button> so we can follow up directly?
+                        </div>`;
+                        chatMessages.appendChild(hint);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 800);
+                }
+            } catch {
+                hideTyping();
+                appendMsg('bot', "Sorry, something went wrong. Please try again or submit a ticket below.");
+            }
+
+            chatSend.disabled = false;
+            chatInput.focus();
+        }
+
+        function showTicketForm() {
+            const card = document.getElementById('ticketCard');
+            card.classList.add('visible');
+            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Pre-fill subject from last chat message if available
+            if (chatHistory.length > 0 && !document.getElementById('tkSubject').value) {
+                const lastUser = [...chatHistory].reverse().find(m => m.role === 'user');
+                if (lastUser) {
+                    document.getElementById('tkSubject').value = lastUser.content.substring(0, 100);
+                }
+            }
+        }
+
+        // Show ticket form if URL has #ticket hash
+        if (location.hash === '#ticket') showTicketForm();
+
+        async function submitTicket(e) {
+            e.preventDefault();
+            const errEl  = document.getElementById('tkError');
+            const btn    = document.getElementById('tkSubmit');
+            errEl.className = 'form-error';
+
+            // Turnstile token
+            const token = document.querySelector('[name="cf-turnstile-response"]')?.value;
+
+            const body = {
+                name:     document.getElementById('tkName').value.trim(),
+                email:    document.getElementById('tkEmail').value.trim(),
+                category: document.getElementById('tkCategory').value,
+                subject:  document.getElementById('tkSubject').value.trim(),
+                message:  document.getElementById('tkMessage').value.trim(),
+                website:  document.querySelector('.hp-field')?.value ?? '',
+                'cf-turnstile-response': token,
+            };
+
+            btn.disabled = true;
+            btn.textContent = 'Submitting…';
+
+            try {
+                const res  = await fetch('/api/v1/tickets/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body),
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    errEl.textContent = data.error || 'Something went wrong. Please try again.';
+                    errEl.className = 'form-error visible';
+                    btn.disabled = false;
+                    btn.textContent = 'Submit Ticket';
+                    // Reset Turnstile
+                    if (window.turnstile) turnstile.reset();
+                    return;
+                }
+
+                document.getElementById('ticketForm').style.display = 'none';
+                const ref = `#${String(data.ticketNo).padStart(4, '0')}`;
+                document.getElementById('ticketRef').textContent = `Ticket ${ref}`;
+                document.getElementById('ticketSuccess').classList.add('visible');
+
+            } catch {
+                errEl.textContent = 'Network error. Please check your connection and try again.';
+                errEl.className = 'form-error visible';
+                btn.disabled = false;
+                btn.textContent = 'Submit Ticket';
+            }
+        }
+    </script>
+</body>
+</html>
