@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unsubscribe - TIME Coin Newsletter</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/config.js"></script>
+    <script src="js/includes.js" defer></script>
+
+    <style>
+        .unsub-wrap {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .unsub-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 48px 40px;
+            max-width: 460px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .unsub-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .unsub-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .unsub-body {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .unsub-email {
+            color: #a5b4fc;
+            font-weight: 600;
+        }
+
+        .status-ok   { color: #34d399; }
+        .status-info { color: #a5b4fc; }
+        .status-err  { color: #f87171; }
+
+        @media (max-width: 480px) {
+            .unsub-card { padding: 32px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="unsub-wrap">
+            <div class="unsub-card" id="card">
+                <span class="unsub-icon">⏳</span>
+                <h1 class="unsub-title">Processing…</h1>
+                <p class="unsub-body">Please wait a moment.</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        (async function() {
+            const token = new URLSearchParams(location.search).get('token');
+            const card  = document.getElementById('card');
+
+            if (!token) {
+                card.innerHTML = `
+                    <span class="unsub-icon">❓</span>
+                    <h1 class="unsub-title">Invalid Link</h1>
+                    <p class="unsub-body">This unsubscribe link is missing a token. Please use the link from your email.</p>
+                    <a href="newsletter.html" style="color:#667eea;font-size:14px;">← Back to Newsletter</a>`;
+                return;
+            }
+
+            try {
+                const res  = await fetch(`/api/v1/newsletter/unsubscribe/${token}`);
+                const data = await res.json();
+
+                if (!res.ok) throw new Error(data.error || 'Something went wrong');
+
+                if (data.already) {
+                    card.innerHTML = `
+                        <span class="unsub-icon">✅</span>
+                        <h1 class="unsub-title status-info">Already Unsubscribed</h1>
+                        <p class="unsub-body">This email address is already removed from our mailing list. You won't receive any more emails from us.</p>
+                        <a href="newsletter.html" style="color:#667eea;font-size:14px;">← Back to Newsletter</a>`;
+                } else {
+                    card.innerHTML = `
+                        <span class="unsub-icon">👋</span>
+                        <h1 class="unsub-title status-ok">Unsubscribed</h1>
+                        <p class="unsub-body">
+                            <span class="unsub-email">${data.email || 'Your address'}</span> has been removed from the TIME Coin newsletter. You won't receive any more emails from us.
+                        </p>
+                        <p class="unsub-body" style="font-size:13px;">Changed your mind? <a href="newsletter.html#subscribe" style="color:#667eea;">Resubscribe</a> any time.</p>
+                        <a href="index.html" style="color:#667eea;font-size:14px;">← Back to Home</a>`;
+                }
+            } catch (err) {
+                card.innerHTML = `
+                    <span class="unsub-icon">⚠️</span>
+                    <h1 class="unsub-title status-err">Something went wrong</h1>
+                    <p class="unsub-body">${err.message}</p>
+                    <a href="newsletter.html" style="color:#667eea;font-size:14px;">← Back to Newsletter</a>`;
+            }
+        })();
+    </script>
+</body>
+</html>
