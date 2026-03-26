@@ -1308,6 +1308,29 @@
                     continue;
                 }
 
+                // table block — collect all consecutive | rows at once
+                if (/^\|.+\|$/.test(t)) {
+                    closeAll();
+                    const tRows = [];
+                    while (i < lines.length && /^\|.+\|$/.test(lines[i].trim())) {
+                        tRows.push(lines[i].trim()); i++;
+                    }
+                    i--; // loop will i++ again
+                    const isSep = r => r.split('|').slice(1,-1).every(c => /^[-: ]+$/.test(c.trim()));
+                    const cells = r => r.split('|').slice(1,-1).map(c => `<td>${inline(c.trim())}</td>`).join('');
+                    const thCells = r => r.split('|').slice(1,-1).map(c => `<th>${inline(c.trim())}</th>`).join('');
+                    if (tRows.length >= 2 && isSep(tRows[1])) {
+                        html += `<table><thead><tr>${thCells(tRows[0])}</tr></thead><tbody>`;
+                        for (let j = 2; j < tRows.length; j++) html += `<tr>${cells(tRows[j])}</tr>`;
+                        html += '</tbody></table>';
+                    } else {
+                        html += '<table><tbody>';
+                        tRows.filter(r => !isSep(r)).forEach(r => { html += `<tr>${cells(r)}</tr>`; });
+                        html += '</tbody></table>';
+                    }
+                    continue;
+                }
+
                 // paragraph
                 closeUl(); closeOl();
                 if (!inP) { html += '<p>'; inP = true; } else { html += '<br>'; }
