@@ -1992,7 +1992,7 @@
             const key = await getTkKey();
             if (!key) return;
             document.getElementById('tkModalContent').innerHTML = '<div style="padding:24px;color:var(--text-secondary);text-align:center;">Loading…</div>';
-            document.getElementById('tkModal').classList.add('active');
+            document.getElementById('tkModal').classList.add('show');
 
             const res  = await fetch(`/api/v1/tickets/${id}`, { headers: { 'Authorization': `Bearer ${key}` } });
             const data = await res.json();
@@ -2044,7 +2044,7 @@
         };
 
         window.closeTkModal = function() {
-            document.getElementById('tkModal').classList.remove('active');
+            document.getElementById('tkModal').classList.remove('show');
         };
 
         window.tkSetStatus = async function(id, status) {
