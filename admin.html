@@ -446,6 +446,7 @@
             .search-input { width: 100%; }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
@@ -698,9 +699,17 @@
                                 style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;line-height:1.6;resize:vertical;box-sizing:border-box;"></textarea>
                         </div>
                         <div>
-                            <label style="font-size:13px;color:var(--text-secondary);display:block;margin-bottom:6px;">Content (HTML supported)</label>
-                            <textarea id="nlContent" rows="16" placeholder="Article body — HTML is supported. Use &lt;p&gt;, &lt;h2&gt;, &lt;ul&gt;, &lt;strong&gt;, etc."
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                                <label style="font-size:13px;color:var(--text-secondary);">Content (Markdown)</label>
+                                <button type="button" onclick="nlTogglePreview()" id="nlPreviewBtn"
+                                    style="padding:4px 12px;background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.25);border-radius:6px;color:#667eea;font-size:12px;font-weight:600;cursor:pointer;">
+                                    👁 Preview
+                                </button>
+                            </div>
+                            <textarea id="nlContent" rows="16" placeholder="Write in Markdown. **bold**, _italic_, ## Heading, - lists, [links](url), etc."
+                                oninput="nlUpdatePreview()"
                                 style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;line-height:1.6;resize:vertical;box-sizing:border-box;font-family:monospace;"></textarea>
+                            <div id="nlPreview" style="display:none;margin-top:8px;padding:16px 20px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:7px;color:#e0e0f0;font-size:14px;line-height:1.8;max-height:400px;overflow-y:auto;"></div>
                         </div>
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                             <div>
@@ -1083,6 +1092,26 @@
                 if (!res.ok) throw new Error('Delete failed');
                 nlLoadArticles();
             } catch (err) { alert(err.message); }
+        };
+
+        window.nlUpdatePreview = function() {
+            const preview = document.getElementById('nlPreview');
+            if (preview.style.display === 'none') return;
+            const md = document.getElementById('nlContent').value;
+            preview.innerHTML = typeof marked !== 'undefined' ? marked.parse(md) : md;
+        };
+
+        window.nlTogglePreview = function() {
+            const preview = document.getElementById('nlPreview');
+            const btn = document.getElementById('nlPreviewBtn');
+            if (preview.style.display === 'none') {
+                preview.style.display = 'block';
+                btn.textContent = '✕ Hide Preview';
+                nlUpdatePreview();
+            } else {
+                preview.style.display = 'none';
+                btn.textContent = '👁 Preview';
+            }
         };
 
         window.nlResetForm = function() {
