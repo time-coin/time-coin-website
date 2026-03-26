@@ -530,7 +530,6 @@
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/marked@4/marked.min.js"></script>
 </head>
 <body>
 
@@ -1247,14 +1246,77 @@
             } catch (err) { alert(err.message); }
         };
 
-        function nlRenderMd(md) {
-            const m = window.marked;
-            if (!m) return md.replace(/\n/g, '<br>');
-            // marked v4: marked(src) or marked.parse(src)
-            // marked v9+: marked.parse(src)
-            if (typeof m.parse === 'function') return m.parse(md);
-            if (typeof m === 'function') return m(md);
-            return md.replace(/\n/g, '<br>');
+        function nlRenderMd(src) {
+            // Inline markdown renderer — no CDN dependency
+            const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+            const inline = s => esc(s)
+                .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;border-radius:8px;margin:8px 0;display:block;">')
+                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+                .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                .replace(/_(.+?)_/g, '<em>$1</em>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>');
+
+            const lines = src.split('\n');
+            let html = '', inP = false, inUl = false, inOl = false, inPre = false, preBuf = '';
+
+            const closeP  = () => { if (inP)  { html += '</p>';  inP  = false; } };
+            const closeUl = () => { if (inUl) { html += '</ul>'; inUl = false; } };
+            const closeOl = () => { if (inOl) { html += '</ol>'; inOl = false; } };
+            const closeAll = () => { closeP(); closeUl(); closeOl(); };
+
+            for (let i = 0; i < lines.length; i++) {
+                const raw = lines[i];
+                const t   = raw.trim();
+
+                // fenced code block
+                if (/^```/.test(t)) {
+                    if (!inPre) { closeAll(); inPre = true; preBuf = ''; }
+                    else        { html += `<pre><code>${esc(preBuf)}</code></pre>`; inPre = false; }
+                    continue;
+                }
+                if (inPre) { preBuf += (preBuf ? '\n' : '') + raw; continue; }
+
+                // blank line
+                if (!t) { closeAll(); continue; }
+
+                // headings
+                const hm = t.match(/^(#{1,6})\s+(.+)$/);
+                if (hm) { closeAll(); html += `<h${hm[1].length}>${inline(hm[2])}</h${hm[1].length}>`; continue; }
+
+                // horizontal rule
+                if (/^(---+|\*\*\*+)$/.test(t)) { closeAll(); html += '<hr>'; continue; }
+
+                // blockquote
+                if (/^> /.test(t)) { closeAll(); html += `<blockquote>${inline(t.slice(2))}</blockquote>`; continue; }
+
+                // unordered list
+                if (/^[*\-+] /.test(t)) {
+                    closeP(); closeOl();
+                    if (!inUl) { html += '<ul>'; inUl = true; }
+                    html += `<li>${inline(t.replace(/^[*\-+] /, ''))}</li>`;
+                    continue;
+                }
+
+                // ordered list
+                if (/^\d+\. /.test(t)) {
+                    closeP(); closeUl();
+                    if (!inOl) { html += '<ol>'; inOl = true; }
+                    html += `<li>${inline(t.replace(/^\d+\.\s+/, ''))}</li>`;
+                    continue;
+                }
+
+                // paragraph
+                closeUl(); closeOl();
+                if (!inP) { html += '<p>'; inP = true; } else { html += '<br>'; }
+                html += inline(t);
+            }
+
+            closeAll();
+            if (inPre) html += `<pre><code>${esc(preBuf)}</code></pre>`;
+            return html;
         }
 
         window.nlUpdatePreview = function() {
