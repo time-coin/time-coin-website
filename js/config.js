@@ -4,37 +4,37 @@
  * Update values here to propagate them across all pages automatically.
  *
  * Usage in HTML:
- *   Text content:  <span data-config="devProgress">85%</span>
+ *   Text content:  <span data-config="walletVersion">v0.6.2</span>
  *   Link href:     <a data-config-href="social.twitter" href="...">Twitter</a>
  */
 const TIME_CONFIG = {
     // Software versions
     nodeVersion:    'v1.6.0',
-    walletVersion:  'v0.4.0',
+    walletVersion:  'v0.6.2',
     mainnetVersion: 'v2.0.0',
 
     // Key dates
-    mainnetDate:  'April 1, 2026',
-    mainnetMonth: 'Apr',
-    mainnetDay:   '01',
-    mainnetYear:  '2026',
+    mainnetDate:  '2027',
+    mainnetYear:  '2027',
 
     // Development progress
     devProgress:    '85%',
     devProgressNum: 85,
 
     // Tokenomics
-    blockReward: '100 TIME',
-    txTime:      '<1s',
+    blockReward:    '100 TIME',
+    txFinality:     '<100ms',
+    blockTime:      '10 min',
+    emission:       'No pre-mine, no halving',
 
     // Community stats (update as these grow)
     communityMembers: '5K+',
     countries:        '50+',
     contributors:     '100+',
 
-    // Banner / summary strings
-    devNotice:    'Testnet Active \u2022 Node v1.6.0 Released \u2022 Wallet v0.4.0 Available \u2022 Mainnet targeting April 1, 2026',
-    progressInfo: 'Node v1.6.0 \u2022 Wallet v0.4.0 \u2022 Security Audit Passed \u2022 Testnet Active \u2022 TLS Fully Implemented \u2022 On-Chain Governance Live \u2022 Mainnet v2.0.0 launching April 1, 2026',
+    // Banner / summary strings (shown in dev notice bar and progress section)
+    devNotice:    'Testnet Active \u2022 Node v1.6.0 Released \u2022 Wallet v0.6.2 Available \u2022 Mainnet targeting 2027',
+    progressInfo: 'Node v1.6.0 \u2022 Wallet v0.6.2 \u2022 Security Audit Passed \u2022 Testnet Active \u2022 TLS Fully Implemented \u2022 On-Chain Governance Live \u2022 Mainnet targeting 2027',
 
     // Social links
     social: {
