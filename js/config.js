@@ -14,8 +14,12 @@ const TIME_CONFIG = {
     mainnetVersion: 'v2.0.0',
 
     // Key dates
-    mainnetDate:  '2027',
-    mainnetYear:  '2027',
+    mainnetDate:       'April 1, 2026',
+    mainnetDateTime:   'April 1, 2026 at 00:00 UTC',
+    mainnetMonth:      'Apr',
+    mainnetDay:        '01',
+    mainnetYear:       '2026',
+    mainnetTimestamp:  '2026-04-01T00:00:00Z',
 
     // Development progress
     devProgress:    '85%',
@@ -33,8 +37,8 @@ const TIME_CONFIG = {
     contributors:     '100+',
 
     // Banner / summary strings (shown in dev notice bar and progress section)
-    devNotice:    'Testnet Active \u2022 Node v1.6.0 Released \u2022 Wallet v0.6.2 Available \u2022 Mainnet targeting 2027',
-    progressInfo: 'Node v1.6.0 \u2022 Wallet v0.6.2 \u2022 Security Audit Passed \u2022 Testnet Active \u2022 TLS Fully Implemented \u2022 On-Chain Governance Live \u2022 Mainnet targeting 2027',
+    devNotice:    'Testnet Active \u2022 Node v1.6.0 Released \u2022 Wallet v0.6.2 Available \u2022 Mainnet launches April 1, 2026',
+    progressInfo: 'Node v1.6.0 \u2022 Wallet v0.6.2 \u2022 Security Audit Passed \u2022 Testnet Active \u2022 TLS Fully Implemented \u2022 On-Chain Governance Live \u2022 Mainnet April 1, 2026',
 
     // Social links
     social: {
