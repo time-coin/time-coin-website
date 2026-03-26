@@ -1214,69 +1214,26 @@ done</code></pre>
             <h2 id="sdk">SDK</h2>
 
             <div class="info-box">
-                <strong>🛠️ SDK Roadmap</strong><br>
-                Official SDKs for JavaScript, Python, and Rust are planned for Q2–Q3 2026 alongside feature enhancements and scalability work. The JSON-RPC API is available today on testnet.
+                <strong>🛠️ SDK — Coming Soon</strong><br>
+                Official SDKs for JavaScript, Python, and Rust are in development. Until then, all functionality is accessible via the <strong>JSON-RPC 2.0 API</strong> (port 24101 on testnet) and the <a href="api.html" style="color:var(--primary-purple)">REST API</a>.
             </div>
 
-            <h3>JavaScript/TypeScript (Planned Q2 2026)</h3>
-            <pre><code>npm install @timecoin/sdk
+            <p>In the meantime, you can interact with the network directly using the RPC API or <code>time-cli</code>:</p>
 
-import { TimeClient, Wallet } from '@timecoin/sdk';
+            <h3>JSON-RPC (any language)</h3>
+            <pre><code>curl -s -u user:password http://localhost:24101 \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"getblockchaininfo","params":[],"id":1}'</code></pre>
 
-// Initialize client
-const client = new TimeClient({
-  network: 'mainnet',
-  apiKey: 'your_api_key'
-});
+            <h3>time-cli</h3>
+            <pre><code># Get balance
+time-cli --testnet getbalance
 
-// Create wallet
-const wallet = Wallet.fromSeed('your twelve word seed phrase...');
+# Send TIME
+time-cli --testnet sendtoaddress TIME0RecipientAddress... 100.0
 
-// Send transaction
-const tx = await wallet.send({
-  to: 'TIME1recipient...',
-  amount: '100.00',
-  fee: '0.01'
-});
-
-console.log('Transaction:', tx.id);</code></pre>
-
-            <h3>Python</h3>
-            <pre><code>pip install timecoin
-
-from timecoin import TimeClient, Wallet
-
-# Initialize
-client = TimeClient(network='mainnet')
-wallet = Wallet.from_seed('your twelve word seed...')
-
-# Send transaction
-tx = wallet.send(
-    to='TIME1recipient...',
-    amount='100.00',
-    fee='0.01'
-)
-
-print(f'Transaction: {tx.id}')</code></pre>
-
-            <h3>Rust</h3>
-            <pre><code>cargo add timecoin-sdk
-
-use timecoin_sdk::{Client, Wallet};
-
-#[tokio::main]
-async fn main() {
-    let client = Client::new("mainnet");
-    let wallet = Wallet::from_seed("your twelve word seed...");
-    
-    let tx = wallet.send(
-        "TIME1recipient...",
-        100.0,
-        0.01
-    ).await?;
-    
-    println!("Transaction: {}", tx.id);
-}</code></pre>
+# Get transaction status
+time-cli --testnet gettransactionfinality &lt;txid&gt;</code></pre>
 
             <h2 id="config">Configuration Reference</h2>
 
