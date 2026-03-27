@@ -1207,19 +1207,10 @@ function recalc() {
     }
 }
 
-// Single source of truth for the fee schedule.
-// Each bracket rate applies only to the portion within that tier (marginal/progressive),
-// so the total fee always increases as the amount increases — no cliff inversions.
-const FEE_BRACKETS = [
-    { limit: 100,      rate: 0.01   }, // 1%
-    { limit: 1000,     rate: 0.005  }, // 0.5%
-    { limit: 10000,    rate: 0.0025 }, // 0.25%
-    { limit: Infinity, rate: 0.001  }, // 0.1%
-];
-
+// Fee schedule lives in js/config.js — TIME_CONFIG.feeBrackets
 function calcFee(timeAmt) {
     let fee = 0, prev = 0;
-    for (const { limit, rate } of FEE_BRACKETS) {
+    for (const { limit, rate } of TIME_CONFIG.feeBrackets) {
         const portion = Math.min(timeAmt, limit) - prev;
         if (portion <= 0) break;
         fee += portion * rate;

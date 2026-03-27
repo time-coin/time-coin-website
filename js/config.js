@@ -54,6 +54,14 @@ const TIME_CONFIG = {
     contact: {
         press: 'press@time-coin.io',
     },
+
+    // Exchange fee schedule (marginal/progressive — each rate applies only to its bracket)
+    feeBrackets: [
+        { limit: 100,      rate: 0.01   }, // 1%
+        { limit: 1000,     rate: 0.005  }, // 0.5%
+        { limit: 10000,    rate: 0.0025 }, // 0.25%
+        { limit: Infinity, rate: 0.001  }, // 0.1%
+    ],
 };
 
 // Auto-inject values into elements tagged with data-config / data-config-href
