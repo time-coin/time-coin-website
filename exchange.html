@@ -1229,8 +1229,9 @@ function showRateStrip(payAmt, timeAmt, coin, timePerCoin) {
     document.getElementById('paySubInfo').innerHTML =
         `≈ <span>${payAmt.toFixed(8).replace(/\.?0+$/, '')} ${coin}</span>`;
 
-    // Availability warning
-    const timeUnitsRequested = BigInt(Math.floor(timeAmt * 1e8));
+    // Availability warning — total needed includes the fee
+    const totalNeeded = timeAmt + fee;
+    const timeUnitsRequested = BigInt(Math.floor(totalNeeded * 1e8));
     let receiveSubHtml = `Fee: <span>${fee.toLocaleString(undefined, {maximumFractionDigits: 4})} TIMC</span>`;
     if (availableTimeUnits !== null && timeUnitsRequested > availableTimeUnits) {
         const maxTime = Number(availableTimeUnits) / 1e8;
@@ -1331,7 +1332,8 @@ async function submitOrder() {
 
     const timeAmt = parseFloat(document.getElementById('receiveInput').value);
     if (availableTimeUnits !== null && !isNaN(timeAmt) && timeAmt > 0) {
-        const requested = BigInt(Math.floor(timeAmt * 1e8));
+        const fee = timeAmt * feeRate(timeAmt).mul;
+        const requested = BigInt(Math.floor((timeAmt + fee) * 1e8));
         if (requested > availableTimeUnits) {
             const max = Number(availableTimeUnits) / 1e8;
             return showError('formError', `Insufficient liquidity. Maximum available: ${max.toLocaleString(undefined, { maximumFractionDigits: 0 })} TIMC.`);
