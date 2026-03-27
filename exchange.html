@@ -1219,6 +1219,17 @@ function calcFee(timeAmt) {
     return fee;
 }
 
+// Binary search for the largest integer amount where amount + fee <= available
+function maxBuyable(availableUnits) {
+    const available = Number(availableUnits) / 1e8;
+    let lo = 0, hi = available;
+    for (let i = 0; i < 64; i++) {
+        const mid = Math.floor((lo + hi) / 2);
+        if (mid + calcFee(mid) <= available) lo = mid; else hi = mid - 1;
+    }
+    return lo;
+}
+
 function showRateStrip(payAmt, timeAmt, coin, timePerCoin) {
     const fee = calcFee(timeAmt);
     const effectivePct = (fee / timeAmt * 100).toFixed(3).replace(/\.?0+$/, '') + '%';
@@ -1239,7 +1250,7 @@ function showRateStrip(payAmt, timeAmt, coin, timePerCoin) {
     const timeUnitsRequested = BigInt(Math.floor(totalNeeded * 1e8));
     let receiveSubHtml = `Fee: <span>${fee.toLocaleString(undefined, {maximumFractionDigits: 4})} TIMC</span>`;
     if (availableTimeUnits !== null && timeUnitsRequested > availableTimeUnits) {
-        const maxTime = Number(availableTimeUnits) / 1e8;
+        const maxTime = maxBuyable(availableTimeUnits);
         receiveSubHtml = `<span style="color:var(--danger-red)">⚠ Exceeds available supply (${maxTime.toLocaleString(undefined,{maximumFractionDigits:0})} TIMC max)</span>`;
     }
     document.getElementById('receiveSubInfo').innerHTML = receiveSubHtml;
@@ -1340,7 +1351,7 @@ async function submitOrder() {
         const fee = calcFee(timeAmt);
         const requested = BigInt(Math.floor((timeAmt + fee) * 1e8));
         if (requested > availableTimeUnits) {
-            const max = Number(availableTimeUnits) / 1e8;
+            const max = maxBuyable(availableTimeUnits);
             return showError('formError', `Insufficient liquidity. Maximum available: ${max.toLocaleString(undefined, { maximumFractionDigits: 0 })} TIMC.`);
         }
     }
