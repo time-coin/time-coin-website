@@ -1055,9 +1055,9 @@ async function loadRates() {
 function updateAvailabilityBadge() {
     const badge = document.getElementById('availabilityBadge');
     if (availableTimeUnits === null) { badge.textContent = ''; return; }
-    const display = Number(availableTimeUnits) / 1e8;
-    const formatted = display.toLocaleString(undefined, { maximumFractionDigits: 0 });
-    badge.innerHTML = `<span style="color:var(--success-green)">●</span> ${formatted} TIMC available`;
+    const maxTime = maxBuyable(availableTimeUnits);
+    const formatted = maxTime.toLocaleString(undefined, { maximumFractionDigits: 0 });
+    badge.innerHTML = `<span style="color:var(--success-green)">●</span> <button type="button" onclick="setMaxReceive(${maxTime})" style="background:none;border:none;color:inherit;text-decoration:underline;cursor:pointer;padding:0;font:inherit;">${formatted} TIMC available</button>`;
 }
 
 // ── Ticker ──
@@ -1230,6 +1230,15 @@ function maxBuyable(availableUnits) {
     return lo;
 }
 
+function setMaxReceive(maxTime) {
+    const input = document.getElementById('receiveInput');
+    if (!input) return;
+    lastEditedSide = 'receive';
+    input.value = maxTime;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
 function showRateStrip(payAmt, timeAmt, coin, timePerCoin) {
     const fee = calcFee(timeAmt);
     const effectivePct = (fee / timeAmt * 100).toFixed(3).replace(/\.?0+$/, '') + '%';
@@ -1251,7 +1260,7 @@ function showRateStrip(payAmt, timeAmt, coin, timePerCoin) {
     let receiveSubHtml = `Fee: <span>${fee.toLocaleString(undefined, {maximumFractionDigits: 4})} TIMC</span>`;
     if (availableTimeUnits !== null && timeUnitsRequested > availableTimeUnits) {
         const maxTime = maxBuyable(availableTimeUnits);
-        receiveSubHtml = `<span style="color:var(--danger-red)">⚠ Exceeds available supply (${maxTime.toLocaleString(undefined,{maximumFractionDigits:0})} TIMC max)</span>`;
+        receiveSubHtml = `<span style="color:var(--danger-red)">⚠ Exceeds available supply (<button type="button" onclick="setMaxReceive(${maxTime})" style="background:none;border:none;color:var(--danger-red);text-decoration:underline;cursor:pointer;padding:0;font-size:inherit;">${maxTime.toLocaleString(undefined,{maximumFractionDigits:0})} TIMC max</button>)</span>`;
     }
     document.getElementById('receiveSubInfo').innerHTML = receiveSubHtml;
 
