@@ -936,7 +936,7 @@
                             <button onclick="prLoadProposals()" style="padding:6px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:12px;cursor:pointer;">↻ Refresh</button>
                         </div>
                     </div>
-                    <div id="prList"><p style="color:var(--text-secondary);font-size:14px;">Loading…</p></div>
+                    <div id="proposalList"><p style="color:var(--text-secondary);font-size:14px;">No proposals found.</p></div>
                 </div>
 
                 <!-- Edit panel -->
@@ -1584,9 +1584,10 @@
         }
 
         window.prLoadProposals = async function() {
+            console.log('[proposals] called');
             const key = await getPrKey();
             if (!key) { console.warn('[proposals] no auth key'); return; }
-            const el = document.getElementById('prList');
+            const el = document.getElementById('proposalList');
             el.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;">Loading…</p>';
             const status = document.getElementById('prFilterStatus')?.value;
             try {
