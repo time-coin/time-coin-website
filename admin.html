@@ -1584,9 +1584,8 @@
         }
 
         window.prLoadProposals = async function() {
-            console.log('[proposals] called');
             const key = await getPrKey();
-            if (!key) { console.warn('[proposals] no auth key'); return; }
+            if (!key) return;
             const el = document.getElementById('proposalList');
             el.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;">Loading…</p>';
             const status = document.getElementById('prFilterStatus')?.value;
@@ -1594,10 +1593,8 @@
                 const res = await fetch('/api/v1/proposals/admin', {
                     headers: { 'Authorization': `Bearer ${key}` }
                 });
-                console.log('[proposals] status:', res.status, 'ok:', res.ok);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 let proposals = await res.json();
-                console.log('[proposals] data:', proposals);
                 if (status) proposals = proposals.filter(p => p.status === status);
                 if (!proposals.length) {
                     el.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;">No proposals found.</p>';
