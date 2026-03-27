@@ -1207,31 +1207,25 @@ function recalc() {
     }
 }
 
-// Progressive (marginal) fee — each bracket only applies to the portion within it,
-// so the total fee always increases as the amount increases (no cliff inversions).
+// Single source of truth for the fee schedule.
+// Each bracket rate applies only to the portion within that tier (marginal/progressive),
+// so the total fee always increases as the amount increases — no cliff inversions.
+const FEE_BRACKETS = [
+    { limit: 100,      rate: 0.01   }, // 1%
+    { limit: 1000,     rate: 0.005  }, // 0.5%
+    { limit: 10000,    rate: 0.0025 }, // 0.25%
+    { limit: Infinity, rate: 0.001  }, // 0.1%
+];
+
 function calcFee(timeAmt) {
-    const brackets = [
-        { limit: 100,   rate: 0.01   },
-        { limit: 1000,  rate: 0.005  },
-        { limit: 10000, rate: 0.0025 },
-        { limit: Infinity, rate: 0.001 },
-    ];
-    let fee = 0;
-    let prev = 0;
-    for (const { limit, rate } of brackets) {
+    let fee = 0, prev = 0;
+    for (const { limit, rate } of FEE_BRACKETS) {
         const portion = Math.min(timeAmt, limit) - prev;
         if (portion <= 0) break;
         fee += portion * rate;
         prev = limit;
     }
     return fee;
-}
-
-function feeRate(timeAmt) {
-    if (timeAmt < 100)    return { pct: '1%',     mul: 0.01 };
-    if (timeAmt < 1000)   return { pct: '0.5%',   mul: 0.005 };
-    if (timeAmt < 10000)  return { pct: '0.25%',  mul: 0.0025 };
-    return { pct: '0.1%', mul: 0.001 };
 }
 
 function showRateStrip(payAmt, timeAmt, coin, timePerCoin) {
