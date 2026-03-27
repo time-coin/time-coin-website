@@ -1207,6 +1207,26 @@ function recalc() {
     }
 }
 
+// Progressive (marginal) fee — each bracket only applies to the portion within it,
+// so the total fee always increases as the amount increases (no cliff inversions).
+function calcFee(timeAmt) {
+    const brackets = [
+        { limit: 100,   rate: 0.01   },
+        { limit: 1000,  rate: 0.005  },
+        { limit: 10000, rate: 0.0025 },
+        { limit: Infinity, rate: 0.001 },
+    ];
+    let fee = 0;
+    let prev = 0;
+    for (const { limit, rate } of brackets) {
+        const portion = Math.min(timeAmt, limit) - prev;
+        if (portion <= 0) break;
+        fee += portion * rate;
+        prev = limit;
+    }
+    return fee;
+}
+
 function feeRate(timeAmt) {
     if (timeAmt < 100)    return { pct: '1%',     mul: 0.01 };
     if (timeAmt < 1000)   return { pct: '0.5%',   mul: 0.005 };
@@ -1215,12 +1235,12 @@ function feeRate(timeAmt) {
 }
 
 function showRateStrip(payAmt, timeAmt, coin, timePerCoin) {
-    const f = feeRate(timeAmt);
-    const fee = timeAmt * f.mul;
+    const fee = calcFee(timeAmt);
+    const effectivePct = (fee / timeAmt * 100).toFixed(3).replace(/\.?0+$/, '') + '%';
 
     document.getElementById('rateDisplay').textContent =
         `1 ${coin} = ${Number(timePerCoin).toLocaleString()} TIMC`;
-    document.getElementById('feeLabel').textContent = `Network fee (${f.pct})`;
+    document.getElementById('feeLabel').textContent = `Network fee (${effectivePct})`;
     document.getElementById('feeDisplay').textContent =
         `${fee.toLocaleString(undefined, { maximumFractionDigits: 4 })} TIMC`;
     document.getElementById('totalPayDisplay').textContent =
@@ -1332,7 +1352,7 @@ async function submitOrder() {
 
     const timeAmt = parseFloat(document.getElementById('receiveInput').value);
     if (availableTimeUnits !== null && !isNaN(timeAmt) && timeAmt > 0) {
-        const fee = timeAmt * feeRate(timeAmt).mul;
+        const fee = calcFee(timeAmt);
         const requested = BigInt(Math.floor((timeAmt + fee) * 1e8));
         if (requested > availableTimeUnits) {
             const max = Number(availableTimeUnits) / 1e8;
