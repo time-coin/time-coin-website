@@ -318,6 +318,19 @@
             <div class="explorer-hero" style="position:relative">
                 <h1><span class="gradient-text">TIME</span> Block Explorer</h1>
                 <p style="color:var(--text-secondary)">Search by block height, transaction ID, or TIME address</p>
+
+                <!-- Network toggle -->
+                <div style="display:inline-flex;border:1px solid rgba(102,126,234,0.35);border-radius:20px;overflow:hidden;margin-top:12px;margin-bottom:4px">
+                    <button id="toggleTestnet" onclick="switchNetwork('testnet')"
+                            style="padding:5px 20px;font-size:0.82rem;font-weight:600;border:none;cursor:pointer;transition:background 0.2s,color 0.2s;font-family:inherit">
+                        Testnet
+                    </button>
+                    <button id="toggleMainnet" onclick="switchNetwork('mainnet')"
+                            style="padding:5px 20px;font-size:0.82rem;font-weight:600;border:none;cursor:pointer;transition:background 0.2s,color 0.2s;font-family:inherit">
+                        Mainnet
+                    </button>
+                </div>
+
                 <button id="addnodesBtn" onclick="copyAddnodes()"
                         style="display:none;position:absolute;top:0;right:0;background:rgba(102,126,234,0.12);border:1px solid rgba(102,126,234,0.3);color:#667eea;font-size:0.78rem;font-weight:600;padding:6px 12px;border-radius:8px;cursor:pointer;transition:all 0.2s;"
                         onmouseover="this.style.background='rgba(102,126,234,0.22)'"
@@ -394,12 +407,12 @@
     </section>
 
 <script>
-// ── Network flag — set to 'mainnet' to point at the mainnet explorer ──────────
-const EXPLORER_NETWORK = 'testnet';
-const API = EXPLORER_NETWORK === 'mainnet' ? '/api/mainnet/explorer' : '/api/explorer';
-const PEERS_API = EXPLORER_NETWORK === 'mainnet'
-    ? '/api/v1/nodes/peers/mainnet/full'
-    : '/api/v1/nodes/peers/testnet/full';
+// ── Network selection — defaults to testnet before mainnet launch ─────────────
+const MAINNET_LAUNCH = new Date('2026-04-01T00:00:00Z');
+const DEFAULT_NETWORK = Date.now() >= MAINNET_LAUNCH.getTime() ? 'mainnet' : 'testnet';
+let currentNetwork = localStorage.getItem('explorerNetwork') || DEFAULT_NETWORK;
+let API = `/api/explorer/${currentNetwork}`;
+let PEERS_API = `/api/v1/nodes/peers/${currentNetwork}/full`;
 
 let tipHeight = Infinity; // updated on each chain stats load
 
@@ -475,6 +488,49 @@ function copyAddnodes() {
             btn.style.background = 'rgba(102,126,234,0.12)';
         }, 2000);
     });
+}
+
+// ── Network toggle ────────────────────────────────────────────────────────────
+function switchNetwork(net) {
+    if (net === currentNetwork) return;
+    currentNetwork = net;
+    localStorage.setItem('explorerNetwork', net);
+    API = `/api/explorer/${net}`;
+    PEERS_API = `/api/v1/nodes/peers/${net}/full`;
+    updateNetworkToggle();
+    showList();
+
+    // Reset stats to loading state
+    ['statHeight', 'statTxs', 'statPeers', 'statNetwork', 'statGold', 'statSilver', 'statBronze'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = '—';
+    });
+    addnodesText = '';
+    const addnodesBtn = document.getElementById('addnodesBtn');
+    if (addnodesBtn) addnodesBtn.style.display = 'none';
+    document.getElementById('blocksBody').innerHTML =
+        '<tr class="loading-row"><td colspan="4"><span class="spinner"></span></td></tr>';
+
+    loadChainStats();
+    loadMasternodes();
+    loadBlocks();
+}
+
+function updateNetworkToggle() {
+    const testnetBtn = document.getElementById('toggleTestnet');
+    const mainnetBtn = document.getElementById('toggleMainnet');
+    if (!testnetBtn || !mainnetBtn) return;
+    if (currentNetwork === 'testnet') {
+        testnetBtn.style.background = 'rgba(102,126,234,0.2)';
+        testnetBtn.style.color = '#667eea';
+        mainnetBtn.style.background = 'transparent';
+        mainnetBtn.style.color = 'var(--text-secondary)';
+    } else {
+        mainnetBtn.style.background = 'rgba(102,126,234,0.2)';
+        mainnetBtn.style.color = '#667eea';
+        testnetBtn.style.background = 'transparent';
+        testnetBtn.style.color = 'var(--text-secondary)';
+    }
 }
 
 // ── Blocks ───────────────────────────────────────────────────────────────────
@@ -738,6 +794,7 @@ function handleUrlParams() {
 
 // ── Init ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+    updateNetworkToggle();
     loadChainStats();
     loadBlocks();
     loadMasternodes();
