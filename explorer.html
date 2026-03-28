@@ -394,7 +394,13 @@
     </section>
 
 <script>
-const API = '/api/explorer';
+// ── Network flag — set to 'mainnet' to point at the mainnet explorer ──────────
+const EXPLORER_NETWORK = 'testnet';
+const API = EXPLORER_NETWORK === 'mainnet' ? '/api/mainnet/explorer' : '/api/explorer';
+const PEERS_API = EXPLORER_NETWORK === 'mainnet'
+    ? '/api/v1/nodes/peers/mainnet/full'
+    : '/api/v1/nodes/peers/testnet/full';
+
 let tipHeight = Infinity; // updated on each chain stats load
 
 // ── Chain Stats ──────────────────────────────────────────────────────────────
@@ -427,17 +433,18 @@ let addnodesText = '';
 
 async function loadMasternodes() {
     try {
-        // Tier counts from RPC (on-chain data)
-        const mnRes = await fetch('/api/v1/supply/masternodes');
+        // Tier counts from explorer RPC (same node as the rest of the explorer)
+        const mnRes = await fetch(`${API}/masternodes`);
         if (mnRes.ok) {
-            const counts = await mnRes.json();
-            document.getElementById('statGold').textContent   = counts.gold   ?? 0;
-            document.getElementById('statSilver').textContent = counts.silver ?? 0;
-            document.getElementById('statBronze').textContent = counts.bronze ?? 0;
+            const data = await mnRes.json();
+            const byTier = data.byTier ?? {};
+            document.getElementById('statGold').textContent   = byTier.Gold   ?? byTier.gold   ?? 0;
+            document.getElementById('statSilver').textContent = byTier.Silver ?? byTier.silver ?? 0;
+            document.getElementById('statBronze').textContent = byTier.Bronze ?? byTier.bronze ?? 0;
         }
 
-        // Addnodes from peer registry (testnet)
-        const peersRes = await fetch('/api/v1/nodes/peers/testnet/full');
+        // Addnodes from peer registry
+        const peersRes = await fetch(PEERS_API);
         if (peersRes.ok) {
             const peers = await peersRes.json();
             const lines = peers
