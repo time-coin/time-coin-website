@@ -605,6 +605,7 @@
                 <button class="tab-btn" onclick="switchTab('proposals', this)">Proposals</button>
                 <button class="tab-btn" onclick="switchTab('analytics', this)">Analytics</button>
                 <button class="tab-btn" onclick="switchTab('tickets', this)">Tickets <span id="tkBadge" style="display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle;"></span></button>
+                <button class="tab-btn" onclick="switchTab('exchange', this)">Exchange <span id="exBadge" style="display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle;">!</span></button>
             </nav>
 
             <!-- Masternodes tab -->
@@ -1089,6 +1090,41 @@
                 </div>
             </div>
 
+            <!-- Exchange tab -->
+            <div id="tab-exchange" class="tab-panel">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+                    <div>
+                        <h1 class="dash-title" style="margin:0">Exchange Wallet</h1>
+                        <p class="dash-subtitle" style="margin:4px 0 0">Hot wallet balance and RPC status.</p>
+                    </div>
+                    <button onclick="exLoad()" style="padding:7px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:var(--text-secondary);font-size:13px;cursor:pointer;">↻ Refresh</button>
+                </div>
+
+                <div id="exAlert" style="display:none;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);border-radius:10px;padding:14px 18px;margin-bottom:20px;color:#fca5a5;font-size:14px;font-weight:600;">
+                    ⚠ Low balance — top up the exchange wallet before orders fail.
+                </div>
+
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:24px;">
+                    <div class="stat-card">
+                        <div class="stat-label">Balance</div>
+                        <div class="stat-value green" id="exBalance">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">RPC</div>
+                        <div class="stat-value" id="exRpc">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Network</div>
+                        <div class="stat-value purple" id="exNetwork">—</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header"><span class="section-title">Hot Wallet Address</span></div>
+                    <p id="exAddress" style="font-family:monospace;font-size:13px;color:var(--text-secondary);margin:0;word-break:break-all;">—</p>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -1157,11 +1193,16 @@
             document.getElementById('userEmail').textContent = user.email;
             document.getElementById('pageLoader').style.display = 'none';
             document.getElementById('dashWrapper').style.display = 'block';
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+            tkStartPolling();
             await loadSubmissions();
             await loadPressReleases();
             await loadCampaigns();
+            exLoad();
             const hash = location.hash.replace('#', '');
-            const validTabs = ['masternodes', 'press', 'campaigns', 'newsletter', 'proposals', 'analytics', 'tickets'];
+            const validTabs = ['masternodes', 'press', 'campaigns', 'newsletter', 'proposals', 'analytics', 'tickets', 'exchange'];
             if (hash && validTabs.includes(hash)) {
                 const btn = document.querySelector(`.tab-btn[onclick*="'${hash}'"]`);
                 if (btn) switchTab(hash, btn);
@@ -1915,8 +1956,10 @@
         }
 
         // ── Tickets ───────────────────────────────────────────────────────────
-        let tkAllTickets = [];
-        let tkFilter     = 'all';
+        let tkAllTickets   = [];
+        let tkFilter       = 'all';
+        let tkPollInterval = null;
+        let tkLastOpenCount = -1;
 
         async function getTkKey() { const u = auth.currentUser; return u ? u.getIdToken() : null; }
 
@@ -1938,6 +1981,51 @@
                 document.getElementById('tkBody').innerHTML = `<tr><td colspan="7" class="empty-state" style="color:#f87171">${err.message}</td></tr>`;
             }
         };
+
+        async function tkPollOnce() {
+            const key = await getTkKey();
+            if (!key) return;
+            try {
+                const res = await fetch('/api/v1/tickets/list', { headers: { 'Authorization': `Bearer ${key}` } });
+                if (!res.ok) return;
+                const tickets = await res.json();
+                const openCount = tickets.filter(t => t.status === 'open').length;
+                // Update badge even when the tab isn't active
+                const badge = document.getElementById('tkBadge');
+                if (openCount > 0) { badge.textContent = openCount; badge.style.display = ''; }
+                else badge.style.display = 'none';
+                // Notify only when count goes up
+                if (tkLastOpenCount >= 0 && openCount > tkLastOpenCount) {
+                    const diff = openCount - tkLastOpenCount;
+                    if (Notification.permission === 'granted') {
+                        new Notification('New Support Ticket', {
+                            body: diff === 1 ? 'A new support ticket has been submitted.' : `${diff} new support tickets have been submitted.`,
+                            icon: '/images/favicon.ico',
+                        });
+                    }
+                    // Also flash the tab title briefly
+                    const origTitle = document.title;
+                    let flashes = 0;
+                    const flash = setInterval(() => {
+                        document.title = flashes % 2 === 0 ? `(${openCount}) New Ticket — Admin` : origTitle;
+                        if (++flashes >= 8) { clearInterval(flash); document.title = origTitle; }
+                    }, 600);
+                }
+                tkLastOpenCount = openCount;
+                // Refresh the table data in memory if the tab is open
+                if (document.getElementById('tab-tickets').classList.contains('active')) {
+                    tkAllTickets = tickets;
+                    tkRenderStats();
+                    tkRenderTable();
+                }
+            } catch (_) { /* silent */ }
+        }
+
+        function tkStartPolling() {
+            if (tkPollInterval) return;
+            tkPollOnce(); // immediate first check to set baseline
+            tkPollInterval = setInterval(tkPollOnce, 60_000);
+        }
 
         function tkRenderStats() {
             const open   = tkAllTickets.filter(t => t.status === 'open').length;
@@ -2577,6 +2665,31 @@
                 el.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;">No campaigns yet.</p>';
             }
         };
+
+        async function exLoad() {
+            try {
+                const token = await auth.currentUser?.getIdToken();
+                const res = await fetch('/api/v1/admin/wallet/status', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const d = await res.json();
+
+                const low = d.lowBalance || !d.rpcReachable;
+                document.getElementById('exBadge').style.display = low ? 'inline' : 'none';
+                document.getElementById('exAlert').style.display = low ? 'block' : 'none';
+
+                document.getElementById('exBalance').textContent = d.rpcReachable ? (d.balanceDisplay ?? '0') + ' TIME' : '—';
+                document.getElementById('exRpc').textContent = d.rpcReachable ? '✓ Online' : '✗ Offline';
+                document.getElementById('exRpc').className = 'stat-value ' + (d.rpcReachable ? 'green' : 'red');
+                document.getElementById('exNetwork').textContent = d.network ?? '—';
+                document.getElementById('exAddress').textContent = d.hotWalletAddress ?? 'Not configured';
+            } catch (err) {
+                document.getElementById('exBadge').style.display = 'inline';
+                document.getElementById('exAlert').style.display = 'block';
+                document.getElementById('exAlert').textContent = '⚠ Could not reach wallet status endpoint.';
+            }
+        }
     </script>
 </body>
 </html>
