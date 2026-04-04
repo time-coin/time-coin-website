@@ -9,8 +9,8 @@
  */
 const TIME_CONFIG = {
     // Software versions
-    nodeVersion:    'v1.6.0',
-    walletVersion:  'v0.6.2',
+    nodeVersion:    'v1.4.33',
+    walletVersion:  'v0.6.3',
     mainnetVersion: 'v2.0.0',
 
     // Key dates
@@ -37,8 +37,8 @@ const TIME_CONFIG = {
     contributors:     '100+',
 
     // Banner / summary strings (shown in dev notice bar and progress section)
-    devNotice:    'Testnet Active \u2022 Node v1.6.0 Released \u2022 Wallet v0.6.2 Available \u2022 Mainnet launches April 1, 2026',
-    progressInfo: 'Node v1.6.0 \u2022 Wallet v0.6.2 \u2022 Security Audit Passed \u2022 Testnet Active \u2022 TLS Fully Implemented \u2022 On-Chain Governance Live \u2022 Mainnet April 1, 2026',
+    devNotice:    'Mainnet Active \u2022 Node v1.4.33 Released \u2022 Wallet v0.6.3 Available',
+    progressInfo: 'Node v1.4.33 \u2022 Wallet v0.6.3 \u2022 Security Audit Passed \u2022 Mainnet Active \u2022 TLS Fully Implemented \u2022 On-Chain Governance Live',
 
     // Social links
     social: {
