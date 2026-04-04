@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIME Coin Marketplace - Buy &amp; Sell TIMC P2P</title>
+    <meta name="description" content="Buy and sell TIME Coin (TIMC) peer-to-peer. Browse listings from the community or post your own sell offer.">
+    <meta name="keywords" content="TIME Coin, TIMC, buy, sell, marketplace, P2P, peer to peer">
+    <meta property="og:title" content="TIME Coin Marketplace">
+    <meta property="og:description" content="Buy and sell TIMC peer-to-peer — no intermediary, no custody.">
+    <meta property="og:type" content="website">
+    <link rel="canonical" href="https://timecoin.io/marketplace.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- Site-wide config -->
+    <script src="js/config.js"></script>
+    <!-- Header/Footer Includes -->
+    <script src="js/includes.js" defer></script>
+</head>
+<body>
+    <!-- Header will be injected here by includes.js -->
+
+    <!-- Page Header -->
+    <section class="mp-hero">
+        <div class="container">
+            <h1>P2P Marketplace</h1>
+            <p>Buy and sell TIME Coin directly with other community members. No intermediary — transactions settle wallet-to-wallet.</p>
+            <button class="btn btn-primary" id="postBtn">Post a Listing</button>
+        </div>
+    </section>
+
+    <main class="container mp-layout">
+
+        <!-- Auth Panel (shown when not logged in) -->
+        <aside class="mp-sidebar">
+            <div class="mp-card" id="authPanel">
+                <div id="authForms">
+                    <div class="mp-tabs">
+                        <button class="mp-tab active" data-tab="login">Sign In</button>
+                        <button class="mp-tab" data-tab="register">Register</button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="loginForm" class="mp-form">
+                        <div class="mp-field">
+                            <label>Email</label>
+                            <input type="email" id="loginEmail" placeholder="you@example.com" required>
+                        </div>
+                        <div class="mp-field">
+                            <label>Password</label>
+                            <input type="password" id="loginPassword" placeholder="••••••••" required>
+                        </div>
+                        <div class="mp-error" id="loginError"></div>
+                        <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+                    </form>
+
+                    <!-- Register Form -->
+                    <form id="registerForm" class="mp-form" style="display:none">
+                        <div class="mp-field">
+                            <label>Email</label>
+                            <input type="email" id="regEmail" placeholder="you@example.com" required>
+                        </div>
+                        <div class="mp-field">
+                            <label>Password <span class="mp-hint">(min 8 chars)</span></label>
+                            <input type="password" id="regPassword" placeholder="••••••••" required minlength="8">
+                        </div>
+                        <div class="mp-field">
+                            <label>Username <span class="mp-hint">(optional)</span></label>
+                            <input type="text" id="regUsername" placeholder="satoshi">
+                        </div>
+                        <div class="mp-error" id="registerError"></div>
+                        <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+                    </form>
+                </div>
+
+                <!-- Profile (shown when logged in) -->
+                <div id="profilePanel" style="display:none">
+                    <p class="mp-profile-email" id="profileEmail"></p>
+                    <div class="mp-field">
+                        <label>TIME Wallet Address <span class="mp-hint">(optional — pre-fills listings)</span></label>
+                        <input type="text" id="profileWallet" placeholder="T...">
+                        <button class="btn btn-secondary btn-sm mt-1" id="saveWalletBtn">Save</button>
+                    </div>
+                    <hr class="mp-divider">
+                    <button class="btn btn-ghost btn-full" id="logoutBtn">Sign Out</button>
+                </div>
+            </div>
+
+            <!-- How it works -->
+            <div class="mp-card mp-how">
+                <h3>How it works</h3>
+                <ol class="mp-steps">
+                    <li>Seller posts amount, price, and their TIME wallet address.</li>
+                    <li>Buyer contacts seller and sends payment (fiat, crypto, or agreed method).</li>
+                    <li>Seller sends TIME Coin to buyer's wallet.</li>
+                    <li>Mark listing as sold when complete.</li>
+                </ol>
+                <p class="mp-disclaimer">TIME Coin does not hold funds or mediate disputes. Transact carefully and verify addresses.</p>
+            </div>
+        </aside>
+
+        <!-- Listings -->
+        <section class="mp-main">
+
+            <!-- Post Listing Form (hidden by default) -->
+            <div class="mp-card mp-post-form" id="postForm" style="display:none">
+                <h2>Post a Listing</h2>
+                <form id="createListingForm">
+                    <div class="mp-row">
+                        <div class="mp-field">
+                            <label>Amount (TIMC)</label>
+                            <input type="number" id="listAmount" placeholder="1000" min="1" step="any" required>
+                        </div>
+                        <div class="mp-field">
+                            <label>Asking Price (USD)</label>
+                            <input type="number" id="listPrice" placeholder="10.00" min="0.01" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="mp-field">
+                        <label>Your TIME Wallet Address <span class="mp-hint">(buyer sends payment here)</span></label>
+                        <input type="text" id="listWallet" placeholder="T..." required>
+                    </div>
+                    <div class="mp-field">
+                        <label>Notes <span class="mp-hint">(optional — payment methods you accept, contact info, etc.)</span></label>
+                        <textarea id="listNotes" rows="3" placeholder="Accepting PayPal, Venmo. DM on Discord: username#1234"></textarea>
+                    </div>
+                    <div class="mp-error" id="listingError"></div>
+                    <div style="display:flex;gap:10px">
+                        <button type="submit" class="btn btn-primary">Post Listing</button>
+                        <button type="button" class="btn btn-ghost" id="cancelPostBtn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- My Listings -->
+            <div id="myListingsSection" style="display:none">
+                <h2 class="mp-section-title">My Listings</h2>
+                <div id="myListings" class="mp-listings"></div>
+            </div>
+
+            <!-- Active Listings -->
+            <h2 class="mp-section-title">Active Listings</h2>
+            <div id="listings" class="mp-listings">
+                <div class="mp-loading">Loading listings...</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer will be injected here by includes.js -->
+
+    <style>
+        .mp-hero {
+            background: linear-gradient(135deg, rgba(102,126,234,0.15) 0%, rgba(118,75,162,0.15) 100%);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding: 60px 0 40px;
+            text-align: center;
+        }
+        .mp-hero h1 { font-size: 40px; margin-bottom: 12px; }
+        .mp-hero p  { color: #b8b8d4; max-width: 560px; margin: 0 auto 24px; }
+
+        .mp-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 32px;
+            padding-top: 32px;
+            padding-bottom: 64px;
+            align-items: start;
+        }
+
+        .mp-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .mp-tabs { display: flex; gap: 4px; margin-bottom: 20px; }
+        .mp-tab {
+            flex: 1;
+            padding: 8px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #b8b8d4;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .mp-tab.active {
+            background: rgba(102,126,234,0.2);
+            border-color: rgba(102,126,234,0.5);
+            color: #ffffff;
+        }
+
+        .mp-form { display: flex; flex-direction: column; gap: 14px; }
+        .mp-field { display: flex; flex-direction: column; gap: 6px; }
+        .mp-field label { font-size: 13px; font-weight: 500; color: #b8b8d4; }
+        .mp-field input, .mp-field textarea {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: #ffffff;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        .mp-field input:focus, .mp-field textarea:focus {
+            outline: none;
+            border-color: rgba(102,126,234,0.6);
+        }
+        .mp-hint { font-weight: 400; color: #6b7280; font-size: 12px; }
+        .mp-error { color: #f87171; font-size: 13px; min-height: 18px; }
+        .mp-divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 16px 0; }
+
+        .mp-profile-email { color: #b8b8d4; font-size: 13px; margin-bottom: 14px; }
+
+        .mp-how h3 { font-size: 16px; margin-bottom: 12px; }
+        .mp-steps { padding-left: 18px; color: #b8b8d4; font-size: 13px; line-height: 1.8; margin: 0 0 12px; }
+        .mp-disclaimer { font-size: 12px; color: #6b7280; line-height: 1.6; }
+
+        .mp-post-form h2 { font-size: 20px; margin-bottom: 20px; }
+        .mp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .mp-section-title { font-size: 20px; margin: 0 0 16px; }
+
+        .mp-listings { display: flex; flex-direction: column; gap: 12px; }
+
+        .mp-listing-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            transition: border-color 0.2s;
+        }
+        .mp-listing-card:hover { border-color: rgba(102,126,234,0.3); }
+
+        .mp-listing-main { flex: 1; }
+        .mp-listing-amount { font-size: 22px; font-weight: 700; color: #ffffff; }
+        .mp-listing-amount span { font-size: 14px; color: #b8b8d4; font-weight: 400; }
+        .mp-listing-price { font-size: 15px; color: #22c55e; font-weight: 600; margin-top: 2px; }
+        .mp-listing-meta { font-size: 12px; color: #6b7280; margin-top: 6px; }
+        .mp-listing-notes { font-size: 13px; color: #b8b8d4; margin-top: 8px; }
+        .mp-listing-wallet {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 6px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .mp-listing-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+        .mp-status-badge {
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .mp-status-active   { background: rgba(34,197,94,0.15);  color: #22c55e; }
+        .mp-status-sold     { background: rgba(102,126,234,0.15); color: #667eea; }
+        .mp-status-cancelled{ background: rgba(107,114,128,0.15); color: #6b7280; }
+
+        .btn-sm { padding: 5px 12px; font-size: 13px; }
+        .btn-full { width: 100%; }
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #b8b8d4;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn-ghost:hover { border-color: rgba(255,255,255,0.3); color: #ffffff; }
+
+        .mp-loading { color: #6b7280; padding: 40px 0; text-align: center; }
+        .mp-empty   { color: #6b7280; padding: 40px 0; text-align: center; }
+
+        .mt-1 { margin-top: 6px; }
+
+        @media (max-width: 900px) {
+            .mp-layout { grid-template-columns: 1fr; }
+            .mp-sidebar { order: 2; }
+            .mp-main    { order: 1; }
+        }
+        @media (max-width: 600px) {
+            .mp-listing-card { flex-direction: column; align-items: flex-start; }
+            .mp-listing-actions { flex-direction: row; align-items: center; width: 100%; }
+            .mp-row { grid-template-columns: 1fr; }
+        }
+    </style>
+
+    <script>
+    (() => {
+        const API = '/api/v1';
+        let token = localStorage.getItem('mp_token');
+        let currentUser = JSON.parse(localStorage.getItem('mp_user') || 'null');
+
+        // ── Auth helpers ──────────────────────────────────────────────────
+        function saveAuth(t, u) {
+            token = t; currentUser = u;
+            localStorage.setItem('mp_token', t);
+            localStorage.setItem('mp_user', JSON.stringify(u));
+        }
+        function clearAuth() {
+            token = null; currentUser = null;
+            localStorage.removeItem('mp_token');
+            localStorage.removeItem('mp_user');
+        }
+        function authHeaders() {
+            return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+        }
+
+        // ── Tab switching ─────────────────────────────────────────────────
+        document.querySelectorAll('.mp-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.mp-tab').forEach(t => t.classList.remove('active'));
+                btn.classList.add('active');
+                const tab = btn.dataset.tab;
+                document.getElementById('loginForm').style.display    = tab === 'login'    ? 'flex' : 'none';
+                document.getElementById('registerForm').style.display = tab === 'register' ? 'flex' : 'none';
+            });
+        });
+
+        // ── Login ─────────────────────────────────────────────────────────
+        document.getElementById('loginForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            document.getElementById('loginError').textContent = '';
+            const res = await fetch(`${API}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email:    document.getElementById('loginEmail').value,
+                    password: document.getElementById('loginPassword').value,
+                }),
+            });
+            const data = await res.json();
+            if (!res.ok) { document.getElementById('loginError').textContent = data.error; return; }
+            saveAuth(data.token, data.user);
+            renderAuthState();
+            loadMyListings();
+        });
+
+        // ── Register ──────────────────────────────────────────────────────
+        document.getElementById('registerForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            document.getElementById('registerError').textContent = '';
+            const body = {
+                email:    document.getElementById('regEmail').value,
+                password: document.getElementById('regPassword').value,
+            };
+            const u = document.getElementById('regUsername').value.trim();
+            if (u) body.username = u;
+            const res = await fetch(`${API}/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body),
+            });
+            const data = await res.json();
+            if (!res.ok) { document.getElementById('registerError').textContent = data.error; return; }
+            saveAuth(data.token, data.user);
+            renderAuthState();
+            loadMyListings();
+        });
+
+        // ── Logout ────────────────────────────────────────────────────────
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            clearAuth();
+            renderAuthState();
+            document.getElementById('myListingsSection').style.display = 'none';
+        });
+
+        // ── Save wallet address ───────────────────────────────────────────
+        document.getElementById('saveWalletBtn').addEventListener('click', async () => {
+            const wallet_address = document.getElementById('profileWallet').value.trim();
+            if (!wallet_address) return;
+            await fetch(`${API}/auth/me`, {
+                method: 'PATCH',
+                headers: authHeaders(),
+                body: JSON.stringify({ wallet_address }),
+            });
+        });
+
+        // ── Post listing toggle ───────────────────────────────────────────
+        document.getElementById('postBtn').addEventListener('click', () => {
+            if (!token) { alert('Please sign in to post a listing.'); return; }
+            const form = document.getElementById('postForm');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            if (form.style.display === 'block') {
+                form.scrollIntoView({ behavior: 'smooth' });
+                if (currentUser?.wallet_address) {
+                    document.getElementById('listWallet').value = currentUser.wallet_address;
+                }
+            }
+        });
+        document.getElementById('cancelPostBtn').addEventListener('click', () => {
+            document.getElementById('postForm').style.display = 'none';
+        });
+
+        // ── Create listing ────────────────────────────────────────────────
+        document.getElementById('createListingForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            document.getElementById('listingError').textContent = '';
+            const body = {
+                amount:         parseFloat(document.getElementById('listAmount').value),
+                price_usd:      parseFloat(document.getElementById('listPrice').value),
+                wallet_address: document.getElementById('listWallet').value.trim(),
+                notes:          document.getElementById('listNotes').value.trim() || undefined,
+            };
+            const res = await fetch(`${API}/listings`, {
+                method: 'POST',
+                headers: authHeaders(),
+                body: JSON.stringify(body),
+            });
+            const data = await res.json();
+            if (!res.ok) { document.getElementById('listingError').textContent = data.error; return; }
+            document.getElementById('postForm').style.display = 'none';
+            document.getElementById('createListingForm').reset();
+            loadListings();
+            loadMyListings();
+        });
+
+        // ── Render helpers ────────────────────────────────────────────────
+        function fmtAmount(n) {
+            return parseFloat(n).toLocaleString(undefined, { maximumFractionDigits: 2 });
+        }
+        function fmtPrice(n) {
+            return '$' + parseFloat(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        function fmtDate(s) {
+            return new Date(s).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+        function truncateWallet(addr) {
+            if (!addr || addr.length <= 16) return addr;
+            return addr.slice(0, 8) + '...' + addr.slice(-6);
+        }
+
+        function renderListing(l, mine = false) {
+            const card = document.createElement('div');
+            card.className = 'mp-listing-card';
+            const pricePerCoin = (parseFloat(l.price_usd) / parseFloat(l.amount)).toFixed(4);
+            card.innerHTML = `
+                <div class="mp-listing-main">
+                    <div class="mp-listing-amount">${fmtAmount(l.amount)} <span>TIMC</span></div>
+                    <div class="mp-listing-price">${fmtPrice(l.price_usd)} <span style="color:#6b7280;font-size:12px;font-weight:400">($${pricePerCoin}/TIMC)</span></div>
+                    ${l.notes ? `<div class="mp-listing-notes">${escapeHtml(l.notes)}</div>` : ''}
+                    <div class="mp-listing-wallet">Wallet: ${truncateWallet(l.wallet_address)}</div>
+                    <div class="mp-listing-meta">Posted by ${escapeHtml(l.username || 'anonymous')} · ${fmtDate(l.created_at)}</div>
+                </div>
+                <div class="mp-listing-actions">
+                    <span class="mp-status-badge mp-status-${l.status}">${l.status}</span>
+                    ${mine ? `
+                        ${l.status === 'active' ? `<button class="btn btn-sm btn-secondary" data-id="${l.id}" data-action="sold">Mark Sold</button>` : ''}
+                        ${l.status === 'active' ? `<button class="btn btn-sm btn-ghost" data-id="${l.id}" data-action="cancel">Cancel</button>` : ''}
+                        <button class="btn btn-sm btn-ghost" data-id="${l.id}" data-action="delete" style="color:#f87171;border-color:rgba(248,113,113,0.3)">Delete</button>
+                    ` : ''}
+                </div>
+            `;
+
+            if (mine) {
+                card.querySelectorAll('[data-action]').forEach(btn => {
+                    btn.addEventListener('click', () => handleListingAction(l.id, btn.dataset.action));
+                });
+            }
+            return card;
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        // ── Load listings ─────────────────────────────────────────────────
+        async function loadListings() {
+            const el = document.getElementById('listings');
+            el.innerHTML = '<div class="mp-loading">Loading...</div>';
+            const res = await fetch(`${API}/listings`);
+            const data = await res.json();
+            el.innerHTML = '';
+            if (!data.listings?.length) {
+                el.innerHTML = '<div class="mp-empty">No active listings yet. Be the first to post!</div>';
+                return;
+            }
+            data.listings.forEach(l => el.appendChild(renderListing(l)));
+        }
+
+        async function loadMyListings() {
+            if (!token) return;
+            const res = await fetch(`${API}/listings/me`, { headers: authHeaders() });
+            if (!res.ok) return;
+            const data = await res.json();
+            const section = document.getElementById('myListingsSection');
+            const el = document.getElementById('myListings');
+            el.innerHTML = '';
+            if (!data.listings?.length) { section.style.display = 'none'; return; }
+            section.style.display = 'block';
+            data.listings.forEach(l => el.appendChild(renderListing(l, true)));
+        }
+
+        // ── Listing actions ───────────────────────────────────────────────
+        async function handleListingAction(id, action) {
+            if (action === 'delete') {
+                if (!confirm('Delete this listing?')) return;
+                await fetch(`${API}/listings/${id}`, { method: 'DELETE', headers: authHeaders() });
+            } else {
+                const status = action === 'sold' ? 'sold' : 'cancelled';
+                await fetch(`${API}/listings/${id}`, {
+                    method: 'PATCH',
+                    headers: authHeaders(),
+                    body: JSON.stringify({ status }),
+                });
+            }
+            loadListings();
+            loadMyListings();
+        }
+
+        // ── Auth state render ─────────────────────────────────────────────
+        function renderAuthState() {
+            const authForms    = document.getElementById('authForms');
+            const profilePanel = document.getElementById('profilePanel');
+            if (token && currentUser) {
+                authForms.style.display    = 'none';
+                profilePanel.style.display = 'block';
+                document.getElementById('profileEmail').textContent = currentUser.email;
+                // Pre-load wallet from profile
+                fetch(`${API}/auth/me`, { headers: authHeaders() })
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d.user?.wallet_address) {
+                            document.getElementById('profileWallet').value = d.user.wallet_address;
+                            currentUser.wallet_address = d.user.wallet_address;
+                            localStorage.setItem('mp_user', JSON.stringify(currentUser));
+                        }
+                    }).catch(() => {});
+            } else {
+                authForms.style.display    = 'block';
+                profilePanel.style.display = 'none';
+            }
+        }
+
+        // ── Init ──────────────────────────────────────────────────────────
+        renderAuthState();
+        loadListings();
+        if (token) loadMyListings();
+
+    })();
+    </script>
+</body>
+</html>
