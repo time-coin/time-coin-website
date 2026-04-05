@@ -11,20 +11,54 @@
 
         <!-- Desktop Navigation -->
         <ul class="nav-links desktop-nav">
-            <li><a href="index.html#features">Features</a></li>
-            <li><a href="index.html#masternodes">Masternodes</a></li>
+
+            <!-- Features dropdown -->
+            <li class="nav-dropdown">
+                <a href="#" class="nav-dropdown-toggle">Features <span class="nav-chevron">&#8964;</span></a>
+                <ul class="nav-dropdown-menu">
+                    <li><a href="index.html#features">Overview</a></li>
+                    <li><a href="index.html#masternodes">Masternodes</a></li>
+                    <li><a href="roadmap.html">Roadmap</a></li>
+                </ul>
+            </li>
+
+            <!-- Trade dropdown -->
+            <li class="nav-dropdown">
+                <a href="#" class="nav-dropdown-toggle">Trade <span class="nav-chevron">&#8964;</span></a>
+                <ul class="nav-dropdown-menu">
+                    <li><a href="exchange.html">Buy TIME</a></li>
+                    <li><a href="marketplace.html">P2P Marketplace</a></li>
+                </ul>
+            </li>
+
             <li><a href="explorer.html">Explorer</a></li>
-            <li><a href="docs.html">Docs</a></li>
-            <li><a href="api.html">API</a></li>
-            <li><a href="faq.html">FAQ</a></li>
-            <li><a href="roadmap.html">Roadmap</a></li>
-            <li><a href="community.html">Community</a></li>
-            <li><a href="newsletter.html">Newsletter</a></li>
-            <li><a href="proposals.html">Proposals</a></li>
-            <li><a href="marketplace.html">Marketplace</a></li>
+
+            <!-- Docs dropdown -->
+            <li class="nav-dropdown">
+                <a href="#" class="nav-dropdown-toggle">Docs <span class="nav-chevron">&#8964;</span></a>
+                <ul class="nav-dropdown-menu">
+                    <li><a href="docs.html">Documentation</a></li>
+                    <li><a href="api.html">API Reference</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="whitepaper.html">Whitepaper</a></li>
+                    <li><a href="technical-whitepaper.html">Technical Whitepaper</a></li>
+                </ul>
+            </li>
+
+            <!-- Community dropdown -->
+            <li class="nav-dropdown">
+                <a href="#" class="nav-dropdown-toggle">Community <span class="nav-chevron">&#8964;</span></a>
+                <ul class="nav-dropdown-menu">
+                    <li><a href="community.html">Community Hub</a></li>
+                    <li><a href="newsletter.html">Newsletter</a></li>
+                    <li><a href="proposals.html">Proposals</a></li>
+                    <li><a href="press.html">Press Kit</a></li>
+                </ul>
+            </li>
+
         </ul>
 
-        <!-- CTA Button -->
+        <!-- CTA Buttons -->
         <div class="nav-cta desktop-nav" style="display:flex;align-items:center;gap:10px;">
             <a href="login.html" class="btn btn-secondary" style="padding:8px 16px;border:1px solid rgba(102,126,234,0.4);border-radius:8px;color:#667eea;font-weight:500;font-size:14px;">Portal</a>
             <a href="exchange.html" class="btn btn-primary" style="padding:8px 16px;font-size:14px;">Buy TIME</a>
@@ -46,30 +80,54 @@
         <span class="mobile-nav-title">Navigation</span>
         <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">×</button>
     </div>
-    
+
     <ul class="mobile-nav-links">
         <li><a href="index.html">Home</a></li>
-        <li><a href="index.html#features">Features</a></li>
-        <li><a href="index.html#masternodes">Masternodes</a></li>
-        <li><a href="exchange.html">Buy TIME</a></li>
+
+        <li class="mobile-nav-group">
+            <button class="mobile-nav-group-btn" aria-expanded="false">Features <span class="nav-chevron">&#8964;</span></button>
+            <ul class="mobile-nav-submenu">
+                <li><a href="index.html#features">Overview</a></li>
+                <li><a href="index.html#masternodes">Masternodes</a></li>
+                <li><a href="roadmap.html">Roadmap</a></li>
+            </ul>
+        </li>
+
+        <li class="mobile-nav-group">
+            <button class="mobile-nav-group-btn" aria-expanded="false">Trade <span class="nav-chevron">&#8964;</span></button>
+            <ul class="mobile-nav-submenu">
+                <li><a href="exchange.html">Buy TIME</a></li>
+                <li><a href="marketplace.html">P2P Marketplace</a></li>
+            </ul>
+        </li>
+
         <li><a href="explorer.html">Explorer</a></li>
-        <li><a href="docs.html">Documentation</a></li>
-        <li><a href="api.html">API Reference</a></li>
-        <li><a href="faq.html">FAQ</a></li>
-        <li><a href="roadmap.html">Roadmap</a></li>
-        <li><a href="community.html">Community</a></li>
-        <li><a href="newsletter.html">Newsletter</a></li>
-        <li><a href="proposals.html">Proposals</a></li>
-        <li><a href="marketplace.html">Marketplace</a></li>
-        <li><a href="press.html">Press Kit</a></li>
-        <li><a href="whitepaper.html">Whitepaper</a></li>
-        <li><a href="technical-whitepaper.html">Technical Whitepaper</a></li>
-        <li><a href="guidelines.html">Guidelines</a></li>
+
+        <li class="mobile-nav-group">
+            <button class="mobile-nav-group-btn" aria-expanded="false">Docs <span class="nav-chevron">&#8964;</span></button>
+            <ul class="mobile-nav-submenu">
+                <li><a href="docs.html">Documentation</a></li>
+                <li><a href="api.html">API Reference</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="whitepaper.html">Whitepaper</a></li>
+                <li><a href="technical-whitepaper.html">Technical Whitepaper</a></li>
+            </ul>
+        </li>
+
+        <li class="mobile-nav-group">
+            <button class="mobile-nav-group-btn" aria-expanded="false">Community <span class="nav-chevron">&#8964;</span></button>
+            <ul class="mobile-nav-submenu">
+                <li><a href="community.html">Community Hub</a></li>
+                <li><a href="newsletter.html">Newsletter</a></li>
+                <li><a href="proposals.html">Proposals</a></li>
+                <li><a href="press.html">Press Kit</a></li>
+            </ul>
+        </li>
     </ul>
 
     <div class="mobile-nav-footer" style="display:flex;flex-direction:column;gap:10px;">
         <a href="login.html" class="btn btn-block" style="text-align:center;padding:12px;border:1px solid rgba(102,126,234,0.4);border-radius:8px;color:#667eea;font-weight:600;">Masternode Portal</a>
-        <a href="docs.html#quick-start" class="btn btn-primary btn-block">Get Started</a>
+        <a href="exchange.html" class="btn btn-primary btn-block">Buy TIME</a>
     </div>
 </div>
 
@@ -130,9 +188,10 @@
     padding: 0;
     flex-shrink: 1;
     min-width: 0;
+    align-items: center;
 }
 
-.nav-links a {
+.nav-links > li > a {
     color: #ffffff;
     text-decoration: none;
     font-weight: 500;
@@ -141,8 +200,70 @@
     transition: color 0.3s ease;
 }
 
-.nav-links a:hover {
+.nav-links > li > a:hover {
     color: #667eea;
+}
+
+/* Dropdown */
+.nav-dropdown {
+    position: relative;
+}
+
+.nav-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.nav-chevron {
+    font-size: 12px;
+    transition: transform 0.2s ease;
+    display: inline-block;
+    line-height: 1;
+}
+
+.nav-dropdown:hover .nav-chevron {
+    transform: rotate(180deg);
+}
+
+.nav-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 12, 41, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 8px 0;
+    min-width: 180px;
+    list-style: none;
+    margin: 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    z-index: 1001;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu {
+    display: block;
+}
+
+.nav-dropdown-menu li a {
+    display: block;
+    padding: 10px 18px;
+    color: #b8b8d4;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.nav-dropdown-menu li a:hover {
+    color: #ffffff;
+    background: rgba(102, 126, 234, 0.1);
+    padding-left: 24px;
 }
 
 .nav-cta {
@@ -243,11 +364,11 @@
     margin: 0;
 }
 
-.mobile-nav-links li {
+.mobile-nav-links > li {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.mobile-nav-links a {
+.mobile-nav-links > li > a {
     display: block;
     padding: 15px 20px;
     color: #ffffff;
@@ -255,10 +376,68 @@
     transition: all 0.3s ease;
 }
 
-.mobile-nav-links a:hover {
+.mobile-nav-links > li > a:hover {
     background: rgba(102, 126, 234, 0.1);
     color: #667eea;
     padding-left: 30px;
+}
+
+/* Mobile accordion groups */
+.mobile-nav-group-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.2s;
+}
+
+.mobile-nav-group-btn:hover {
+    color: #667eea;
+}
+
+.mobile-nav-group-btn .nav-chevron {
+    transition: transform 0.2s ease;
+}
+
+.mobile-nav-group-btn[aria-expanded="true"] .nav-chevron {
+    transform: rotate(180deg);
+}
+
+.mobile-nav-submenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.mobile-nav-submenu.open {
+    max-height: 400px;
+}
+
+.mobile-nav-submenu li a {
+    display: block;
+    padding: 12px 20px 12px 36px;
+    color: #b8b8d4;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.mobile-nav-submenu li a:hover {
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.08);
 }
 
 .mobile-nav-footer {
@@ -273,21 +452,21 @@
 /* Compress slightly before the hamburger kicks in */
 @media (max-width: 1280px) {
     .nav-links {
-        gap: 18px;
+        gap: 22px;
     }
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 1080px) {
     .nav-links {
-        gap: 12px;
+        gap: 16px;
     }
-    .nav-links a {
+    .nav-links > li > a {
         font-size: 14px;
     }
 }
 
-/* Switch to hamburger when nav gets crowded */
-@media (max-width: 1100px) {
+/* Switch to hamburger */
+@media (max-width: 900px) {
     .desktop-nav {
         display: none;
     }
@@ -303,3 +482,35 @@ body {
 }
 </style>
 
+<script>
+(function () {
+    // Mobile menu open/close
+    var menuBtn   = document.getElementById('mobileMenuBtn');
+    var closeBtn  = document.getElementById('mobileNavClose');
+    var overlay   = document.getElementById('mobileNavOverlay');
+    var mobileNav = document.getElementById('mobileNav');
+
+    function openMenu()  { mobileNav.classList.add('active'); overlay.classList.add('active'); }
+    function closeMenu() { mobileNav.classList.remove('active'); overlay.classList.remove('active'); }
+
+    if (menuBtn)  menuBtn.addEventListener('click', openMenu);
+    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+    if (overlay)  overlay.addEventListener('click', closeMenu);
+
+    // Mobile accordion groups
+    document.querySelectorAll('.mobile-nav-group-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var expanded = btn.getAttribute('aria-expanded') === 'true';
+            // Close all others
+            document.querySelectorAll('.mobile-nav-group-btn').forEach(function (b) {
+                b.setAttribute('aria-expanded', 'false');
+                b.nextElementSibling.classList.remove('open');
+            });
+            if (!expanded) {
+                btn.setAttribute('aria-expanded', 'true');
+                btn.nextElementSibling.classList.add('open');
+            }
+        });
+    });
+})();
+</script>
