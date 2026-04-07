@@ -356,6 +356,81 @@
             cursor: pointer;
         }
 
+        /* Inspect / Diagnostics button */
+        .btn-inspect {
+            padding: 5px 10px;
+            border-radius: 6px;
+            background: rgba(167,139,250,0.1);
+            color: #a78bfa;
+            border: 1px solid rgba(167,139,250,0.25);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 4px;
+        }
+        .btn-inspect:hover { background: rgba(167,139,250,0.2); }
+        .btn-inspect:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Probe modal */
+        .probe-modal { max-width: 540px; }
+        .probe-modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+        .probe-modal .probe-ip { font-family: monospace; font-size: 13px; color: var(--text-secondary); margin-bottom: 18px; }
+        .probe-section { margin-bottom: 16px; }
+        .probe-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .probe-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.04);
+            margin-bottom: 6px;
+        }
+        .probe-badge {
+            flex-shrink: 0;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-top: 1px;
+        }
+        .probe-badge-ok   { background: rgba(74,222,128,0.12); color: #4ade80; }
+        .probe-badge-fail { background: rgba(239,68,68,0.12);  color: #f87171; }
+        .probe-badge-wait { background: rgba(56,189,248,0.12); color: #38bdf8; }
+        .probe-badge-host { background: rgba(251,191,36,0.12); color: #fbbf24; }
+        .probe-badge-home { background: rgba(52,211,153,0.12); color: #34d399; }
+        .probe-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+            min-width: 100px;
+        }
+        .probe-detail {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            flex: 1;
+        }
+        .probe-error {
+            font-size: 11px;
+            color: #f87171;
+            font-family: monospace;
+            margin-top: 3px;
+        }
+        .probe-divider {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            margin: 14px 0;
+        }
+
         /* Tabs */
         .tab-nav {
             display: flex;
@@ -1147,6 +1222,46 @@
         </div>
     </div>
 
+    <!-- Inspect / Diagnostics Modal -->
+    <div class="modal-overlay" id="inspectModal" onclick="if(event.target===this)closeInspectModal()">
+        <div class="modal probe-modal">
+            <h3>Node Diagnostics</h3>
+            <div class="probe-ip" id="inspectLabel">—</div>
+
+            <!-- IP Info -->
+            <div class="probe-section">
+                <div class="probe-section-title">IP Information</div>
+                <div id="inspectIpRows">
+                    <div class="probe-row">
+                        <span class="probe-badge probe-badge-wait">…</span>
+                        <div>
+                            <div class="probe-label">Looking up…</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="probe-divider">
+
+            <!-- Connection Tests -->
+            <div class="probe-section">
+                <div class="probe-section-title">Connection Tests</div>
+                <div id="inspectTestRows">
+                    <div class="probe-row">
+                        <span class="probe-badge probe-badge-wait">…</span>
+                        <div>
+                            <div class="probe-label">Running tests…</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeInspectModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
         import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
@@ -1322,6 +1437,8 @@
                     <td>
                         <button class="btn-ping" id="ping-btn-${s.id}" onclick="pingNode('${s.id}','${s.ip}',${s.port})">Ping</button>
                         <span class="ping-result" id="ping-result-${s.id}" style="display:none"></span>
+                        <br>
+                        <button class="btn-inspect" onclick="openInspectModal('${s.id}','${s.ip}',${s.port},'${s.network || 'mainnet'}')">Inspect</button>
                     </td>
                     <td>${actions}</td>
                 </tr>`;
@@ -1360,6 +1477,108 @@
             }
             btn.disabled = false;
             btn.textContent = 'Ping';
+        };
+
+        // ── Node Inspect / Diagnostics ────────────────────────────────────────
+
+        window.openInspectModal = async function(id, ip, port, network) {
+            document.getElementById('inspectLabel').textContent = `${ip}:${port} — ${network === 'mainnet' ? 'Mainnet' : 'Testnet'}`;
+            document.getElementById('inspectIpRows').innerHTML = probeLoadingRow('Looking up IP info…');
+            document.getElementById('inspectTestRows').innerHTML = probeLoadingRow('Running connection tests…');
+            document.getElementById('inspectModal').classList.add('show');
+
+            const idToken = await auth.currentUser?.getIdToken();
+            if (!idToken) {
+                document.getElementById('inspectIpRows').innerHTML = probeErrorRow('Auth error — please refresh.');
+                document.getElementById('inspectTestRows').innerHTML = probeErrorRow('Auth error — please refresh.');
+                return;
+            }
+
+            const headers = { 'Authorization': `Bearer ${idToken}` };
+
+            // Run lookup and probe concurrently
+            const [lookupResult, probeResult] = await Promise.allSettled([
+                fetch(`/api/v1/nodes/lookup?ip=${encodeURIComponent(ip)}`, { headers }).then(r => r.json()),
+                fetch(`/api/v1/nodes/probe?ip=${encodeURIComponent(ip)}&port=${encodeURIComponent(port)}&network=${encodeURIComponent(network)}`, { headers }).then(r => r.json()),
+            ]);
+
+            // Render IP info
+            if (lookupResult.status === 'fulfilled' && !lookupResult.value.error) {
+                const d = lookupResult.value;
+                const hostingBadge = d.hosting
+                    ? '<span class="probe-badge probe-badge-host">☁ Cloud / Data Center</span>'
+                    : '<span class="probe-badge probe-badge-home">🏠 Residential / ISP</span>';
+                document.getElementById('inspectIpRows').innerHTML = `
+                    <div class="probe-row">
+                        ${hostingBadge}
+                        <div>
+                            <div class="probe-label">${d.org || d.isp || '—'}</div>
+                            <div class="probe-detail">${[d.city, d.region, d.country].filter(Boolean).join(', ')}</div>
+                            <div class="probe-detail">${d.asn || ''}</div>
+                        </div>
+                    </div>`;
+            } else {
+                const msg = lookupResult.status === 'fulfilled' ? lookupResult.value.error : lookupResult.reason?.message || 'Lookup failed';
+                document.getElementById('inspectIpRows').innerHTML = probeErrorRow(msg);
+            }
+
+            // Render connection tests
+            if (probeResult.status === 'fulfilled' && !probeResult.value.error) {
+                const d = probeResult.value;
+                const inboundOk = d.inbound?.ok;
+                const outboundOk = d.outbound?.ok;
+
+                document.getElementById('inspectTestRows').innerHTML = `
+                    <div class="probe-row">
+                        <span class="probe-badge ${inboundOk ? 'probe-badge-ok' : 'probe-badge-fail'}">${inboundOk ? '✓' : '✕'}</span>
+                        <div>
+                            <div class="probe-label">Inbound connectivity</div>
+                            <div class="probe-detail">${inboundOk
+                                ? `TCP connected in ${d.inbound.latency}ms — port is open and accepting connections`
+                                : `Port unreachable — other nodes cannot connect to this masternode`}
+                            </div>
+                            ${!inboundOk && d.inbound?.error ? `<div class="probe-error">${d.inbound.error}</div>` : ''}
+                        </div>
+                    </div>
+                    <div class="probe-row">
+                        <span class="probe-badge ${outboundOk ? 'probe-badge-ok' : 'probe-badge-fail'}">${outboundOk ? '✓' : '✕'}</span>
+                        <div>
+                            <div class="probe-label">Outgoing / protocol</div>
+                            <div class="probe-detail">${outboundOk
+                                ? `TIME node responded in ${d.outbound.latency}ms — node is running and sending data`
+                                : (d.inbound?.ok
+                                    ? `Port is open but node did not respond to TIME handshake`
+                                    : `Skipped — inbound connection failed`)}
+                            </div>
+                            ${outboundOk && d.outbound?.isTimeNode ? `<div class="probe-detail" style="color:#4ade80">✓ TIME protocol confirmed</div>` : ''}
+                            ${!outboundOk && d.outbound?.error && d.inbound?.ok ? `<div class="probe-error">${d.outbound.error}</div>` : ''}
+                        </div>
+                    </div>`;
+            } else {
+                const msg = probeResult.status === 'fulfilled' ? probeResult.value.error : probeResult.reason?.message || 'Probe failed';
+                document.getElementById('inspectTestRows').innerHTML = probeErrorRow(msg);
+            }
+        };
+
+        function probeLoadingRow(label) {
+            return `<div class="probe-row">
+                <span class="probe-badge probe-badge-wait">…</span>
+                <div><div class="probe-label">${label}</div></div>
+            </div>`;
+        }
+
+        function probeErrorRow(msg) {
+            return `<div class="probe-row">
+                <span class="probe-badge probe-badge-fail">✕</span>
+                <div>
+                    <div class="probe-label">Error</div>
+                    <div class="probe-error">${msg}</div>
+                </div>
+            </div>`;
+        }
+
+        window.closeInspectModal = function() {
+            document.getElementById('inspectModal').classList.remove('show');
         };
 
         window.setFilter = function(filter, btn) {
