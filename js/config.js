@@ -9,8 +9,8 @@
  */
 const TIME_CONFIG = {
     // Software versions
-    nodeVersion:    'v1.4.33',
-    walletVersion:  'v0.6.3',
+    nodeVersion:    'v1.4.34',
+    walletVersion:  'v0.6.4',
     mainnetVersion: 'v2.0.0',
 
     // Key dates
@@ -37,8 +37,8 @@ const TIME_CONFIG = {
     contributors:     '100+',
 
     // Banner / summary strings (shown in dev notice bar and progress section)
-    devNotice:    'Mainnet Active \u2022 Node v1.4.33 Released \u2022 Wallet v0.6.3 Available',
-    progressInfo: 'Node v1.4.33 \u2022 Wallet v0.6.3 \u2022 Security Audit Passed \u2022 Mainnet Active \u2022 TLS Fully Implemented \u2022 On-Chain Governance Live',
+    devNotice:    'Mainnet Active \u2022 Node v1.4.34 Released \u2022 Wallet v0.6.4 Available',
+    progressInfo: 'Node v1.4.34 \u2022 Wallet v0.6.4 \u2022 Security Audit Passed \u2022 Mainnet Active \u2022 TLS Fully Implemented \u2022 On-Chain Governance Live',
 
     // Social links
     social: {
