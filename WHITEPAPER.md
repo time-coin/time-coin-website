@@ -2,7 +2,7 @@
 
 **Version:** 1.2  
 **Date:** March 2026  
-**Status:** Testnet Active — Mainnet Pending
+**Status:** Mainnet Live — Launched April 1, 2026
 
 ---
 
@@ -501,14 +501,14 @@ Both Accept and Reject votes must be cryptographically signed. A masternode cann
 - DHT-based peer discovery
 - IPv6 support
 
-### Phase 4 — Advanced Features (Q4 2026)
+### Phase 4 — Advanced Features (Post-Mainnet)
 
 - On-chain governance with tier-weighted voting
 - Treasury proposal and disbursement system
 - Zero-knowledge proofs for private transactions
 - Quantum-resistant signature research
 
-### Mainnet Launch (Target: Q4 2026)
+### Mainnet Launch (April 1, 2026)
 
 ---
 

@@ -2,7 +2,7 @@
 
 **A Next-Generation Cryptocurrency with Instant, Provable Finality**
 
-*Version 4.0 · March 2026 · Testnet Active*
+*Version 4.0 · April 2026 · Mainnet Live*
 
 ---
 

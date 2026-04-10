@@ -211,12 +211,12 @@ We welcome contributions to improve the TIME Coin website!
 
 ## 📋 Project Status
 
-**Current Phase:** Testnet Active — Mainnet Pending
+**Current Phase:** Mainnet Live — Launched April 1, 2026
 
 - ✅ Phase 1: Core protocol (Complete)
-- 🔄 Phase 2: Testnet hardening (In Progress — Q1/Q2 2026)
-- ⏳ Phase 3: Mainnet launch (Target Q3/Q4 2026)
-- 🚀 Phase 4: Accessibility & growth (2027+)
+- ✅ Phase 2: Testnet hardening (Complete — Q1/Q2 2026)
+- ✅ Phase 3: Mainnet launch (Launched April 1, 2026)
+- 🔄 Phase 4: Post-mainnet scalability & growth (In Progress)
 
 [View Full Roadmap](roadmap.html)
 
