@@ -7,6 +7,7 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
     <style>
         body { padding-top: 0; }
 
@@ -646,10 +647,61 @@
         .nl-preview-box table { width: 100%; border-collapse: collapse; margin-bottom: 1.5em; font-size: 15px; }
         .nl-preview-box th, .nl-preview-box td { border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; text-align: left; }
         .nl-preview-box th { background: rgba(102,126,234,0.1); color: #a5b4fc; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+
+        /* Network Map */
+        #mapContainer {
+            height: 520px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .leaflet-popup-content-wrapper {
+            background: #1a1730;
+            border: 1px solid rgba(102,126,234,0.35);
+            color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .leaflet-popup-tip { background: #1a1730; }
+        .leaflet-popup-content { margin: 12px 16px; font-size: 13px; line-height: 1.6; }
+        .map-popup-ip { font-weight: 700; font-size: 14px; color: #a5b4fc; margin-bottom: 4px; }
+        .map-popup-detail { color: rgba(255,255,255,0.7); }
+        .map-popup-tier {
+            display: inline-block;
+            padding: 1px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .map-popup-tier.tier-gold    { background: rgba(234,179,8,0.15);  color: #eab308; border: 1px solid rgba(234,179,8,0.3); }
+        .map-popup-tier.tier-silver  { background: rgba(148,163,184,0.12); color: #94a3b8; border: 1px solid rgba(148,163,184,0.25); }
+        .map-popup-tier.tier-bronze  { background: rgba(180,83,9,0.15);   color: #fb923c; border: 1px solid rgba(180,83,9,0.3); }
+        .map-popup-tier.tier-free    { background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); }
+        .map-legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            align-items: center;
+        }
+        .map-legend-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <script src="js/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 </head>
 <body>
 
@@ -681,6 +733,7 @@
                 <button class="tab-btn" onclick="switchTab('analytics', this)">Analytics</button>
                 <button class="tab-btn" onclick="switchTab('tickets', this)">Tickets <span id="tkBadge" style="display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle;"></span></button>
                 <button class="tab-btn" onclick="switchTab('exchange', this)">Exchange <span id="exBadge" style="display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle;">!</span></button>
+                <button class="tab-btn" onclick="switchTab('map', this)">Network Map</button>
             </nav>
 
             <!-- Masternodes tab -->
@@ -1200,6 +1253,32 @@
                 </div>
             </div>
 
+            <!-- Network Map tab -->
+            <div id="tab-map" class="tab-panel">
+                <h1 class="dash-title">Network Map</h1>
+                <p class="dash-subtitle">Geographic distribution of approved masternodes.</p>
+
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-title">Masternode Locations</span>
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <span id="mapNodeCount" style="font-size:13px;color:var(--text-secondary);">—</span>
+                            <button onclick="mapLoad(true)" style="padding:7px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:var(--text-secondary);font-size:13px;cursor:pointer;">↻ Refresh</button>
+                        </div>
+                    </div>
+
+                    <div id="mapStatus" style="display:none;font-size:13px;color:var(--text-secondary);margin-bottom:12px;"></div>
+                    <div id="mapContainer"></div>
+
+                    <div class="map-legend">
+                        <span><span class="map-legend-dot" style="background:#eab308;"></span>Gold</span>
+                        <span><span class="map-legend-dot" style="background:#94a3b8;"></span>Silver</span>
+                        <span><span class="map-legend-dot" style="background:#fb923c;"></span>Bronze</span>
+                        <span><span class="map-legend-dot" style="background:#667eea;"></span>Free</span>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -1317,7 +1396,7 @@
             await loadCampaigns();
             exLoad();
             const hash = location.hash.replace('#', '');
-            const validTabs = ['masternodes', 'press', 'campaigns', 'newsletter', 'proposals', 'analytics', 'tickets', 'exchange'];
+            const validTabs = ['masternodes', 'press', 'campaigns', 'newsletter', 'proposals', 'analytics', 'tickets', 'exchange', 'map'];
             if (hash && validTabs.includes(hash)) {
                 const btn = document.querySelector(`.tab-btn[onclick*="'${hash}'"]`);
                 if (btn) switchTab(hash, btn);
@@ -1605,6 +1684,7 @@
             if (tab === 'proposals') prLoadProposals();
             if (tab === 'analytics') anLoad();
             if (tab === 'tickets')   tkLoad();
+            if (tab === 'map')       mapLoad();
         };
 
         // ── Newsletter ────────────────────────────────────────────────────────
@@ -2909,6 +2989,125 @@
                 document.getElementById('exAlert').textContent = '⚠ Could not reach wallet status endpoint.';
             }
         }
+
+        // ── Network Map ───────────────────────────────────────────────────────
+        let mapInstance = null;
+        let mapLoaded = false;
+        const mapGeoCache = {};
+
+        const TIER_COLORS = {
+            gold:   '#eab308',
+            silver: '#94a3b8',
+            bronze: '#fb923c',
+            free:   '#667eea',
+        };
+
+        function tierColor(tier) {
+            return TIER_COLORS[(tier || 'free').toLowerCase()] || TIER_COLORS.free;
+        }
+
+        function makeMarkerIcon(color) {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" viewBox="0 0 22 30">
+                <path d="M11 0C4.9 0 0 4.9 0 11c0 8.25 11 19 11 19s11-10.75 11-19C22 4.9 17.1 0 11 0z" fill="${color}" opacity="0.9"/>
+                <circle cx="11" cy="11" r="4.5" fill="#fff" opacity="0.85"/>
+            </svg>`;
+            return L.divIcon({
+                html: svg,
+                className: '',
+                iconSize: [22, 30],
+                iconAnchor: [11, 30],
+                popupAnchor: [0, -30],
+            });
+        }
+
+        async function geoLookup(ip) {
+            if (mapGeoCache[ip]) return mapGeoCache[ip];
+            try {
+                const r = await fetch(`https://ipwho.is/${ip}`);
+                const d = await r.json();
+                if (!d.success || !d.latitude) return null;
+                const result = { lat: d.latitude, lon: d.longitude, city: d.city, country: d.country, org: d.connection?.org || '' };
+                mapGeoCache[ip] = result;
+                return result;
+            } catch {
+                return null;
+            }
+        }
+
+        window.mapLoad = async function(force = false) {
+            if (mapLoaded && !force) return;
+            mapLoaded = true;
+
+            // Initialize map once
+            if (!mapInstance) {
+                mapInstance = L.map('mapContainer', {
+                    center: [20, 0],
+                    zoom: 2,
+                    minZoom: 1,
+                    maxZoom: 10,
+                    zoomControl: true,
+                });
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                    subdomains: 'abcd',
+                    maxZoom: 20,
+                }).addTo(mapInstance);
+            } else {
+                // Clear existing markers
+                mapInstance.eachLayer(layer => {
+                    if (layer instanceof L.Marker) mapInstance.removeLayer(layer);
+                });
+            }
+
+            const approved = allSubmissions.filter(s => s.status === 'approved');
+            const statusEl = document.getElementById('mapStatus');
+            const countEl  = document.getElementById('mapNodeCount');
+            countEl.textContent = `${approved.length} approved node${approved.length !== 1 ? 's' : ''}`;
+
+            if (approved.length === 0) {
+                statusEl.style.display = 'block';
+                statusEl.textContent = 'No approved masternodes to display.';
+                return;
+            }
+
+            statusEl.style.display = 'block';
+            statusEl.textContent = `Resolving locations for ${approved.length} node${approved.length !== 1 ? 's' : ''}…`;
+
+            // Geo-resolve in batches of 5 to avoid rate limits
+            const BATCH = 5;
+            let placed = 0;
+            for (let i = 0; i < approved.length; i += BATCH) {
+                const batch = approved.slice(i, i + BATCH);
+                await Promise.all(batch.map(async (s) => {
+                    const ip = (s.ip || '').split(':')[0];
+                    if (!ip) return;
+                    const geo = await geoLookup(ip);
+                    if (!geo) return;
+
+                    const tier     = (s.tier || 'free').toLowerCase();
+                    const color    = tierColor(tier);
+                    const location = [geo.city, geo.country].filter(Boolean).join(', ') || 'Unknown';
+
+                    const marker = L.marker([geo.lat, geo.lon], { icon: makeMarkerIcon(color) });
+                    marker.bindPopup(`
+                        <div class="map-popup-ip">${s.ip || ip}</div>
+                        <div class="map-popup-detail">${location}</div>
+                        ${geo.org ? `<div class="map-popup-detail" style="font-size:11px;opacity:0.7;">${geo.org}</div>` : ''}
+                        <div><span class="map-popup-tier tier-${tier}">${tier}</span></div>
+                    `);
+                    marker.addTo(mapInstance);
+                    placed++;
+                }));
+            }
+
+            statusEl.textContent = placed > 0
+                ? `Showing ${placed} of ${approved.length} node${approved.length !== 1 ? 's' : ''} (${approved.length - placed} could not be resolved).`
+                : 'Could not resolve locations for any nodes.';
+            if (placed === approved.length) statusEl.style.display = 'none';
+
+            // Force Leaflet to recalculate size (tab was hidden on init)
+            mapInstance.invalidateSize();
+        };
     </script>
 </body>
 </html>
