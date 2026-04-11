@@ -3028,19 +3028,16 @@
 
         async function geoLookup(ip) {
             if (mapGeoCache[ip]) return mapGeoCache[ip];
-            try {
-                const token = await auth.currentUser?.getIdToken();
-                const r = await fetch(`/api/v1/nodes/lookup?ip=${encodeURIComponent(ip)}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                const d = await r.json();
-                if (!d.lat || !d.lon) return null;
-                const result = { lat: d.lat, lon: d.lon, city: d.city, country: d.country, org: d.org || d.isp || '' };
-                mapGeoCache[ip] = result;
-                return result;
-            } catch {
-                return null;
-            }
+            const token = await auth.currentUser?.getIdToken();
+            const r = await fetch(`/api/v1/nodes/lookup?ip=${encodeURIComponent(ip)}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const d = await r.json();
+            if (d.error) throw new Error(`${ip}: ${d.error} (HTTP ${r.status})`);
+            if (!d.lat || !d.lon) throw new Error(`${ip}: no coordinates in response`);
+            const result = { lat: d.lat, lon: d.lon, city: d.city, country: d.country, org: d.org || d.isp || '' };
+            mapGeoCache[ip] = result;
+            return result;
         }
 
         window.mapLoad = async function(force = false) {
@@ -3090,34 +3087,40 @@
             // Geo-resolve in batches of 5 to avoid rate limits
             const BATCH = 5;
             let placed = 0;
+            const errors = [];
             for (let i = 0; i < approved.length; i += BATCH) {
                 const batch = approved.slice(i, i + BATCH);
                 await Promise.all(batch.map(async (s) => {
                     const ip = (s.ip || '').split(':')[0];
                     if (!ip) return;
-                    const geo = await geoLookup(ip);
-                    if (!geo) return;
+                    try {
+                        const geo = await geoLookup(ip);
+                        const tier     = (s.tier || 'free').toLowerCase();
+                        const color    = tierColor(tier);
+                        const location = [geo.city, geo.country].filter(Boolean).join(', ') || 'Unknown';
 
-                    const tier     = (s.tier || 'free').toLowerCase();
-                    const color    = tierColor(tier);
-                    const location = [geo.city, geo.country].filter(Boolean).join(', ') || 'Unknown';
-
-                    const marker = L.marker([geo.lat, geo.lon], { icon: makeMarkerIcon(color) });
-                    marker.bindPopup(`
-                        <div class="map-popup-ip">${s.ip || ip}</div>
-                        <div class="map-popup-detail">${location}</div>
-                        ${geo.org ? `<div class="map-popup-detail" style="font-size:11px;opacity:0.7;">${geo.org}</div>` : ''}
-                        <div><span class="map-popup-tier tier-${tier}">${tier}</span></div>
-                    `);
-                    marker.addTo(mapInstance);
-                    placed++;
+                        const marker = L.marker([geo.lat, geo.lon], { icon: makeMarkerIcon(color) });
+                        marker.bindPopup(`
+                            <div class="map-popup-ip">${s.ip || ip}</div>
+                            <div class="map-popup-detail">${location}</div>
+                            ${geo.org ? `<div class="map-popup-detail" style="font-size:11px;opacity:0.7;">${geo.org}</div>` : ''}
+                            <div><span class="map-popup-tier tier-${tier}">${tier}</span></div>
+                        `);
+                        marker.addTo(mapInstance);
+                        placed++;
+                    } catch (e) {
+                        errors.push(e.message);
+                    }
                 }));
             }
 
-            statusEl.textContent = placed > 0
-                ? `Showing ${placed} of ${approved.length} node${approved.length !== 1 ? 's' : ''} (${approved.length - placed} could not be resolved).`
-                : 'Could not resolve locations for any nodes.';
-            if (placed === approved.length) statusEl.style.display = 'none';
+            if (placed === approved.length) {
+                statusEl.style.display = 'none';
+            } else if (placed > 0) {
+                statusEl.textContent = `Showing ${placed} of ${approved.length} node${approved.length !== 1 ? 's' : ''} (${approved.length - placed} unresolved).`;
+            } else {
+                statusEl.textContent = errors.length ? `Error: ${errors[0]}` : 'Could not resolve locations for any nodes.';
+            }
         };
     </script>
 </body>
