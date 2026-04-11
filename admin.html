@@ -3029,10 +3029,13 @@
         async function geoLookup(ip) {
             if (mapGeoCache[ip]) return mapGeoCache[ip];
             try {
-                const r = await fetch(`https://ipwho.is/${ip}`);
+                const token = await auth.currentUser?.getIdToken();
+                const r = await fetch(`/api/v1/nodes/lookup?ip=${encodeURIComponent(ip)}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
                 const d = await r.json();
-                if (!d.success || !d.latitude) return null;
-                const result = { lat: d.latitude, lon: d.longitude, city: d.city, country: d.country, org: d.connection?.org || '' };
+                if (!d.lat || !d.lon) return null;
+                const result = { lat: d.lat, lon: d.lon, city: d.city, country: d.country, org: d.org || d.isp || '' };
                 mapGeoCache[ip] = result;
                 return result;
             } catch {
