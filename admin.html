@@ -1284,6 +1284,12 @@
                         <span><span class="map-legend-dot" style="background:#94a3b8;"></span>Silver</span>
                         <span><span class="map-legend-dot" style="background:#fb923c;"></span>Bronze</span>
                         <span><span class="map-legend-dot" style="background:#667eea;"></span>Free</span>
+                        <span style="margin-left:12px;padding-left:12px;border-left:1px solid rgba(255,255,255,0.1);">
+                            <svg width="14" height="14" style="vertical-align:middle;margin-right:4px;"><path d="M7 0C3.1 0 0 3.1 0 7c0 5.25 7 12 7 12s7-6.75 7-12C14 3.1 10.9 0 7 0z" fill="#94a3b8" opacity="0.9"/><circle cx="7" cy="7" r="2.5" fill="#fff" opacity="0.85"/></svg>Approved
+                        </span>
+                        <span>
+                            <svg width="12" height="12" style="vertical-align:middle;margin-right:4px;"><circle cx="6" cy="6" r="5" fill="#94a3b8" opacity="0.5" stroke="#fff" stroke-width="1" stroke-opacity="0.3"/></svg>On-chain only
+                        </span>
                     </div>
                 </div>
             </div>
@@ -3029,6 +3035,19 @@
             });
         }
 
+        function makeDotIcon(color) {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
+                <circle cx="6" cy="6" r="5" fill="${color}" opacity="0.5" stroke="#fff" stroke-width="1" stroke-opacity="0.3"/>
+            </svg>`;
+            return L.divIcon({
+                html: svg,
+                className: '',
+                iconSize: [12, 12],
+                iconAnchor: [6, 6],
+                popupAnchor: [0, -8],
+            });
+        }
+
         async function geoLookup(ip) {
             if (mapGeoCache[ip]) return mapGeoCache[ip];
             const token = await auth.currentUser?.getIdToken();
@@ -3098,6 +3117,13 @@
 
             statusEl.textContent = `Resolving locations for ${nodes.length} node${nodes.length !== 1 ? 's' : ''}…`;
 
+            // Build set of approved IPs from Firebase submissions
+            const approvedIps = new Set(
+                allSubmissions
+                    .filter(s => s.status === 'approved')
+                    .map(s => (s.ip || '').split(':')[0])
+            );
+
             // Geo-resolve in batches of 5
             const BATCH = 5;
             let placed = 0;
@@ -3110,16 +3136,23 @@
                     try {
                         const geo = await geoLookup(ip);
                         // tier comes from the blockchain: 'Free' | 'Bronze' | 'Silver' | 'Gold'
-                        const tier  = (node.tier || 'Free').toLowerCase();
-                        const color = tierColor(tier);
+                        const tier     = (node.tier || 'Free').toLowerCase();
+                        const color    = tierColor(tier);
                         const location = [geo.city, geo.country].filter(Boolean).join(', ') || 'Unknown';
+                        const approved = approvedIps.has(ip);
 
-                        const marker = L.marker([geo.lat, geo.lon], { icon: makeMarkerIcon(color) });
+                        const marker = L.marker([geo.lat, geo.lon], {
+                            icon: approved ? makeMarkerIcon(color) : makeDotIcon(color),
+                            zIndexOffset: approved ? 100 : 0,
+                        });
                         marker.bindPopup(`
                             <div class="map-popup-ip">${node.address}</div>
                             <div class="map-popup-detail">${location}</div>
                             ${geo.org ? `<div class="map-popup-detail" style="font-size:11px;opacity:0.7;">${geo.org}</div>` : ''}
-                            <div><span class="map-popup-tier tier-${tier}">${tier}</span></div>
+                            <div>
+                                <span class="map-popup-tier tier-${tier}">${tier}</span>
+                                ${!approved ? '<span style="font-size:11px;color:rgba(255,255,255,0.4);margin-left:6px;">not approved</span>' : ''}
+                            </div>
                         `);
                         marker.addTo(mapInstance);
                         placed++;
