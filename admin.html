@@ -3064,47 +3064,59 @@
                     maxZoom: 20,
                 }).addTo(mapInstance);
             } else {
-                // Clear existing markers
                 mapInstance.eachLayer(layer => {
                     if (layer instanceof L.Marker) mapInstance.removeLayer(layer);
                 });
             }
 
-            // Let Leaflet measure the now-visible container
             mapInstance.invalidateSize();
 
-            const approved = allSubmissions.filter(s => s.status === 'approved');
             const statusEl = document.getElementById('mapStatus');
             const countEl  = document.getElementById('mapNodeCount');
-            countEl.textContent = `${approved.length} approved node${approved.length !== 1 ? 's' : ''}`;
 
-            if (approved.length === 0) {
-                statusEl.style.display = 'block';
-                statusEl.textContent = 'No approved masternodes to display.';
+            statusEl.style.display = 'block';
+            statusEl.textContent = 'Fetching live mainnet nodes…';
+
+            // Fetch live masternode list from the blockchain (mainnet only, tier is authoritative)
+            let nodes = [];
+            try {
+                const res = await fetch('/api/explorer/mainnet/masternodes');
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                nodes = data.nodes || [];
+            } catch (e) {
+                statusEl.textContent = `Error fetching masternodes: ${e.message}`;
                 return;
             }
 
-            statusEl.style.display = 'block';
-            statusEl.textContent = `Resolving locations for ${approved.length} node${approved.length !== 1 ? 's' : ''}…`;
+            countEl.textContent = `${nodes.length} mainnet node${nodes.length !== 1 ? 's' : ''}`;
 
-            // Geo-resolve in batches of 5 to avoid rate limits
+            if (nodes.length === 0) {
+                statusEl.textContent = 'No mainnet masternodes found.';
+                return;
+            }
+
+            statusEl.textContent = `Resolving locations for ${nodes.length} node${nodes.length !== 1 ? 's' : ''}…`;
+
+            // Geo-resolve in batches of 5
             const BATCH = 5;
             let placed = 0;
             const errors = [];
-            for (let i = 0; i < approved.length; i += BATCH) {
-                const batch = approved.slice(i, i + BATCH);
-                await Promise.all(batch.map(async (s) => {
-                    const ip = (s.ip || '').split(':')[0];
+            for (let i = 0; i < nodes.length; i += BATCH) {
+                const batch = nodes.slice(i, i + BATCH);
+                await Promise.all(batch.map(async (node) => {
+                    const ip = (node.address || '').split(':')[0];
                     if (!ip) return;
                     try {
                         const geo = await geoLookup(ip);
-                        const tier     = (s.tier || 'free').toLowerCase();
-                        const color    = tierColor(tier);
+                        // tier comes from the blockchain: 'Free' | 'Bronze' | 'Silver' | 'Gold'
+                        const tier  = (node.tier || 'Free').toLowerCase();
+                        const color = tierColor(tier);
                         const location = [geo.city, geo.country].filter(Boolean).join(', ') || 'Unknown';
 
                         const marker = L.marker([geo.lat, geo.lon], { icon: makeMarkerIcon(color) });
                         marker.bindPopup(`
-                            <div class="map-popup-ip">${s.ip || ip}</div>
+                            <div class="map-popup-ip">${node.address}</div>
                             <div class="map-popup-detail">${location}</div>
                             ${geo.org ? `<div class="map-popup-detail" style="font-size:11px;opacity:0.7;">${geo.org}</div>` : ''}
                             <div><span class="map-popup-tier tier-${tier}">${tier}</span></div>
@@ -3117,10 +3129,10 @@
                 }));
             }
 
-            if (placed === approved.length) {
+            if (placed === nodes.length) {
                 statusEl.style.display = 'none';
             } else if (placed > 0) {
-                statusEl.textContent = `Showing ${placed} of ${approved.length} node${approved.length !== 1 ? 's' : ''} (${approved.length - placed} unresolved).`;
+                statusEl.textContent = `Showing ${placed} of ${nodes.length} node${nodes.length !== 1 ? 's' : ''} (${nodes.length - placed} unresolved).`;
             } else {
                 statusEl.textContent = errors.length ? `Error: ${errors[0]}` : 'Could not resolve locations for any nodes.';
             }
