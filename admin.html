@@ -435,23 +435,29 @@
         /* Tabs */
         .tab-nav {
             display: flex;
+            flex-wrap: wrap;
             gap: 4px;
             margin-bottom: 28px;
             border-bottom: 1px solid rgba(255,255,255,0.08);
             padding-bottom: 0;
+            overflow-x: auto;
+            scrollbar-width: none;
         }
+        .tab-nav::-webkit-scrollbar { display: none; }
 
         .tab-btn {
-            padding: 9px 20px;
+            padding: 9px 16px;
             background: transparent;
             border: none;
             border-bottom: 2px solid transparent;
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
             margin-bottom: -1px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .tab-btn:hover { color: #fff; }
@@ -3038,7 +3044,9 @@
             if (mapLoaded && !force) return;
             mapLoaded = true;
 
-            // Initialize map once
+            // Initialize map once — defer a frame so the tab panel is fully painted
+            await new Promise(res => setTimeout(res, 50));
+
             if (!mapInstance) {
                 mapInstance = L.map('mapContainer', {
                     center: [20, 0],
@@ -3058,6 +3066,9 @@
                     if (layer instanceof L.Marker) mapInstance.removeLayer(layer);
                 });
             }
+
+            // Let Leaflet measure the now-visible container
+            mapInstance.invalidateSize();
 
             const approved = allSubmissions.filter(s => s.status === 'approved');
             const statusEl = document.getElementById('mapStatus');
@@ -3104,9 +3115,6 @@
                 ? `Showing ${placed} of ${approved.length} node${approved.length !== 1 ? 's' : ''} (${approved.length - placed} could not be resolved).`
                 : 'Could not resolve locations for any nodes.';
             if (placed === approved.length) statusEl.style.display = 'none';
-
-            // Force Leaflet to recalculate size (tab was hidden on init)
-            mapInstance.invalidateSize();
         };
     </script>
 </body>
