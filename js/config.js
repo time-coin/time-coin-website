@@ -21,6 +21,11 @@ const TIME_CONFIG = {
     mainnetYear:       '2026',
     mainnetTimestamp:  '2026-04-01T00:00:00Z',
 
+    // Re-launch
+    relaunchDate:      'April 15, 2026',
+    relaunchDateTime:  'April 15, 2026 at 00:00 GMT',
+    relaunchTimestamp: '2026-04-15T00:00:00Z',
+
     // Development progress
     devProgress:    '85%',
     devProgressNum: 85,
@@ -37,7 +42,7 @@ const TIME_CONFIG = {
     contributors:     '100+',
 
     // Banner / summary strings (shown in dev notice bar and progress section)
-    devNotice:    'Mainnet Active \u2022 Node v1.4.34 Released \u2022 Wallet v0.6.4 Available',
+    devNotice:    'Re-launch April 15, 2026 at 00:00 GMT \u2022 Node v1.4.34 Released \u2022 Wallet v0.6.4 Available',
     progressInfo: 'Node v1.4.34 \u2022 Wallet v0.6.4 \u2022 Security Audit Passed \u2022 Mainnet Active \u2022 TLS Fully Implemented \u2022 On-Chain Governance Live',
 
     // Social links
