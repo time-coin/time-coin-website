@@ -69,30 +69,10 @@
                     We are re-launching TIME Coin with a fresh mainnet, enhanced tokenomics, and a fully audited codebase.
                     The network goes live on <strong>April 15, 2026 at 00:00 GMT</strong> — fair and open to everyone.
                 </p>
-
-                <!-- Countdown Timer -->
-                <div class="countdown-wrap">
-                    <div class="countdown-block">
-                        <span class="countdown-num" id="cd-days">--</span>
-                        <span class="countdown-label">Days</span>
-                    </div>
-                    <div class="countdown-sep">:</div>
-                    <div class="countdown-block">
-                        <span class="countdown-num" id="cd-hours">--</span>
-                        <span class="countdown-label">Hours</span>
-                    </div>
-                    <div class="countdown-sep">:</div>
-                    <div class="countdown-block">
-                        <span class="countdown-num" id="cd-minutes">--</span>
-                        <span class="countdown-label">Minutes</span>
-                    </div>
-                    <div class="countdown-sep">:</div>
-                    <div class="countdown-block">
-                        <span class="countdown-num" id="cd-seconds">--</span>
-                        <span class="countdown-label">Seconds</span>
-                    </div>
+                <div class="relaunch-date-display">
+                    <span class="relaunch-date-label">Launch Date</span>
+                    <span class="relaunch-date-value">April 15, 2026 — 00:00 GMT</span>
                 </div>
-
                 <div class="relaunch-actions">
                     <a href="roadmap.html" class="btn btn-primary">View Roadmap</a>
                     <a href="community.html" class="btn btn-secondary">Join Community</a>
@@ -289,40 +269,6 @@
 
     <!-- Footer will be injected here by includes.js -->
 
-    <script>
-        (function () {
-            var target = new Date('2026-04-15T00:00:00Z').getTime();
-
-            function pad(n) { return String(n).padStart(2, '0'); }
-
-            function tick() {
-                var now  = Date.now();
-                var diff = target - now;
-
-                if (diff <= 0) {
-                    document.getElementById('cd-days').textContent    = '00';
-                    document.getElementById('cd-hours').textContent   = '00';
-                    document.getElementById('cd-minutes').textContent = '00';
-                    document.getElementById('cd-seconds').textContent = '00';
-                    return;
-                }
-
-                var days    = Math.floor(diff / 86400000);
-                var hours   = Math.floor((diff % 86400000) / 3600000);
-                var minutes = Math.floor((diff % 3600000)  / 60000);
-                var seconds = Math.floor((diff % 60000)    / 1000);
-
-                document.getElementById('cd-days').textContent    = pad(days);
-                document.getElementById('cd-hours').textContent   = pad(hours);
-                document.getElementById('cd-minutes').textContent = pad(minutes);
-                document.getElementById('cd-seconds').textContent = pad(seconds);
-            }
-
-            tick();
-            setInterval(tick, 1000);
-        })();
-    </script>
-
     <style>
         /* Page-Specific Styles */
         /* Re-launch Banner */
@@ -373,53 +319,33 @@
             color: #e0e0f0;
         }
 
-        /* Countdown */
-        .countdown-wrap {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
-        }
-
-        .countdown-block {
-            display: flex;
+        /* Launch date display */
+        .relaunch-date-display {
+            display: inline-flex;
             flex-direction: column;
             align-items: center;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(102, 126, 234, 0.3);
-            border-radius: 12px;
-            padding: 16px 24px;
-            min-width: 90px;
+            border-radius: 14px;
+            padding: 20px 40px;
+            margin-bottom: 36px;
+            gap: 6px;
         }
 
-        .countdown-num {
-            font-size: 52px;
+        .relaunch-date-label {
+            font-size: 12px;
+            color: #8888aa;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .relaunch-date-value {
+            font-size: 28px;
             font-weight: 700;
-            color: #fff;
-            line-height: 1;
-            font-variant-numeric: tabular-nums;
             background: linear-gradient(135deg, #667eea, #a78bfa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-        }
-
-        .countdown-label {
-            font-size: 12px;
-            color: #8888aa;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-top: 6px;
-        }
-
-        .countdown-sep {
-            font-size: 40px;
-            font-weight: 700;
-            color: #667eea;
-            line-height: 1;
-            margin-bottom: 20px;
         }
 
         .relaunch-actions {
@@ -438,17 +364,12 @@
                 font-size: 15px;
             }
 
-            .countdown-num {
-                font-size: 36px;
+            .relaunch-date-value {
+                font-size: 20px;
             }
 
-            .countdown-block {
-                min-width: 70px;
-                padding: 12px 16px;
-            }
-
-            .countdown-sep {
-                font-size: 28px;
+            .relaunch-date-display {
+                padding: 16px 24px;
             }
         }
 
