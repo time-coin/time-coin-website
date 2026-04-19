@@ -2716,8 +2716,10 @@
             const btn = document.getElementById('autoRejectBtn');
             const msg = document.getElementById('autoRejectMsg');
             btn.disabled = true;
-            btn.textContent = 'Checking…';
             msg.textContent = '';
+
+            const idToken = await auth.currentUser?.getIdToken();
+            const authHeaders = idToken ? { 'Authorization': `Bearer ${idToken}` } : {};
 
             let rejected = 0;
             let checked  = 0;
@@ -2725,19 +2727,44 @@
             for (const s of pending) {
                 checked++;
                 btn.textContent = `Checking ${checked}/${pending.length}…`;
+                let rejectReason = null;
+
                 try {
-                    const res  = await fetch(`/api/v1/nodes/banned/check?ip=${encodeURIComponent(s.ip)}`);
-                    const data = await res.json();
-                    if (data.banned) {
-                        await updateDoc(doc(db, 'masternode_submissions', s.id), {
-                            status: 'rejected',
-                            notes:  `Auto-rejected: ${data.reason}`,
-                        });
-                        s.status = 'rejected';
-                        s.notes  = `Auto-rejected: ${data.reason}`;
-                        rejected++;
+                    // 1 — Ban check (no auth needed)
+                    const banRes  = await fetch(`/api/v1/nodes/banned/check?ip=${encodeURIComponent(s.ip)}`);
+                    const banData = await banRes.json();
+                    if (banData.banned) {
+                        rejectReason = `Banned IP: ${banData.reason}`;
                     }
                 } catch { /* skip on network error */ }
+
+                if (!rejectReason) {
+                    try {
+                        // 2 — Node probe: must be reachable and speak TIME protocol
+                        const probeRes  = await fetch(
+                            `/api/v1/nodes/probe?ip=${encodeURIComponent(s.ip)}&port=${encodeURIComponent(s.port)}&network=${encodeURIComponent(s.network)}`,
+                            { headers: authHeaders }
+                        );
+                        const probe = await probeRes.json();
+                        if (!probe.inbound?.ok) {
+                            rejectReason = `Node unreachable — port ${s.port} did not respond`;
+                        } else if (!probe.outbound?.ok) {
+                            rejectReason = `Port is open but node did not respond to TIME handshake`;
+                        }
+                    } catch { /* skip on network error */ }
+                }
+
+                if (rejectReason) {
+                    try {
+                        await updateDoc(doc(db, 'masternode_submissions', s.id), {
+                            status: 'rejected',
+                            notes:  `Auto-rejected: ${rejectReason}`,
+                        });
+                        s.status = 'rejected';
+                        s.notes  = `Auto-rejected: ${rejectReason}`;
+                        rejected++;
+                    } catch { /* skip on write error */ }
+                }
             }
 
             updateStats();
@@ -2745,8 +2772,8 @@
             btn.disabled = false;
             btn.textContent = '⚡ Auto-reject Banned';
             msg.textContent = rejected > 0
-                ? `Rejected ${rejected} banned IP${rejected !== 1 ? 's' : ''}.`
-                : `No banned IPs found among ${pending.length} pending submission${pending.length !== 1 ? 's' : ''}.`;
+                ? `Rejected ${rejected} of ${pending.length} submission${pending.length !== 1 ? 's' : ''}.`
+                : `All ${pending.length} submission${pending.length !== 1 ? 's' : ''} passed.`;
             msg.style.color = rejected > 0 ? '#f87171' : '#34d399';
         };
 
