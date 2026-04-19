@@ -1340,6 +1340,18 @@
                     <span id="banMsg" style="font-size:13px;color:var(--text-secondary);display:block;margin-top:8px;"></span>
                 </div>
 
+                <!-- Lookup & remove -->
+                <div class="section" style="margin-top:0">
+                    <div class="section-header"><span class="section-title">Lookup & Remove</span></div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                        <input id="lookupIpInput" type="text" placeholder="Enter exact IP…"
+                            style="flex:1;min-width:200px;padding:8px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;"
+                            onkeydown="if(event.key==='Enter')lookupBan()">
+                        <button onclick="lookupBan()" style="padding:8px 18px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:var(--text-secondary);font-size:13px;cursor:pointer;">Search</button>
+                    </div>
+                    <div id="lookupResult" style="margin-top:12px;display:none;padding:12px 14px;border-radius:8px;font-size:13px;"></div>
+                </div>
+
                 <!-- Ban list -->
                 <div class="section" style="margin-top:0">
                     <div class="section-header">
@@ -3438,6 +3450,54 @@
                 document.getElementById('bannedBody').innerHTML =
                     '<tr><td colspan="5" style="padding:16px 10px;color:#f87171;">Failed to load.</td></tr>';
             }
+        }
+
+        async function lookupBan() {
+            const ip = document.getElementById('lookupIpInput').value.trim();
+            const box = document.getElementById('lookupResult');
+            if (!ip) return;
+            box.style.display = 'block';
+            box.style.background = 'rgba(255,255,255,0.04)';
+            box.style.border = '1px solid rgba(255,255,255,0.08)';
+            box.innerHTML = 'Searching…';
+
+            const token = await getBannedToken();
+            if (!token) { box.innerHTML = '<span style="color:#f87171;">Auth failed.</span>'; return; }
+
+            // Use the admin list endpoint and filter by exact IP match
+            try {
+                const res  = await fetch('/api/v1/nodes/banned', { headers: { Authorization: `Bearer ${token}` } });
+                const rows = await res.json();
+                const match = rows.find(r => r.ip === ip || `${r.ip}/${r.prefix}` === ip);
+
+                if (!match) {
+                    box.style.border = '1px solid rgba(255,255,255,0.08)';
+                    box.innerHTML = `<span style="color:var(--text-secondary);">No active ban found for <strong style="color:#fff;">${ip}</strong>.</span>`;
+                    return;
+                }
+
+                const cidr = match.prefix && match.prefix !== '32' ? `${match.ip}/${match.prefix}` : match.ip;
+                const date = match.banned_at ? new Date(match.banned_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : '—';
+                box.style.border = '1px solid rgba(239,68,68,0.3)';
+                box.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
+                        <div>
+                            <span style="color:#f87171;font-weight:600;">${cidr}</span>
+                            <span style="margin-left:10px;color:var(--text-secondary);font-size:11px;text-transform:uppercase;">${match.ban_type}</span>
+                            <div style="margin-top:4px;color:var(--text-secondary);">${match.reason}</div>
+                            <div style="margin-top:2px;font-size:11px;color:var(--text-secondary);">Banned ${date}</div>
+                        </div>
+                        <button onclick="removeBanAndClear(${match.id})" style="padding:7px 16px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.35);border-radius:7px;color:#f87171;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">Remove Ban</button>
+                    </div>`;
+            } catch {
+                box.innerHTML = '<span style="color:#f87171;">Lookup failed.</span>';
+            }
+        }
+
+        async function removeBanAndClear(id) {
+            await removeBan(id);
+            document.getElementById('lookupResult').style.display = 'none';
+            document.getElementById('lookupIpInput').value = '';
         }
 
         let allBannedRows = [];
