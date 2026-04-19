@@ -820,6 +820,21 @@
                         <div class="page-btns" id="pageBtns"></div>
                     </div>
                 </div>
+
+                <!-- Compliance check -->
+                <div class="section" style="margin-top:0">
+                    <div class="section-header">
+                        <span class="section-title">Approved Node Compliance</span>
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <span id="complianceMsg" style="font-size:13px;color:var(--text-secondary);"></span>
+                            <button onclick="runComplianceCheck()" id="complianceBtn"
+                                style="padding:6px 14px;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.3);border-radius:6px;color:#818cf8;font-size:12px;font-weight:600;cursor:pointer;">
+                                ⚙ Check Compliance
+                            </button>
+                        </div>
+                    </div>
+                    <div id="complianceResults" style="display:none;margin-top:8px;"></div>
+                </div>
             </div>
 
             <!-- Press Releases tab -->
@@ -2708,6 +2723,83 @@
             } catch (err) {
                 alert('Failed to delete: ' + err.message);
             }
+        };
+
+        // ── Approved node compliance check ───────────────────────────────────
+
+        window.runComplianceCheck = async function() {
+            const btn = document.getElementById('complianceBtn');
+            const msg = document.getElementById('complianceMsg');
+            const resultsEl = document.getElementById('complianceResults');
+            btn.disabled = true;
+            btn.textContent = 'Checking…';
+            msg.textContent = '';
+            resultsEl.style.display = 'none';
+
+            const idToken = await auth.currentUser?.getIdToken();
+            if (!idToken) { btn.disabled = false; btn.textContent = '⚙ Check Compliance'; return; }
+
+            try {
+                const res  = await fetch('/api/v1/nodes/compliance', {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${idToken}` },
+                });
+                const data = await res.json();
+
+                msg.textContent = `${data.passed}/${data.checked} passed, ${data.removed} removed`;
+                msg.style.color = data.removed > 0 ? '#f87171' : '#34d399';
+
+                if (data.results?.length) {
+                    const failed  = data.results.filter(r => r.status !== 'ok');
+                    const passed  = data.results.filter(r => r.status === 'ok');
+
+                    const statusColor = { banned: '#f87171', unreachable: '#fbbf24', version_mismatch: '#fb923c', no_handshake: '#fbbf24' };
+                    const statusLabel = { banned: 'Banned', unreachable: 'Unreachable', version_mismatch: 'Outdated version', no_handshake: 'No handshake', ok: 'OK' };
+
+                    resultsEl.style.display = 'block';
+                    resultsEl.innerHTML = [
+                        ...failed.map(r => `
+                            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:6px;background:rgba(239,68,68,0.07);margin-bottom:4px;">
+                                <span style="font-family:monospace;font-size:13px;color:#f87171;">${r.ip}:${r.port} <span style="color:var(--text-secondary);font-size:11px;">${r.network}</span></span>
+                                <span style="font-size:12px;color:${statusColor[r.status] || '#f87171'};font-weight:600;">${statusLabel[r.status] || r.status}</span>
+                                <span style="font-size:12px;color:var(--text-secondary);max-width:360px;text-align:right;">${r.reason || ''}</span>
+                            </div>`),
+                        failed.length && passed.length ? `<div style="font-size:12px;color:var(--text-secondary);padding:6px 0;">${passed.length} node${passed.length !== 1 ? 's' : ''} passed</div>` : '',
+                    ].join('');
+
+                    // Sync Firestore status for removed nodes
+                    if (failed.length) {
+                        const q = query(collection(db, 'masternode_submissions'),
+                            where('status', '==', 'approved'));
+                        const snap = await getDocs(q);
+                        for (const f of failed) {
+                            const match = snap.docs.find(d => d.data().ip === f.ip && d.data().network === f.network);
+                            if (match) {
+                                const note = f.status === 'version_mismatch'
+                                    ? 'Removed from whitelist: your node is running an outdated protocol version. Please update to v2 or higher and resubmit.'
+                                    : f.status === 'banned'
+                                        ? `Removed from whitelist: banned IP — ${f.reason}`
+                                        : `Removed from whitelist: ${f.reason}`;
+                                await updateDoc(doc(db, 'masternode_submissions', match.id), {
+                                    status: 'rejected',
+                                    notes:  note,
+                                }).catch(() => {});
+                                const s = allSubmissions.find(s => s.id === match.id);
+                                if (s) { s.status = 'rejected'; s.notes = note; }
+                            }
+                        }
+                        updateStats();
+                        renderTable();
+                    }
+                }
+            } catch (err) {
+                msg.textContent = 'Check failed — see console';
+                msg.style.color = '#f87171';
+                console.error(err);
+            }
+
+            btn.disabled = false;
+            btn.textContent = '⚙ Check Compliance';
         };
 
         // Runs silently after every loadSubmissions — rejects banned IPs without user interaction.
