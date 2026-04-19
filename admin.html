@@ -1344,7 +1344,10 @@
                 <div class="section" style="margin-top:0">
                     <div class="section-header">
                         <span class="section-title">Active Bans</span>
-                        <button onclick="loadBanned()" style="padding:6px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:12px;cursor:pointer;">↻ Refresh</button>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <input id="bannedSearch" type="text" placeholder="Search IP or reason…" oninput="filterBanned()" style="padding:5px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-primary);font-size:12px;width:220px;outline:none;">
+                            <button onclick="loadBanned()" style="padding:6px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:12px;cursor:pointer;">↻ Refresh</button>
+                        </div>
                     </div>
                     <div style="overflow-x:auto;">
                         <table style="width:100%;border-collapse:collapse;font-size:13px;">
@@ -3429,11 +3432,19 @@
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const rows = await res.json();
-                renderBanned(rows);
+                allBannedRows = rows;
+                filterBanned();
             } catch {
                 document.getElementById('bannedBody').innerHTML =
                     '<tr><td colspan="5" style="padding:16px 10px;color:#f87171;">Failed to load.</td></tr>';
             }
+        }
+
+        let allBannedRows = [];
+
+        function filterBanned() {
+            const q = (document.getElementById('bannedSearch')?.value || '').toLowerCase();
+            renderBanned(q ? allBannedRows.filter(r => r.ip.includes(q) || (r.reason || '').toLowerCase().includes(q)) : allBannedRows);
         }
 
         function renderBanned(rows) {
