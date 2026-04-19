@@ -562,6 +562,7 @@
             addDoc,
             getDocs,
             deleteDoc,
+            updateDoc,
             doc,
             query,
             where,
@@ -664,7 +665,7 @@
                     ? node.submittedAt.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
                     : 'Just now';
 
-                const canDelete = node.status === 'pending';
+                const canDelete = node.status === 'pending' || node.status === 'rejected';
 
                 return `
                     <div class="node-card">
@@ -735,9 +736,14 @@
                 showMsg('error', 'Please enter a valid port number (1–65535).');
                 return;
             }
-            // Duplicate check
-            if (nodes.find(n => n.ip === ip && n.port === port && n.network === network)) {
-                showMsg('error', 'You have already submitted this IP:port for this network.');
+            // Block duplicate pending submissions
+            if (nodes.find(n => n.ip === ip && n.port === port && n.network === network && n.status === 'pending')) {
+                showMsg('error', 'You already have a pending submission for this IP:port.');
+                return;
+            }
+            // Block resubmission of approved nodes
+            if (nodes.find(n => n.ip === ip && n.port === port && n.network === network && n.status === 'approved')) {
+                showMsg('error', 'This node is already approved on the whitelist.');
                 return;
             }
 
@@ -761,22 +767,35 @@
 
             btn.textContent = 'Submitting...';
 
-            try {
-                await addDoc(collection(db, 'masternode_submissions'), {
-                    userId:     currentUser.uid,
-                    userEmail:  currentUser.email,
-                    ip,
-                    port,
-                    tier,
-                    network,
-                    label,
-                    status:     'pending',
-                    submittedAt: serverTimestamp(),
-                    notes:      '',
-                });
+            // If a previous rejection exists for this IP, reopen it instead of creating a duplicate
+            const previousRejection = nodes.find(n => n.ip === ip && n.port === port && n.network === network && n.status === 'rejected');
 
-                // Optional Discord notification
-                if (DISCORD_WEBHOOK_URL) {
+            try {
+                if (previousRejection) {
+                    await updateDoc(doc(db, 'masternode_submissions', previousRejection.id), {
+                        status:      'pending',
+                        notes:       '',
+                        tier,
+                        label,
+                        submittedAt: serverTimestamp(),
+                    });
+                } else {
+                    await addDoc(collection(db, 'masternode_submissions'), {
+                        userId:     currentUser.uid,
+                        userEmail:  currentUser.email,
+                        ip,
+                        port,
+                        tier,
+                        network,
+                        label,
+                        status:     'pending',
+                        submittedAt: serverTimestamp(),
+                        notes:      '',
+                    });
+                }
+
+                // Optional Discord notification (new submissions only)
+                if (!previousRejection && DISCORD_WEBHOOK_URL) {
                     fetch(DISCORD_WEBHOOK_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -802,7 +821,9 @@
                 document.getElementById('nodeIp').value = '';
                 document.getElementById('nodeLabel').value = '';
 
-                showMsg('success', 'Masternode submitted! Your application is under review.');
+                showMsg('success', previousRejection
+                    ? 'Resubmitted! Your application is back under review.'
+                    : 'Masternode submitted! Your application is under review.');
                 await loadNodes();
             } catch (err) {
                 console.error(err);
