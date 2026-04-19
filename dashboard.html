@@ -684,7 +684,13 @@
                                 ${node.label ? `<span>· ${node.label}</span>` : ''}
                                 <span>· ${date}</span>
                             </div>
-                            ${node.notes ? `<div class="node-note">Admin note: ${node.notes}</div>` : ''}
+                            ${node.notes
+                                ? node.status === 'rejected'
+                                    ? `<div class="node-note" style="color:#fca5a5;margin-top:6px;"><strong style="color:#f87171;">Reason:</strong> ${node.notes.replace(/^Auto-rejected:\s*/i, '')}</div>`
+                                    : `<div class="node-note">Admin note: ${node.notes}</div>`
+                                : node.status === 'rejected'
+                                    ? `<div class="node-note" style="color:#fca5a5;margin-top:6px;"><strong style="color:#f87171;">Reason:</strong> No reason provided — contact support to appeal.</div>`
+                                    : ''}
                         </div>
                         <div class="node-actions">
                             ${statusBadge}
