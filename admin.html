@@ -1492,6 +1492,8 @@
                 allSubmissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                 updateStats();
                 renderTable();
+                // Silently auto-reject any pending submissions from banned IPs
+                autoBanPending();
             } catch (err) {
                 document.getElementById('submissionsBody').innerHTML =
                     `<tr><td colspan="8" class="empty-state" style="color:var(--danger-red)">${err.message}</td></tr>`;
@@ -2705,6 +2707,29 @@
                 alert('Failed to delete: ' + err.message);
             }
         };
+
+        // Runs silently after every loadSubmissions — rejects banned IPs without user interaction.
+        async function autoBanPending() {
+            const pending = allSubmissions.filter(s => s.status === 'pending');
+            if (!pending.length) return;
+            let changed = false;
+            await Promise.all(pending.map(async (s) => {
+                try {
+                    const res  = await fetch(`/api/v1/nodes/banned/check?ip=${encodeURIComponent(s.ip)}`);
+                    const data = await res.json();
+                    if (data.banned) {
+                        await updateDoc(doc(db, 'masternode_submissions', s.id), {
+                            status: 'rejected',
+                            notes:  `Auto-rejected: Banned IP — ${data.reason}`,
+                        });
+                        s.status = 'rejected';
+                        s.notes  = `Auto-rejected: Banned IP — ${data.reason}`;
+                        changed  = true;
+                    }
+                } catch { /* ignore */ }
+            }));
+            if (changed) { updateStats(); renderTable(); }
+        }
 
         window.autoRejectBanned = async function() {
             const pending = allSubmissions.filter(s => s.status === 'pending');
