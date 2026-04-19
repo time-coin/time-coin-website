@@ -2775,7 +2775,11 @@
                                     ? 'Removed from whitelist: your node is running an outdated protocol version. Please update to v2 or higher and resubmit.'
                                     : f.status === 'banned'
                                         ? `Removed from whitelist: banned IP — ${f.reason}`
-                                        : `Removed from whitelist: ${f.reason}`;
+                                        : f.status === 'unreachable'
+                                            ? `Removed from whitelist: could not connect to your node. Please ensure your node is running and the port is open, then resubmit.`
+                                            : f.status === 'no_handshake'
+                                                ? `Removed from whitelist: connected to your node but it did not respond to the TIME handshake. Please check your node is fully synced and resubmit.`
+                                                : `Removed from whitelist: ${f.reason}`;
                                 await updateDoc(doc(db, 'masternode_submissions', match.id), {
                                     status: 'rejected',
                                     notes:  note,
@@ -2862,11 +2866,11 @@
                         );
                         const probe = await probeRes.json();
                         if (!probe.inbound?.ok) {
-                            rejectReason = `Node unreachable — port ${s.port} did not respond`;
+                            rejectReason = `Could not connect to your node on port ${s.port}. Please ensure your node is running and the port is open, then resubmit.`;
                         } else if (!probe.outbound?.ok) {
                             rejectReason = probe.outbound?.versionMismatch
                                 ? `Your node is running an outdated protocol version. Please update to version 2 or higher and resubmit.`
-                                : `Port is open but node did not respond to the TIME handshake`;
+                                : `Connected to port ${s.port} but your node did not respond to the TIME handshake. Please check your node is fully synced and resubmit.`;
                         }
                     } catch { /* skip on network error */ }
                 }
