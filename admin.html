@@ -1258,8 +1258,14 @@
 
                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:24px;">
                     <div class="stat-card" style="overflow:hidden;">
-                        <div class="stat-label">Balance</div>
+                        <div class="stat-label">Total Wallet Balance</div>
                         <div class="stat-value green" id="exBalance" style="font-size:clamp(14px,2.2vw,22px);word-break:break-all;line-height:1.3;">—</div>
+                        <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">All addresses combined</div>
+                    </div>
+                    <div class="stat-card" style="overflow:hidden;">
+                        <div class="stat-label">Hot Wallet Address Balance</div>
+                        <div class="stat-value" id="exAddressBalance" style="font-size:clamp(14px,2.2vw,22px);word-break:break-all;line-height:1.3;">—</div>
+                        <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">Configured address only</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">RPC</div>
@@ -3247,6 +3253,10 @@
                 document.getElementById('exAlert').style.display = low ? 'block' : 'none';
 
                 document.getElementById('exBalance').textContent = d.rpcReachable ? (d.balanceDisplay ?? '0') + ' TIME' : '—';
+                const addrBal = d.hotWalletAddressBalanceDisplay;
+                const addrBalEl = document.getElementById('exAddressBalance');
+                addrBalEl.textContent = d.rpcReachable ? (addrBal !== null ? addrBal + ' TIME' : 'N/A') : '—';
+                addrBalEl.className = 'stat-value ' + (addrBal !== null && addrBal !== d.balanceDisplay ? 'yellow' : 'green');
                 document.getElementById('exRpc').textContent = d.rpcReachable ? '✓ Online' : '✗ Offline';
                 document.getElementById('exRpc').className = 'stat-value ' + (d.rpcReachable ? 'green' : 'red');
                 document.getElementById('exNetwork').textContent = d.network ?? '—';
