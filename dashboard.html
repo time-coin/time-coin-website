@@ -506,13 +506,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="nodeTier">Tier *</label>
-                        <select id="nodeTier">
-                            <option value="Free">Free — 0 TIME</option>
-                            <option value="Bronze">Bronze — 1,000 TIME</option>
-                            <option value="Silver">Silver — 10,000 TIME</option>
-                            <option value="Gold">Gold — 100,000 TIME</option>
-                        </select>
+                        <label>Tier</label>
+                        <div id="tierDisplay" style="padding:9px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;font-size:14px;color:var(--text-secondary);">
+                            Detected automatically from the blockchain
+                        </div>
+                        <input type="hidden" id="nodeTier" value="">
                     </div>
                     <div class="form-group">
                         <label for="nodePort">Port</label>
@@ -722,7 +720,6 @@
         document.getElementById('submitBtn').addEventListener('click', async () => {
             const ip      = document.getElementById('nodeIp').value.trim();
             const port    = parseInt(document.getElementById('nodePort').value, 10);
-            const tier    = document.getElementById('nodeTier').value;
             const network = document.getElementById('nodeNetwork').value;
             const label   = document.getElementById('nodeLabel').value.trim();
 
@@ -763,6 +760,26 @@
                 }
             } catch {
                 // If ban check fails, allow submission to proceed
+            }
+
+            // Auto-detect tier from blockchain
+            btn.textContent = 'Detecting tier...';
+            let tier = 'Free';
+            try {
+                const tierRes  = await fetch(`/api/v1/nodes/tier?ip=${encodeURIComponent(ip)}&network=${encodeURIComponent(network)}`);
+                const tierData = await tierRes.json();
+                if (tierData.tier) {
+                    tier = tierData.tier;
+                    const tierColors = { Gold: '#eab308', Silver: '#94a3b8', Bronze: '#fb923c', Free: '#667eea' };
+                    document.getElementById('tierDisplay').innerHTML =
+                        `<span style="color:${tierColors[tier] || '#fff'};font-weight:600;">${tier}</span>` +
+                        (tierData.collateral ? ` <span style="color:var(--text-secondary);font-size:12px;">— ${Number(tierData.collateral).toLocaleString()} TIME collateral</span>` : '');
+                    document.getElementById('nodeTier').value = tier;
+                } else {
+                    document.getElementById('tierDisplay').innerHTML = '<span style="color:var(--text-secondary);">Not found on-chain — defaulting to Free</span>';
+                }
+            } catch {
+                // RPC unavailable — default to Free
             }
 
             btn.textContent = 'Submitting...';
