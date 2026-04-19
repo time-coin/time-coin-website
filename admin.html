@@ -1356,10 +1356,7 @@
                 <div class="section" style="margin-top:0">
                     <div class="section-header">
                         <span class="section-title">Active Bans</span>
-                        <div style="display:flex;gap:8px;align-items:center;">
-                            <input id="bannedSearch" type="text" placeholder="Search IP or reason…" oninput="filterBanned()" style="padding:5px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-primary);font-size:12px;width:220px;outline:none;">
-                            <button onclick="loadBanned()" style="padding:6px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:12px;cursor:pointer;">↻ Refresh</button>
-                        </div>
+                        <button onclick="loadBanned()" style="padding:6px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:12px;cursor:pointer;">↻ Refresh</button>
                     </div>
                     <div style="overflow-x:auto;">
                         <table style="width:100%;border-collapse:collapse;font-size:13px;">
@@ -3452,60 +3449,85 @@
             }
         }
 
+        function showLookupResult(html, borderColor) {
+            const box = document.getElementById('lookupResult');
+            box.style.display = 'block';
+            box.style.padding = '14px 16px';
+            box.style.borderRadius = '8px';
+            box.style.background = 'rgba(255,255,255,0.04)';
+            box.style.border = `1px solid ${borderColor}`;
+            box.style.fontSize = '13px';
+            box.style.marginTop = '12px';
+            box.innerHTML = html;
+        }
+
         async function lookupBan() {
             const ip = document.getElementById('lookupIpInput').value.trim();
-            const box = document.getElementById('lookupResult');
-            if (!ip) return;
-            box.style.display = 'block';
-            box.style.background = 'rgba(255,255,255,0.04)';
-            box.style.border = '1px solid rgba(255,255,255,0.08)';
-            box.innerHTML = 'Searching…';
+            if (!ip) {
+                showLookupResult('<span style="color:#fbbf24;">Please enter an IP address.</span>', 'rgba(251,191,36,0.3)');
+                return;
+            }
+
+            showLookupResult('<span style="color:#94a3b8;">Searching…</span>', 'rgba(255,255,255,0.1)');
 
             const token = await getBannedToken();
-            if (!token) { box.innerHTML = '<span style="color:#f87171;">Auth failed.</span>'; return; }
+            if (!token) {
+                showLookupResult('<span style="color:#f87171;">Not authenticated — please log in first.</span>', 'rgba(239,68,68,0.3)');
+                return;
+            }
 
-            // Use the admin list endpoint and filter by exact IP match
             try {
-                const res  = await fetch('/api/v1/nodes/banned', { headers: { Authorization: `Bearer ${token}` } });
+                const res = await fetch('/api/v1/nodes/banned', { headers: { Authorization: `Bearer ${token}` } });
+                if (!res.ok) {
+                    showLookupResult(`<span style="color:#f87171;">API error ${res.status} — check your session.</span>`, 'rgba(239,68,68,0.3)');
+                    return;
+                }
                 const rows = await res.json();
+                allBannedRows = rows;
+                renderBanned(rows);
+
                 const match = rows.find(r => r.ip === ip || `${r.ip}/${r.prefix}` === ip);
 
                 if (!match) {
-                    box.style.border = '1px solid rgba(255,255,255,0.08)';
-                    box.innerHTML = `<span style="color:var(--text-secondary);">No active ban found for <strong style="color:#fff;">${ip}</strong>.</span>`;
+                    showLookupResult(
+                        `<span style="color:#34d399;font-size:16px;margin-right:8px;">✓</span><span style="color:#e2e8f0;"><strong>${ip}</strong> is not in the ban list.</span>`,
+                        'rgba(52,211,153,0.3)'
+                    );
                     return;
                 }
 
-                const cidr = match.prefix && match.prefix !== '32' ? `${match.ip}/${match.prefix}` : match.ip;
+                const cidr = match.prefix && String(match.prefix) !== '32' ? `${match.ip}/${match.prefix}` : match.ip;
                 const date = match.banned_at ? new Date(match.banned_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : '—';
-                box.style.border = '1px solid rgba(239,68,68,0.3)';
-                box.innerHTML = `
+                showLookupResult(`
                     <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
                         <div>
-                            <span style="color:#f87171;font-weight:600;">${cidr}</span>
-                            <span style="margin-left:10px;color:var(--text-secondary);font-size:11px;text-transform:uppercase;">${match.ban_type}</span>
-                            <div style="margin-top:4px;color:var(--text-secondary);">${match.reason}</div>
-                            <div style="margin-top:2px;font-size:11px;color:var(--text-secondary);">Banned ${date}</div>
+                            <span style="color:#f87171;font-weight:700;font-size:14px;">${cidr}</span>
+                            <span style="margin-left:10px;background:rgba(239,68,68,0.15);color:#f87171;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;">${match.ban_type}</span>
+                            <div style="margin-top:6px;color:#e2e8f0;">${match.reason}</div>
+                            <div style="margin-top:3px;font-size:11px;color:#94a3b8;">Banned ${date}</div>
                         </div>
-                        <button onclick="removeBanAndClear(${match.id})" style="padding:7px 16px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.35);border-radius:7px;color:#f87171;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">Remove Ban</button>
-                    </div>`;
-            } catch {
-                box.innerHTML = '<span style="color:#f87171;">Lookup failed.</span>';
+                        <button onclick="removeBanAndClear(${match.id})" style="padding:8px 18px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:7px;color:#f87171;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">Remove Ban</button>
+                    </div>`, 'rgba(239,68,68,0.35)');
+            } catch (err) {
+                showLookupResult(`<span style="color:#f87171;">Lookup failed: ${err.message}</span>`, 'rgba(239,68,68,0.3)');
             }
         }
 
         async function removeBanAndClear(id) {
-            await removeBan(id);
-            document.getElementById('lookupResult').style.display = 'none';
-            document.getElementById('lookupIpInput').value = '';
+            const token = await getBannedToken();
+            if (!token) return;
+            if (!confirm('Remove this ban?')) return;
+            try {
+                await fetch(`/api/v1/nodes/banned/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+                document.getElementById('lookupResult').style.display = 'none';
+                document.getElementById('lookupIpInput').value = '';
+                await loadBanned();
+            } catch {
+                showLookupResult('<span style="color:#f87171;">Failed to remove ban.</span>', 'rgba(239,68,68,0.3)');
+            }
         }
 
         let allBannedRows = [];
-
-        function filterBanned() {
-            const q = (document.getElementById('bannedSearch')?.value || '').toLowerCase();
-            renderBanned(q ? allBannedRows.filter(r => r.ip.includes(q) || (r.reason || '').toLowerCase().includes(q)) : allBannedRows);
-        }
 
         function renderBanned(rows) {
             const tbody = document.getElementById('bannedBody');
