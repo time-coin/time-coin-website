@@ -3499,34 +3499,39 @@
 
         async function syncMnEmails() {
             const msg = document.getElementById('mnSyncMsg');
-            msg.textContent = 'Reading submissions…'; msg.style.color = 'var(--text-secondary)';
+            const setMsg = (text, color) => { if (msg) { msg.textContent = text; msg.style.color = color; } };
+            setMsg('Reading submissions…', 'var(--text-secondary)');
             try {
                 const snap = await getDocs(collection(db, 'masternode_submissions'));
                 const seen = new Set();
                 const contacts = [];
                 snap.forEach(d => {
                     const { userEmail, userId } = d.data();
-                    if (userEmail && !seen.has(userEmail)) {
-                        seen.add(userEmail);
+                    if (userEmail && !seen.has(userEmail.toLowerCase())) {
+                        seen.add(userEmail.toLowerCase());
                         contacts.push({ email: userEmail, uid: userId || null });
                     }
                 });
-                if (!contacts.length) { msg.textContent = 'No emails found in submissions.'; msg.style.color = '#fbbf24'; return; }
-
-                msg.textContent = `Registering ${contacts.length} emails…`;
-                const results = await Promise.allSettled(contacts.map(c =>
-                    fetch('/api/v1/newsletter/masternode-contacts', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(c),
-                    })
-                ));
-                const failed = results.filter(r => r.status === 'rejected').length;
-                msg.textContent = `Done — ${contacts.length - failed} registered${failed ? `, ${failed} failed` : ''}.`;
-                msg.style.color = failed ? '#fbbf24' : '#34d399';
+                if (!contacts.length) {
+                    setMsg('No emails found in submissions.', '#fbbf24');
+                    return;
+                }
+                setMsg(`Found ${contacts.length} unique emails — registering…`, 'var(--text-secondary)');
+                let ok = 0, failed = 0;
+                for (const c of contacts) {
+                    try {
+                        const res = await fetch('/api/v1/newsletter/masternode-contacts', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(c),
+                        });
+                        if (res.ok) ok++; else failed++;
+                    } catch { failed++; }
+                }
+                setMsg(`Done — ${ok} registered${failed ? `, ${failed} failed` : ''}.`, failed ? '#fbbf24' : '#34d399');
                 await loadMnContacts();
             } catch (err) {
-                msg.textContent = `Error: ${err.message}`; msg.style.color = '#f87171';
+                setMsg(`Error: ${err.message}`, '#f87171');
             }
         }
 
