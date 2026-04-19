@@ -1704,9 +1704,11 @@
                             <div class="probe-label">Outgoing / protocol</div>
                             <div class="probe-detail">${outboundOk
                                 ? `TIME node responded in ${d.outbound.latency}ms — node is running and sending data`
-                                : (d.inbound?.ok
-                                    ? `Port is open but node did not respond to TIME handshake`
-                                    : `Skipped — inbound connection failed`)}
+                                : d.outbound?.versionMismatch
+                                    ? `Outdated protocol version — node must be updated to version 2 or higher`
+                                    : (d.inbound?.ok
+                                        ? `Port is open but node did not respond to TIME handshake`
+                                        : `Skipped — inbound connection failed`)}
                             </div>
                             ${outboundOk && d.outbound?.isTimeNode ? `<div class="probe-detail" style="color:#4ade80">✓ TIME protocol confirmed</div>` : ''}
                             ${!outboundOk && d.outbound?.error && d.inbound?.ok ? `<div class="probe-error">${d.outbound.error}</div>` : ''}
@@ -2774,7 +2776,9 @@
                         if (!probe.inbound?.ok) {
                             rejectReason = `Node unreachable — port ${s.port} did not respond`;
                         } else if (!probe.outbound?.ok) {
-                            rejectReason = `Port is open but node did not respond to TIME handshake`;
+                            rejectReason = probe.outbound?.versionMismatch
+                                ? `Your node is running an outdated protocol version. Please update to version 2 or higher and resubmit.`
+                                : `Port is open but node did not respond to the TIME handshake`;
                         }
                     } catch { /* skip on network error */ }
                 }
