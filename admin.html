@@ -3578,20 +3578,24 @@
         }
 
         async function loadBanned() {
-            const token = await getBannedToken();
-            if (!token) return;
-            document.getElementById('bannedBody').innerHTML =
-                '<tr><td colspan="5" style="padding:16px 10px;color:var(--text-secondary);">Loading…</td></tr>';
+            const tbody = document.getElementById('bannedBody');
+            tbody.innerHTML = '<tr><td colspan="5" style="padding:16px 10px;color:var(--text-secondary);">Loading…</td></tr>';
             try {
+                const token = await getBannedToken();
+                if (!token) throw new Error('Not authenticated — please reload and log in again.');
                 const res = await fetch('/api/v1/nodes/banned', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.error || `HTTP ${res.status}`);
+                }
                 const rows = await res.json();
-                allBannedRows = rows;
+                allBannedRows = Array.isArray(rows) ? rows : [];
                 filterBanned();
-            } catch {
-                document.getElementById('bannedBody').innerHTML =
-                    '<tr><td colspan="5" style="padding:16px 10px;color:#f87171;">Failed to load.</td></tr>';
+            } catch (err) {
+                tbody.innerHTML =
+                    `<tr><td colspan="5" style="padding:16px 10px;color:#f87171;">Failed to load: ${err.message}</td></tr>`;
             }
         }
 
