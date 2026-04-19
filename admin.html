@@ -750,12 +750,6 @@
             <div id="tab-masternodes" class="tab-panel active">
                 <h1 class="dash-title">Masternode Submissions</h1>
                 <p class="dash-subtitle">Review and approve or reject masternode applications.</p>
-                <div style="margin-bottom:24px">
-                    <button id="syncAllBtn" style="padding:8px 18px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);border-radius:8px;color:#38bdf8;font-size:13px;font-weight:600;cursor:pointer">
-                        Sync All Approved → Peers Table
-                    </button>
-                    <span id="syncAllMsg" style="font-size:13px;margin-left:12px;color:var(--text-secondary)"></span>
-                </div>
 
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -1509,6 +1503,8 @@
                 renderTable();
                 // Silently auto-reject any pending submissions from banned IPs
                 autoBanPending();
+                // Keep peers table in sync with approved submissions
+                autoSyncApproved();
             } catch (err) {
                 document.getElementById('submissionsBody').innerHTML =
                     `<tr><td colspan="8" class="empty-state" style="color:var(--danger-red)">${err.message}</td></tr>`;
@@ -2939,33 +2935,19 @@
             document.getElementById('noteModal').classList.remove('show');
         };
 
-        document.getElementById('syncAllBtn').addEventListener('click', async () => {
-            const btn = document.getElementById('syncAllBtn');
-            const msg = document.getElementById('syncAllMsg');
+        async function autoSyncApproved() {
             const approved = allSubmissions.filter(s => s.status === 'approved');
-            if (approved.length === 0) { msg.textContent = 'No approved nodes to sync.'; return; }
-
-            btn.disabled = true;
-            msg.textContent = `Syncing ${approved.length} node(s)...`;
-
+            if (!approved.length) return;
             const idToken = await auth.currentUser?.getIdToken();
-            if (!idToken) { msg.textContent = 'Auth error — please refresh.'; btn.disabled = false; return; }
-
-            let ok = 0, fail = 0, lastErr = '';
-            await Promise.all(approved.map(async s => {
-                try {
-                    const res = await fetch('/api/v1/nodes/sync', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
-                        body: JSON.stringify({ ip: s.ip, port: s.port, tier: s.tier, network: s.network, firestoreId: s.id }),
-                    });
-                    if (res.ok) { ok++; } else { fail++; lastErr = `${res.status} ${res.statusText}`; }
-                } catch (e) { fail++; lastErr = e.message; }
-            }));
-
-            msg.textContent = `Done — ${ok} synced${fail ? `, ${fail} failed${lastErr ? ` (${lastErr})` : ''}` : ''}.`;
-            btn.disabled = false;
-        });
+            if (!idToken) return;
+            await Promise.all(approved.map(s =>
+                fetch('/api/v1/nodes/sync', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
+                    body: JSON.stringify({ ip: s.ip, port: s.port, tier: s.tier, network: s.network, firestoreId: s.id }),
+                }).catch(() => {})
+            ));
+        }
 
         window.saveNote = async function() {
             if (!noteTargetId) return;
