@@ -1075,6 +1075,16 @@
                 <h1 class="dash-title">Masternode Updates</h1>
                 <p class="dash-subtitle">Send email campaigns to registered masternode operators. Operators are added automatically when they submit a node.</p>
 
+                <!-- Backfill from Firestore -->
+                <div class="section">
+                    <div class="section-header"><span class="section-title">Sync Existing Applicants</span></div>
+                    <p style="font-size:13px;color:var(--text-secondary);margin:0 0 12px;">Registers all unique emails from Firestore masternode submissions into the mailing list (idempotent — safe to run multiple times).</p>
+                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                        <button onclick="syncMnEmails()" style="padding:8px 18px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:7px;color:#a5b4fc;font-size:13px;font-weight:600;cursor:pointer;">Sync from Submissions</button>
+                        <span id="mnSyncMsg" style="font-size:13px;color:var(--text-secondary);"></span>
+                    </div>
+                </div>
+
                 <!-- Compose -->
                 <div class="section">
                     <div class="section-header"><span class="section-title">Compose Campaign</span></div>
@@ -3486,6 +3496,39 @@
         };
 
         // ── Masternode Updates ────────────────────────────────────────────────
+
+        async function syncMnEmails() {
+            const msg = document.getElementById('mnSyncMsg');
+            msg.textContent = 'Reading submissions…'; msg.style.color = 'var(--text-secondary)';
+            try {
+                const snap = await getDocs(collection(db, 'masternode_submissions'));
+                const seen = new Set();
+                const contacts = [];
+                snap.forEach(d => {
+                    const { userEmail, userId } = d.data();
+                    if (userEmail && !seen.has(userEmail)) {
+                        seen.add(userEmail);
+                        contacts.push({ email: userEmail, uid: userId || null });
+                    }
+                });
+                if (!contacts.length) { msg.textContent = 'No emails found in submissions.'; msg.style.color = '#fbbf24'; return; }
+
+                msg.textContent = `Registering ${contacts.length} emails…`;
+                const results = await Promise.allSettled(contacts.map(c =>
+                    fetch('/api/v1/newsletter/masternode-contacts', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(c),
+                    })
+                ));
+                const failed = results.filter(r => r.status === 'rejected').length;
+                msg.textContent = `Done — ${contacts.length - failed} registered${failed ? `, ${failed} failed` : ''}.`;
+                msg.style.color = failed ? '#fbbf24' : '#34d399';
+                await loadMnContacts();
+            } catch (err) {
+                msg.textContent = `Error: ${err.message}`; msg.style.color = '#f87171';
+            }
+        }
 
         async function getMnToken() {
             const user = auth.currentUser;
