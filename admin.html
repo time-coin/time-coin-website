@@ -743,6 +743,7 @@
                 <button class="tab-btn" onclick="switchTab('tickets', this)">Tickets <span id="tkBadge" style="display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle;"></span></button>
                 <button class="tab-btn" onclick="switchTab('exchange', this)">Exchange <span id="exBadge" style="display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle;">!</span></button>
                 <button class="tab-btn" onclick="switchTab('map', this)">Network Map</button>
+                <button class="tab-btn" onclick="switchTab('banned', this)">Banned Peers</button>
             </nav>
 
             <!-- Masternodes tab -->
@@ -786,6 +787,11 @@
                                 <button class="filter-btn" onclick="setFilter('approved', this)">Approved</button>
                                 <button class="filter-btn" onclick="setFilter('rejected', this)">Rejected</button>
                             </div>
+                            <button onclick="autoRejectBanned()" id="autoRejectBtn"
+                                style="padding:6px 14px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:6px;color:#f87171;font-size:12px;font-weight:600;cursor:pointer;">
+                                ⚡ Auto-reject Banned
+                            </button>
+                            <span id="autoRejectMsg" style="font-size:12px;color:var(--text-secondary);"></span>
                         </div>
                     </div>
 
@@ -1294,6 +1300,62 @@
                 </div>
             </div>
 
+            <!-- Banned Peers tab -->
+            <div id="tab-banned" class="tab-panel">
+                <h1 class="dash-title">Banned Peers</h1>
+                <p class="dash-subtitle">Manage flagged IPs and CIDR subnets. Users who submit a banned IP are blocked instantly and shown the reason.</p>
+
+                <!-- Add ban form -->
+                <div class="section">
+                    <div class="section-header"><span class="section-title">Add Ban</span></div>
+                    <div style="display:grid;grid-template-columns:1fr 2fr 1fr auto;gap:10px;align-items:end;flex-wrap:wrap;">
+                        <div>
+                            <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">IP or CIDR</label>
+                            <input id="banIp" type="text" placeholder="154.217.246.0/24"
+                                style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;">
+                        </div>
+                        <div>
+                            <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Reason</label>
+                            <input id="banReason" type="text" placeholder="TLS flood / Reward-hijacking (AV44)"
+                                style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;">
+                        </div>
+                        <div>
+                            <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Type</label>
+                            <select id="banType" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;">
+                                <option value="permanent">Permanent</option>
+                                <option value="temporary">Temporary</option>
+                            </select>
+                        </div>
+                        <button onclick="addBan()" style="padding:8px 16px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.35);border-radius:7px;color:#f87171;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">+ Add Ban</button>
+                    </div>
+                    <span id="banMsg" style="font-size:13px;color:var(--text-secondary);display:block;margin-top:8px;"></span>
+                </div>
+
+                <!-- Ban list -->
+                <div class="section" style="margin-top:0">
+                    <div class="section-header">
+                        <span class="section-title">Active Bans</span>
+                        <button onclick="loadBanned()" style="padding:6px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:12px;cursor:pointer;">↻ Refresh</button>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                            <thead>
+                                <tr style="color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,0.08);">
+                                    <th style="text-align:left;padding:8px 10px;font-weight:500;">IP / CIDR</th>
+                                    <th style="text-align:left;padding:8px 10px;font-weight:500;">Reason</th>
+                                    <th style="text-align:left;padding:8px 10px;font-weight:500;">Type</th>
+                                    <th style="text-align:left;padding:8px 10px;font-weight:500;">Banned</th>
+                                    <th style="text-align:left;padding:8px 10px;font-weight:500;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bannedBody">
+                                <tr><td colspan="5" style="padding:16px 10px;color:var(--text-secondary);">Loading…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -1700,6 +1762,7 @@
             if (tab === 'analytics') anLoad();
             if (tab === 'tickets')   tkLoad();
             if (tab === 'map')       mapLoad();
+            if (tab === 'banned')    loadBanned();
         };
 
         // ── Newsletter ────────────────────────────────────────────────────────
@@ -2643,6 +2706,50 @@
             }
         };
 
+        window.autoRejectBanned = async function() {
+            const pending = allSubmissions.filter(s => s.status === 'pending');
+            if (!pending.length) {
+                document.getElementById('autoRejectMsg').textContent = 'No pending submissions.';
+                return;
+            }
+
+            const btn = document.getElementById('autoRejectBtn');
+            const msg = document.getElementById('autoRejectMsg');
+            btn.disabled = true;
+            btn.textContent = 'Checking…';
+            msg.textContent = '';
+
+            let rejected = 0;
+            let checked  = 0;
+
+            for (const s of pending) {
+                checked++;
+                btn.textContent = `Checking ${checked}/${pending.length}…`;
+                try {
+                    const res  = await fetch(`/api/v1/nodes/banned/check?ip=${encodeURIComponent(s.ip)}`);
+                    const data = await res.json();
+                    if (data.banned) {
+                        await updateDoc(doc(db, 'masternode_submissions', s.id), {
+                            status: 'rejected',
+                            notes:  `Auto-rejected: ${data.reason}`,
+                        });
+                        s.status = 'rejected';
+                        s.notes  = `Auto-rejected: ${data.reason}`;
+                        rejected++;
+                    }
+                } catch { /* skip on network error */ }
+            }
+
+            updateStats();
+            renderTable();
+            btn.disabled = false;
+            btn.textContent = '⚡ Auto-reject Banned';
+            msg.textContent = rejected > 0
+                ? `Rejected ${rejected} banned IP${rejected !== 1 ? 's' : ''}.`
+                : `No banned IPs found among ${pending.length} pending submission${pending.length !== 1 ? 's' : ''}.`;
+            msg.style.color = rejected > 0 ? '#f87171' : '#34d399';
+        };
+
         window.setStatus = async function(id, status) {
             try {
                 await updateDoc(doc(db, 'masternode_submissions', id), { status });
@@ -3169,6 +3276,104 @@
                 statusEl.textContent = errors.length ? `Error: ${errors[0]}` : 'Could not resolve locations for any nodes.';
             }
         };
+
+        // ── Banned Peers ──────────────────────────────────────────────────────
+
+        async function getBannedToken() {
+            const user = auth.currentUser;
+            if (!user) return null;
+            return user.getIdToken();
+        }
+
+        async function loadBanned() {
+            const token = await getBannedToken();
+            if (!token) return;
+            document.getElementById('bannedBody').innerHTML =
+                '<tr><td colspan="5" style="padding:16px 10px;color:var(--text-secondary);">Loading…</td></tr>';
+            try {
+                const res = await fetch('/api/v1/nodes/banned', {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                const rows = await res.json();
+                renderBanned(rows);
+            } catch {
+                document.getElementById('bannedBody').innerHTML =
+                    '<tr><td colspan="5" style="padding:16px 10px;color:#f87171;">Failed to load.</td></tr>';
+            }
+        }
+
+        function renderBanned(rows) {
+            const tbody = document.getElementById('bannedBody');
+            if (!rows.length) {
+                tbody.innerHTML = '<tr><td colspan="5" style="padding:16px 10px;color:var(--text-secondary);">No active bans.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = rows.map(r => {
+                const cidr = r.prefix && r.prefix !== '32' ? `${r.ip}/${r.prefix}` : r.ip;
+                const date = r.banned_at ? new Date(r.banned_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+                const typeBadge = r.ban_type === 'permanent'
+                    ? '<span style="color:#f87171;font-size:11px;font-weight:600;">PERMANENT</span>'
+                    : '<span style="color:#fbbf24;font-size:11px;font-weight:600;">TEMPORARY</span>';
+                const activeStyle = r.is_active ? '' : 'opacity:0.4;';
+                return `<tr style="border-bottom:1px solid rgba(255,255,255,0.05);${activeStyle}">
+                    <td style="padding:10px;font-family:monospace;color:#a5b4fc;">${cidr}</td>
+                    <td style="padding:10px;color:var(--text-secondary);max-width:360px;">${r.reason}</td>
+                    <td style="padding:10px;">${typeBadge}</td>
+                    <td style="padding:10px;color:var(--text-secondary);">${date}</td>
+                    <td style="padding:10px;">
+                        <button onclick="removeBan(${r.id})"
+                            style="padding:4px 10px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:5px;color:#f87171;font-size:12px;cursor:pointer;">
+                            Remove
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        async function addBan() {
+            const token = await getBannedToken();
+            if (!token) return;
+            const ip     = document.getElementById('banIp').value.trim();
+            const reason = document.getElementById('banReason').value.trim();
+            const type   = document.getElementById('banType').value;
+            const msg    = document.getElementById('banMsg');
+
+            if (!ip || !reason) { msg.textContent = 'IP and reason are required.'; msg.style.color = '#f87171'; return; }
+
+            try {
+                const res = await fetch('/api/v1/nodes/banned', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ ip, reason, ban_type: type }),
+                });
+                const data = await res.json();
+                if (!res.ok) { msg.textContent = data.error || 'Failed.'; msg.style.color = '#f87171'; return; }
+                msg.textContent = `${ip} banned.`;
+                msg.style.color = '#34d399';
+                document.getElementById('banIp').value = '';
+                document.getElementById('banReason').value = '';
+                await loadBanned();
+                setTimeout(() => { msg.textContent = ''; }, 4000);
+            } catch {
+                msg.textContent = 'Request failed.'; msg.style.color = '#f87171';
+            }
+        }
+
+        async function removeBan(id) {
+            if (!confirm('Remove this ban?')) return;
+            const token = await getBannedToken();
+            if (!token) return;
+            try {
+                await fetch(`/api/v1/nodes/banned/${id}`, {
+                    method: 'DELETE',
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                await loadBanned();
+            } catch {
+                alert('Failed to remove ban.');
+            }
+        }
+
     </script>
 </body>
 </html>

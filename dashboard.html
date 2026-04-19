@@ -743,6 +743,22 @@
 
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
+            btn.textContent = 'Checking...';
+
+            try {
+                // Check if IP is banned before accepting submission
+                const banCheck = await fetch(`/api/v1/nodes/banned/check?ip=${encodeURIComponent(ip)}`);
+                const banData = await banCheck.json();
+                if (banData.banned) {
+                    showMsg('banned', banData.reason);
+                    btn.disabled = false;
+                    btn.textContent = 'Submit for Whitelisting';
+                    return;
+                }
+            } catch {
+                // If ban check fails, allow submission to proceed
+            }
+
             btn.textContent = 'Submitting...';
 
             try {
@@ -811,6 +827,12 @@
 
         function showMsg(type, text) {
             const el = document.getElementById('formMsg');
+            if (type === 'banned') {
+                el.innerHTML = `<strong>This IP has been flagged:</strong> ${text}<br>
+                    <a href="support.html" style="color:#f87171;text-decoration:underline;font-size:13px;">Submit an appeal via Support Ticket &rarr;</a>`;
+                el.className = 'form-msg error';
+                return;
+            }
             el.textContent = text;
             el.className = `form-msg ${type}`;
             setTimeout(() => { el.className = 'form-msg'; }, 6000);
