@@ -3497,7 +3497,7 @@
 
         // ── Masternode Updates ────────────────────────────────────────────────
 
-        async function syncMnEmails() {
+        window.syncMnEmails = async function syncMnEmails() {
             const msg = document.getElementById('mnSyncMsg');
             const setMsg = (text, color) => { if (msg) { msg.textContent = text; msg.style.color = color; } };
             setMsg('Reading submissions…', 'var(--text-secondary)');
@@ -3541,7 +3541,7 @@
             return user.getIdToken();
         }
 
-        async function loadMnContacts() {
+        window.loadMnContacts = async function loadMnContacts() {
             const token = await getMnToken();
             if (!token) return;
             document.getElementById('mnContactsBody').innerHTML =
@@ -3583,7 +3583,7 @@
             }).join('');
         }
 
-        async function deleteMnContact(id) {
+        window.deleteMnContact = async function deleteMnContact(id) {
             if (!confirm('Remove this contact?')) return;
             const token = await getMnToken();
             if (!token) return;
@@ -3591,7 +3591,7 @@
             await loadMnContacts();
         }
 
-        async function sendMnCampaign() {
+        window.sendMnCampaign = async function sendMnCampaign() {
             const subject = document.getElementById('mnSubject').value.trim();
             const body    = document.getElementById('mnBody').value.trim();
             const msg     = document.getElementById('mnSendMsg');
