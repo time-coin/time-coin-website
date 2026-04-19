@@ -826,6 +826,15 @@
                     });
                 }
 
+                // Register email for masternode operator updates (non-blocking, idempotent)
+                if (currentUser.email) {
+                    fetch('/api/v1/newsletter/masternode-contacts', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: currentUser.email, uid: currentUser.uid }),
+                    }).catch(() => {});
+                }
+
                 // Optional Discord notification (new submissions only)
                 if (!previousRejection && DISCORD_WEBHOOK_URL) {
                     fetch(DISCORD_WEBHOOK_URL, {

@@ -738,6 +738,7 @@
                 <button class="tab-btn" onclick="switchTab('press', this)">Press Releases</button>
                 <button class="tab-btn" onclick="switchTab('campaigns', this)">Email Campaigns</button>
                 <button class="tab-btn" onclick="switchTab('newsletter', this)">Newsletter</button>
+                <button class="tab-btn" onclick="switchTab('masternode-updates', this)">Masternode Updates</button>
                 <button class="tab-btn" onclick="switchTab('proposals', this)">Proposals</button>
                 <button class="tab-btn" onclick="switchTab('analytics', this)">Analytics</button>
                 <button class="tab-btn" onclick="switchTab('tickets', this)">Tickets <span id="tkBadge" style="display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle;"></span></button>
@@ -1066,6 +1067,56 @@
                     </div>
                     <div id="nlSubStats" style="display:flex;gap:20px;margin-bottom:16px;flex-wrap:wrap;"></div>
                     <div id="nlSubList"><p style="color:var(--text-secondary);font-size:14px;">Loading…</p></div>
+                </div>
+            </div>
+
+            <!-- Masternode Updates tab -->
+            <div id="tab-masternode-updates" class="tab-panel">
+                <h1 class="dash-title">Masternode Updates</h1>
+                <p class="dash-subtitle">Send email campaigns to registered masternode operators. Operators are added automatically when they submit a node.</p>
+
+                <!-- Compose -->
+                <div class="section">
+                    <div class="section-header"><span class="section-title">Compose Campaign</span></div>
+                    <div style="display:flex;flex-direction:column;gap:12px;">
+                        <div>
+                            <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Subject</label>
+                            <input id="mnSubject" type="text" placeholder="e.g. Mandatory node upgrade before block 150000"
+                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;box-sizing:border-box;">
+                        </div>
+                        <div>
+                            <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Message</label>
+                            <textarea id="mnBody" rows="10" placeholder="Write your update here…"
+                                style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:#fff;font-size:13px;resize:vertical;font-family:inherit;box-sizing:border-box;"></textarea>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                            <button onclick="sendMnCampaign()" style="padding:9px 22px;background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.4);border-radius:7px;color:#a5b4fc;font-size:13px;font-weight:600;cursor:pointer;">Send to All Operators</button>
+                            <span id="mnSendMsg" style="font-size:13px;color:var(--text-secondary);"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subscriber list -->
+                <div class="section" style="margin-top:0">
+                    <div class="section-header">
+                        <span class="section-title">Registered Operators <span id="mnCount" style="color:var(--text-secondary);font-weight:400;font-size:13px;"></span></span>
+                        <button onclick="loadMnContacts()" style="padding:6px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:12px;cursor:pointer;">↻ Refresh</button>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                            <thead>
+                                <tr style="color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,0.08);">
+                                    <th style="text-align:left;padding:8px 10px;font-weight:500;">Email</th>
+                                    <th style="text-align:left;padding:8px 10px;font-weight:500;">Status</th>
+                                    <th style="text-align:left;padding:8px 10px;font-weight:500;">Subscribed</th>
+                                    <th style="text-align:left;padding:8px 10px;font-weight:500;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mnContactsBody">
+                                <tr><td colspan="4" style="padding:16px 10px;color:var(--text-secondary);">Loading…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -1791,6 +1842,7 @@
             btn.classList.add('active');
             location.hash = tab;
             if (tab === 'newsletter') nlLoadArticles();
+            if (tab === 'masternode-updates') loadMnContacts();
             if (tab === 'proposals') prLoadProposals();
             if (tab === 'analytics') anLoad();
             if (tab === 'tickets')   tkLoad();
@@ -3432,6 +3484,90 @@
                 statusEl.textContent = errors.length ? `Error: ${errors[0]}` : 'Could not resolve locations for any nodes.';
             }
         };
+
+        // ── Masternode Updates ────────────────────────────────────────────────
+
+        async function getMnToken() {
+            const user = auth.currentUser;
+            if (!user) return null;
+            return user.getIdToken();
+        }
+
+        async function loadMnContacts() {
+            const token = await getMnToken();
+            if (!token) return;
+            document.getElementById('mnContactsBody').innerHTML =
+                '<tr><td colspan="4" style="padding:16px 10px;color:var(--text-secondary);">Loading…</td></tr>';
+            try {
+                const res  = await fetch('/api/v1/newsletter/admin/masternode-contacts', { headers: { Authorization: `Bearer ${token}` } });
+                const rows = await res.json();
+                const active = rows.filter(r => r.is_active);
+                document.getElementById('mnCount').textContent = `— ${active.length} active`;
+                renderMnContacts(rows);
+            } catch {
+                document.getElementById('mnContactsBody').innerHTML =
+                    '<tr><td colspan="4" style="padding:16px 10px;color:#f87171;">Failed to load.</td></tr>';
+            }
+        }
+
+        function renderMnContacts(rows) {
+            const tbody = document.getElementById('mnContactsBody');
+            if (!rows.length) {
+                tbody.innerHTML = '<tr><td colspan="4" style="padding:16px 10px;color:var(--text-secondary);">No operators registered yet.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = rows.map(r => {
+                const date   = r.subscribed_at ? new Date(r.subscribed_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : '—';
+                const status = r.is_active
+                    ? '<span style="color:#34d399;font-size:11px;font-weight:600;">ACTIVE</span>'
+                    : '<span style="color:#94a3b8;font-size:11px;font-weight:600;">UNSUBSCRIBED</span>';
+                return `<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                    <td style="padding:10px;color:#e2e8f0;">${r.email}</td>
+                    <td style="padding:10px;">${status}</td>
+                    <td style="padding:10px;color:var(--text-secondary);">${date}</td>
+                    <td style="padding:10px;">
+                        <button onclick="deleteMnContact(${r.id})"
+                            style="padding:4px 10px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:5px;color:#f87171;font-size:12px;cursor:pointer;">
+                            Remove
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        async function deleteMnContact(id) {
+            if (!confirm('Remove this contact?')) return;
+            const token = await getMnToken();
+            if (!token) return;
+            await fetch(`/api/v1/newsletter/admin/masternode-contacts/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+            await loadMnContacts();
+        }
+
+        async function sendMnCampaign() {
+            const subject = document.getElementById('mnSubject').value.trim();
+            const body    = document.getElementById('mnBody').value.trim();
+            const msg     = document.getElementById('mnSendMsg');
+            if (!subject || !body) { msg.textContent = 'Subject and message are required.'; msg.style.color = '#f87171'; return; }
+
+            const token = await getMnToken();
+            if (!token) { msg.textContent = 'Not authenticated.'; msg.style.color = '#f87171'; return; }
+
+            msg.textContent = 'Sending…'; msg.style.color = 'var(--text-secondary)';
+            try {
+                const res  = await fetch('/api/v1/newsletter/admin/masternode-send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ subject, body }),
+                });
+                const data = await res.json();
+                if (!res.ok) { msg.textContent = data.error || 'Failed.'; msg.style.color = '#f87171'; return; }
+                msg.textContent = data.message;
+                msg.style.color = '#34d399';
+                setTimeout(() => { msg.textContent = ''; }, 6000);
+            } catch {
+                msg.textContent = 'Request failed.'; msg.style.color = '#f87171';
+            }
+        }
 
         // ── Banned Peers ──────────────────────────────────────────────────────
 
