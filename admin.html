@@ -1128,6 +1128,25 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- Sent campaigns -->
+                <div class="section" style="margin-top:0">
+                    <div class="section-header">
+                        <span class="section-title">Sent Campaigns</span>
+                        <button onclick="loadMnCampaigns()" style="padding:6px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:12px;cursor:pointer;">↻ Refresh</button>
+                    </div>
+                    <div id="mnCampaignsList" style="display:flex;flex-direction:column;gap:8px;">
+                        <p style="color:var(--text-secondary);font-size:13px;margin:0;">Loading…</p>
+                    </div>
+                </div>
+
+                <!-- Campaign preview modal -->
+                <div id="mnCampaignModal" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center;">
+                    <div style="background:#1e1e2e;border:1px solid rgba(255,255,255,0.12);border-radius:12px;max-width:640px;width:calc(100vw - 40px);max-height:80vh;overflow-y:auto;padding:28px 32px;position:relative;">
+                        <button onclick="document.getElementById('mnCampaignModal').style.display='none'" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer;">✕</button>
+                        <div id="mnCampaignModalContent"></div>
+                    </div>
+                </div>
             </div>
 
             <!-- Proposals tab -->
@@ -1852,7 +1871,7 @@
             btn.classList.add('active');
             location.hash = tab;
             if (tab === 'newsletter') nlLoadArticles();
-            if (tab === 'masternode-updates') loadMnContacts();
+            if (tab === 'masternode-updates') { loadMnContacts(); loadMnCampaigns(); }
             if (tab === 'proposals') prLoadProposals();
             if (tab === 'analytics') anLoad();
             if (tab === 'tickets')   tkLoad();
@@ -3617,6 +3636,48 @@
             }
         }
 
+        window.loadMnCampaigns = async function loadMnCampaigns() {
+            const list = document.getElementById('mnCampaignsList');
+            list.innerHTML = '<p style="color:var(--text-secondary);font-size:13px;margin:0;">Loading…</p>';
+            try {
+                const token = await getMnToken();
+                if (!token) throw new Error('Not authenticated');
+                const res = await fetch('/api/v1/newsletter/admin/masternode-campaigns', { headers: { Authorization: `Bearer ${token}` } });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const rows = await res.json();
+                if (!rows.length) {
+                    list.innerHTML = '<p style="color:var(--text-secondary);font-size:13px;margin:0;">No campaigns sent yet.</p>';
+                    return;
+                }
+                list.innerHTML = rows.map(r => {
+                    const date = new Date(r.sent_at).toLocaleString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit' });
+                    return `<div style="padding:14px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
+                        <div style="min-width:0;">
+                            <div style="font-weight:600;color:#e2e8f0;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.subject}</div>
+                            <div style="font-size:12px;color:var(--text-secondary);margin-top:3px;">${date} &bull; ${r.sent_to} sent${r.failed ? ` &bull; <span style="color:#fbbf24;">${r.failed} failed</span>` : ''}</div>
+                        </div>
+                        <button onclick="previewMnCampaign(${r.id})" style="padding:5px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);font-size:12px;cursor:pointer;white-space:nowrap;">View</button>
+                    </div>`;
+                }).join('');
+                list._rows = rows;
+            } catch (err) {
+                list.innerHTML = `<p style="color:#f87171;font-size:13px;margin:0;">Failed to load: ${err.message}</p>`;
+            }
+        }
+
+        window.previewMnCampaign = function previewMnCampaign(id) {
+            const list = document.getElementById('mnCampaignsList');
+            const row  = (list._rows || []).find(r => r.id === id);
+            if (!row) return;
+            const date = new Date(row.sent_at).toLocaleString('en-US', { month:'long', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit' });
+            document.getElementById('mnCampaignModalContent').innerHTML = `
+                <h2 style="color:#e2e8f0;margin:0 0 6px;font-size:18px;">${row.subject}</h2>
+                <p style="color:var(--text-secondary);font-size:12px;margin:0 0 20px;">${date} &bull; Sent to ${row.sent_to} operator${row.sent_to !== 1 ? 's' : ''}${row.failed ? ` &bull; <span style="color:#fbbf24;">${row.failed} failed</span>` : ''}</p>
+                <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:16px 18px;color:#cbd5e1;font-size:14px;line-height:1.75;white-space:pre-wrap;">${row.body}</div>`;
+            const modal = document.getElementById('mnCampaignModal');
+            modal.style.display = 'flex';
+        }
+
         // ── Banned Peers ──────────────────────────────────────────────────────
 
         async function getBannedToken() {
@@ -3640,7 +3701,7 @@
                 }
                 const rows = await res.json();
                 allBannedRows = Array.isArray(rows) ? rows : [];
-                filterBanned();
+                renderBanned(allBannedRows);
             } catch (err) {
                 tbody.innerHTML =
                     `<tr><td colspan="5" style="padding:16px 10px;color:#f87171;">Failed to load: ${err.message}</td></tr>`;
