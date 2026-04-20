@@ -664,19 +664,41 @@ async function showTx(txid) {
             rewardBreakdown = row('Block Reward', `<div style="width:100%"><div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:6px">Total: ${totalTIME.toLocaleString()} TIME</div>${rows}</div>`);
         }
 
+        // Special transaction (masternode operation) — build a detail section
+        const sd = tx.special_data;
+        let specialSection = '';
+        if (sd && sd.type) {
+            const typeLabels = {
+                MasternodeRegistration: 'Masternode Registration',
+                MasternodeDeregistration: 'Masternode Deregistration',
+                MasternodePayoutUpdate: 'Masternode Payout Update',
+            };
+            const typeLabel = typeLabels[sd.type] ?? sd.type;
+            let sdRows = `<div style="margin-bottom:6px"><span class="badge" style="background:#667eea22;color:#667eea;padding:2px 10px;border-radius:10px;font-size:0.8rem;font-weight:600">${typeLabel}</span></div>`;
+            if (sd.node_address) sdRows += `<div style="font-size:0.82rem;margin-bottom:3px"><strong>Node:</strong> <span class="mono">${sd.node_address}</span></div>`;
+            if (sd.wallet_address) sdRows += `<div style="font-size:0.82rem;margin-bottom:3px"><strong>Wallet:</strong> <span class="mono">${sd.wallet_address}</span></div>`;
+            if (sd.reward_address) sdRows += `<div style="font-size:0.82rem;margin-bottom:3px"><strong>Reward address:</strong> <span class="mono">${sd.reward_address || '(same as wallet)'}</span></div>`;
+            if (sd.new_reward_address) sdRows += `<div style="font-size:0.82rem;margin-bottom:3px"><strong>New reward address:</strong> <span class="mono">${sd.new_reward_address}</span></div>`;
+            if (sd.collateral_outpoint) sdRows += `<div style="font-size:0.82rem;margin-bottom:3px"><strong>Collateral:</strong> <span class="mono">${sd.collateral_outpoint || 'Free tier (none)'}</span></div>`;
+            if (sd.slot_id != null) sdRows += `<div style="font-size:0.82rem;margin-bottom:3px"><strong>Slot ID:</strong> ${sd.slot_id}</div>`;
+            specialSection = row('Masternode Operation', sdRows);
+        }
+
+        const txTypeLabel = isCoinbase ? 'Block Reward' : (sd?.type ? 'Masternode TX' : 'Transaction');
         const height = tx.height ?? tx.block_height;
         const html = `
             <div class="panel-header">
-                <span class="panel-title">${isCoinbase ? 'Block Reward' : 'Transaction'}</span>
+                <span class="panel-title">${txTypeLabel}</span>
                 <span class="badge badge-green">Confirmed</span>
             </div>
             ${row('TXID', `<span class="mono">${tx.txid ?? txid}</span>`)}
             ${height != null ? row('Block', `<a class="hash-link" onclick="showBlock(${height});return false" href="#">#${Number(height).toLocaleString()}</a>`) : ''}
             ${tx.time || tx.blocktime ? row('Time', formatFull(tx.time ?? tx.blocktime)) : ''}
             ${tx.size != null ? row('Size', formatBytes(tx.size)) : ''}
+            ${specialSection}
             ${rewardBreakdown}
-            ${row('Inputs', inputs)}
-            ${row('Outputs', outputs)}
+            ${!sd ? row('Inputs', inputs) : ''}
+            ${!sd ? row('Outputs', outputs) : ''}
             ${tx.fee != null && tx.fee !== 0 ? row('Fee', `${tx.fee} TIME`) : ''}
         `;
         showDetail(html);
