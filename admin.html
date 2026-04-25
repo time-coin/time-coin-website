@@ -3799,6 +3799,8 @@
                 const date = r.banned_at ? new Date(r.banned_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
                 const typeBadge = r.ban_type === 'permanent'
                     ? '<span style="color:#f87171;font-size:11px;font-weight:600;">PERMANENT</span>'
+                    : r.ban_type === 'blacklist'
+                    ? '<span style="color:#a78bfa;font-size:11px;font-weight:600;">AUTO-SYNC</span>'
                     : '<span style="color:#fbbf24;font-size:11px;font-weight:600;">TEMPORARY</span>';
                 const activeStyle = r.is_active ? '' : 'opacity:0.4;';
                 return `<tr style="border-bottom:1px solid rgba(255,255,255,0.05);${activeStyle}">
